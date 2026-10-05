@@ -97,15 +97,19 @@
                     <div class="space-y-3 text-sm text-slate-300 pt-2">
                         <p class="flex items-start gap-3">
                             <i class="fa-solid fa-location-dot text-amber-400 text-base mt-1"></i>
-                            <span>Gedung Consoltainer Center Lt. 5, Jl. Yos Sudarso No. 88, Tanjung Priok, Jakarta Utara 14320</span>
+                            <span>Pans Building - Jl. Sultan Agung No.425, RT.006/RW.007, Medan Satria, Bekasi, Jawa Barat 17132</span>
                         </p>
                         <p class="flex items-center gap-3">
                             <i class="fa-solid fa-phone text-amber-400 text-base"></i>
-                            <span>+62 21 4390 8888 (Hunting)</span>
+                            <span>021-29286684-85 ext 226</span>
                         </p>
                         <p class="flex items-center gap-3">
                             <i class="fa-solid fa-envelope text-amber-400 text-base"></i>
-                            <span>info@consoltainer.co.id</span>
+                            <span>docimport@ctl-indonesia.net</span>
+                        </p>
+                        <p class="flex items-center gap-3">
+                            <i class="fa-brands fa-weixin text-amber-400 text-base"></i>
+                            <span>WeChat: wxid_6a4lnfiacoyg22</span>
                         </p>
                         <p class="flex items-center gap-3">
                             <i class="fa-solid fa-clock text-amber-400 text-base"></i>
@@ -114,7 +118,7 @@
                     </div>
 
                     <div class="pt-4 border-t border-brand-800">
-                        <a href="https://wa.me/6281299887766?text=Halo%20PT.%20CONSOLTAINER%20TRANSPORT%20LOGISTIC,%20saya%20ingin%20konsultasi%20pengiriman%20kargo" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow text-center block transition flex items-center justify-center gap-2 text-sm">
+                        <a href="https://wa.me/6285156459307?text=Halo%20PT.%20CONSOLTAINER%20TRANSPORT%20LOGISTIC,%20saya%20ingin%20konsultasi%20pengiriman%20kargo" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow text-center block transition flex items-center justify-center gap-2 text-sm">
                             <i class="fa-brands fa-whatsapp text-lg"></i> Direct WhatsApp Marketing
                         </a>
                     </div>

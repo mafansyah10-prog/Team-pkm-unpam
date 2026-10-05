@@ -250,7 +250,7 @@
             <a href="{{ route('contact') }}" class="px-8 py-3.5 bg-brand-900 hover:bg-brand-800 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95">
                 Hubungi Marketing Kami
             </a>
-            <a href="https://wa.me/6281299887766" target="_blank" class="px-6 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl shadow transition flex items-center gap-2">
+            <a href="https://wa.me/6285156459307" target="_blank" class="px-6 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl shadow transition flex items-center gap-2">
                 <i class="fa-brands fa-whatsapp text-emerald-600 text-lg"></i> Fast Chat WhatsApp
             </a>
         </div>

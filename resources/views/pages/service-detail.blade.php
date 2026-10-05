@@ -76,7 +76,7 @@
                 <div class="bg-gradient-to-br from-brand-900 to-brand-800 text-white rounded-2xl p-6">
                     <h3 class="text-lg font-bold mb-2">Customer Service 24/7</h3>
                     <p class="text-xs text-slate-300 leading-relaxed mb-6">Hubungi tim operasional kami langsung melalui WhatsApp untuk konsultasi cepat.</p>
-                    <a href="https://wa.me/6281299887766" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow text-center block transition">
+                    <a href="https://wa.me/6285156459307" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow text-center block transition">
                         <i class="fa-brands fa-whatsapp text-lg mr-1.5"></i> WhatsApp Hotline
                     </a>
                 </div>
