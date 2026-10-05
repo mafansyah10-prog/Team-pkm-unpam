@@ -55,8 +55,8 @@
     <div class="bg-brand-900 text-slate-300 text-xs py-2 border-b border-brand-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center space-x-4">
-                <span><i class="fa-solid fa-phone text-accent-500 mr-1.5"></i> +62 21 4390 8888</span>
-                <span class="hidden sm:inline"><i class="fa-solid fa-envelope text-accent-500 mr-1.5"></i> info@consoltainer.co.id</span>
+                <span><i class="fa-solid fa-phone text-accent-500 mr-1.5"></i> 021-29286684-85 ext 226</span>
+                <span class="hidden sm:inline"><i class="fa-solid fa-envelope text-accent-500 mr-1.5"></i> ctl@ctl-indonesia.net</span>
                 <span class="hidden md:inline"><i class="fa-solid fa-clock text-accent-500 mr-1.5"></i> Senin - Jumat: 08:30 - 17:30</span>
             </div>
             <div class="flex items-center space-x-3">
@@ -157,7 +157,7 @@
                         <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
                         <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-linkedin-in"></i></a>
                         <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://wa.me/6281299887766" target="_blank" class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center text-white hover:bg-emerald-700 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="https://wa.me/6285156459307" target="_blank" class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center text-white hover:bg-emerald-700 transition"><i class="fa-brands fa-whatsapp"></i></a>
                     </div>
                 </div>
 
@@ -188,19 +188,23 @@
                     <div class="space-y-3 text-sm text-slate-400">
                         <p class="flex items-start gap-2">
                             <i class="fa-solid fa-location-dot text-accent-500 mt-1"></i>
-                            <span>Jl. Yos Sudarso No. 88, Tanjung Priok, Jakarta Utara</span>
+                            <span>Pans Building - Jl. Sultan Agung No.425, RT.006/RW.007, Medan Satria, Bekasi, Jawa Barat 17132</span>
                         </p>
                         <p class="flex items-center gap-2">
                             <i class="fa-solid fa-phone text-accent-500"></i>
-                            <span>+62 21 4390 8888</span>
+                            <span>021-29286684-85 ext 226</span>
                         </p>
                         <p class="flex items-center gap-2">
                             <i class="fa-solid fa-envelope text-accent-500"></i>
-                            <span>sales@consoltainer.co.id</span>
+                            <span>ctl@ctl-indonesia.net</span>
                         </p>
                         <p class="flex items-center gap-2 text-emerald-400 font-semibold">
                             <i class="fa-brands fa-whatsapp"></i>
-                            <span>+62 812 9988 7766</span>
+                            <span>+62 851-5645-9307</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i class="fa-brands fa-weixin text-accent-500"></i>
+                            <span>WeChat: wxid_6a4lnfiacoyg22</span>
                         </p>
                     </div>
                 </div>
@@ -219,7 +223,7 @@
     </footer>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/6281299887766?text=Halo%20PT.%20CONSOLTAINER%20TRANSPORT%20LOGISTIC,%20saya%20ingin%20konsultasi%20pengiriman%20kargo" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full p-3.5 shadow-2xl flex items-center justify-center transition transform hover:scale-110 group" title="Chat WhatsApp Customer Support">
+    <a href="https://wa.me/6285156459307?text=Halo%20PT.%20CONSOLTAINER%20TRANSPORT%20LOGISTIC,%20saya%20ingin%20konsultasi%20pengiriman%20kargo" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full p-3.5 shadow-2xl flex items-center justify-center transition transform hover:scale-110 group" title="Chat WhatsApp Customer Support">
         <i class="fa-brands fa-whatsapp text-2xl"></i>
         <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out font-bold text-xs pl-0 group-hover:pl-2">Chat Tim Logistik</span>
     </a>
