@@ -49,8 +49,8 @@
                         <h4 class="text-lg font-bold text-brand-900">Butuh Konsultasi untuk Layanan Ini?</h4>
                         <p class="text-xs text-brand-700 mt-1">Dapatkan penawaran tarif kompetitif dan jadwal pelayaran terbaik sekarang.</p>
                     </div>
-                    <a href="{{ route('contact') }}" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow transition whitespace-nowrap">
-                        Minta Penawaran (RFQ)
+                    <a href="{{ route('contact') }}" class="px-6 py-3 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow transition whitespace-nowrap">
+                        <i class="fa-solid fa-headset mr-1 text-amber-400"></i> Hubungi Kami
                     </a>
                 </div>
             </div>

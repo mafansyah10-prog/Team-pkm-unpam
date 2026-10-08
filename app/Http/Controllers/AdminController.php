@@ -12,6 +12,7 @@ use App\Models\ContactMessage;
 use App\Models\CompanySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -42,15 +43,21 @@ class AdminController extends Controller
     public function serviceStore(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255',
+            'title'             => 'required|string|max:255',
             'short_description' => 'required|string',
-            'description' => 'required|string',
-            'icon' => 'nullable|string',
-            'image' => 'nullable|string',
-            'is_featured' => 'boolean',
+            'description'       => 'required|string',
+            'icon'              => 'nullable|string',
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'is_featured'       => 'boolean',
         ]);
 
-        $data['slug'] = Str::slug($data['title']);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/services', 'public');
+        } else {
+            unset($data['image']);
+        }
+
+        $data['slug']       = Str::slug($data['title']);
         $data['is_featured'] = $request->has('is_featured');
         $data['sort_order'] = Service::count() + 1;
 
@@ -60,8 +67,37 @@ class AdminController extends Controller
 
     public function serviceDelete($id)
     {
-        Service::findOrFail($id)->delete();
+        $service = Service::findOrFail($id);
+        if ($service->image && !str_starts_with($service->image, 'http')) {
+            Storage::disk('public')->delete($service->image);
+        }
+        $service->delete();
         return redirect()->back()->with('success', 'Layanan berhasil dihapus!');
+    }
+
+    public function serviceUpdate(Request $request, $id)
+    {
+        $service = Service::findOrFail($id);
+        $data = $request->validate([
+            'title'             => 'required|string|max:255',
+            'short_description' => 'required|string',
+            'description'       => 'required|string',
+            'icon'              => 'nullable|string',
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($service->image && !str_starts_with($service->image, 'http')) {
+                Storage::disk('public')->delete($service->image);
+            }
+            $data['image'] = $request->file('image')->store('uploads/services', 'public');
+        }
+
+        $data['slug'] = Str::slug($data['title']);
+        $data['is_featured'] = $request->has('is_featured');
+
+        $service->update($data);
+        return redirect()->back()->with('success', 'Layanan berhasil diperbarui!');
     }
 
     // 2. Products Management
@@ -74,15 +110,21 @@ class AdminController extends Controller
     public function productStore(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'required|string',
+            'title'             => 'required|string|max:255',
+            'category'          => 'required|string',
             'short_description' => 'required|string',
-            'description' => 'required|string',
-            'image' => 'nullable|string',
-            'is_featured' => 'boolean',
+            'description'       => 'required|string',
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'is_featured'       => 'boolean',
         ]);
 
-        $data['slug'] = Str::slug($data['title']);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/products', 'public');
+        } else {
+            unset($data['image']);
+        }
+
+        $data['slug']       = Str::slug($data['title']);
         $data['is_featured'] = $request->has('is_featured');
         $data['sort_order'] = Product::count() + 1;
 
@@ -92,8 +134,37 @@ class AdminController extends Controller
 
     public function productDelete($id)
     {
-        Product::findOrFail($id)->delete();
+        $product = Product::findOrFail($id);
+        if ($product->image && !str_starts_with($product->image, 'http')) {
+            Storage::disk('public')->delete($product->image);
+        }
+        $product->delete();
         return redirect()->back()->with('success', 'Produk berhasil dihapus!');
+    }
+
+    public function productUpdate(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $data = $request->validate([
+            'title'             => 'required|string|max:255',
+            'category'          => 'required|string',
+            'short_description' => 'required|string',
+            'description'       => 'required|string',
+            'image'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($product->image && !str_starts_with($product->image, 'http')) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $data['image'] = $request->file('image')->store('uploads/products', 'public');
+        }
+
+        $data['slug'] = Str::slug($data['title']);
+        $data['is_featured'] = $request->has('is_featured');
+
+        $product->update($data);
+        return redirect()->back()->with('success', 'Produk berhasil diperbarui!');
     }
 
     // 3. Team Management
@@ -106,13 +177,19 @@ class AdminController extends Controller
     public function teamStore(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
+            'name'       => 'required|string|max:255',
+            'position'   => 'required|string|max:255',
             'department' => 'required|string|max:255',
-            'bio' => 'nullable|string',
-            'email' => 'nullable|email',
-            'image' => 'nullable|string',
+            'bio'        => 'nullable|string',
+            'email'      => 'nullable|email',
+            'image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
         ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/team', 'public');
+        } else {
+            unset($data['image']);
+        }
 
         $data['sort_order'] = TeamMember::count() + 1;
 
@@ -122,8 +199,35 @@ class AdminController extends Controller
 
     public function teamDelete($id)
     {
-        TeamMember::findOrFail($id)->delete();
+        $member = TeamMember::findOrFail($id);
+        if ($member->image && !str_starts_with($member->image, 'http')) {
+            Storage::disk('public')->delete($member->image);
+        }
+        $member->delete();
         return redirect()->back()->with('success', 'Anggota tim berhasil dihapus!');
+    }
+
+    public function teamUpdate(Request $request, $id)
+    {
+        $member = TeamMember::findOrFail($id);
+        $data = $request->validate([
+            'name'       => 'required|string|max:255',
+            'position'   => 'required|string|max:255',
+            'department' => 'required|string|max:255',
+            'bio'        => 'nullable|string',
+            'email'      => 'nullable|email',
+            'image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($member->image && !str_starts_with($member->image, 'http')) {
+                Storage::disk('public')->delete($member->image);
+            }
+            $data['image'] = $request->file('image')->store('uploads/team', 'public');
+        }
+
+        $member->update($data);
+        return redirect()->back()->with('success', 'Anggota tim berhasil diperbarui!');
     }
 
     // 4. Gallery Management
@@ -136,12 +240,13 @@ class AdminController extends Controller
     public function galleryStore(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'required|string',
-            'image' => 'required|string',
+            'title'       => 'required|string|max:255',
+            'category'    => 'required|string',
+            'image'       => 'required|image|mimes:jpg,jpeg,png,webp|max:8192',
             'description' => 'nullable|string',
         ]);
 
+        $data['image']      = $request->file('image')->store('uploads/gallery', 'public');
         $data['sort_order'] = GalleryItem::count() + 1;
 
         GalleryItem::create($data);
@@ -150,8 +255,33 @@ class AdminController extends Controller
 
     public function galleryDelete($id)
     {
-        GalleryItem::findOrFail($id)->delete();
+        $item = GalleryItem::findOrFail($id);
+        if ($item->image && !str_starts_with($item->image, 'http')) {
+            Storage::disk('public')->delete($item->image);
+        }
+        $item->delete();
         return redirect()->back()->with('success', 'Foto galeri berhasil dihapus!');
+    }
+
+    public function galleryUpdate(Request $request, $id)
+    {
+        $item = GalleryItem::findOrFail($id);
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'category'    => 'required|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
+            'description' => 'nullable|string',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($item->image && !str_starts_with($item->image, 'http')) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $data['image'] = $request->file('image')->store('uploads/gallery', 'public');
+        }
+
+        $item->update($data);
+        return redirect()->back()->with('success', 'Foto galeri berhasil diperbarui!');
     }
 
     // 5. Portfolios Management
@@ -164,15 +294,21 @@ class AdminController extends Controller
     public function portfolioStore(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'client' => 'nullable|string',
-            'route' => 'nullable|string',
-            'cargo_type' => 'nullable|string',
+            'title'       => 'required|string|max:255',
+            'client'      => 'nullable|string',
+            'route'       => 'nullable|string',
+            'cargo_type'  => 'nullable|string',
             'description' => 'required|string',
-            'image' => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
         ]);
 
-        $data['slug'] = Str::slug($data['title']);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/portfolios', 'public');
+        } else {
+            unset($data['image']);
+        }
+
+        $data['slug']       = Str::slug($data['title']);
         $data['sort_order'] = Portfolio::count() + 1;
 
         Portfolio::create($data);
@@ -181,8 +317,36 @@ class AdminController extends Controller
 
     public function portfolioDelete($id)
     {
-        Portfolio::findOrFail($id)->delete();
+        $portfolio = Portfolio::findOrFail($id);
+        if ($portfolio->image && !str_starts_with($portfolio->image, 'http')) {
+            Storage::disk('public')->delete($portfolio->image);
+        }
+        $portfolio->delete();
         return redirect()->back()->with('success', 'Portofolio berhasil dihapus!');
+    }
+
+    public function portfolioUpdate(Request $request, $id)
+    {
+        $portfolio = Portfolio::findOrFail($id);
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'client'      => 'nullable|string',
+            'route'       => 'nullable|string',
+            'cargo_type'  => 'nullable|string',
+            'description' => 'required|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($portfolio->image && !str_starts_with($portfolio->image, 'http')) {
+                Storage::disk('public')->delete($portfolio->image);
+            }
+            $data['image'] = $request->file('image')->store('uploads/portfolios', 'public');
+        }
+
+        $data['slug'] = Str::slug($data['title']);
+        $portfolio->update($data);
+        return redirect()->back()->with('success', 'Portofolio berhasil diperbarui!');
     }
 
     // 6. Testimonials Management
@@ -211,6 +375,21 @@ class AdminController extends Controller
     {
         Testimonial::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'Testimoni berhasil dihapus!');
+    }
+
+    public function testimonialUpdate(Request $request, $id)
+    {
+        $testimonial = Testimonial::findOrFail($id);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'content' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $testimonial->update($data);
+        return redirect()->back()->with('success', 'Testimoni berhasil diperbarui!');
     }
 
     // 7. Contact Messages Management
@@ -243,9 +422,32 @@ class AdminController extends Controller
 
     public function settingsUpdate(Request $request)
     {
-        foreach ($request->except('_token') as $key => $value) {
+        $request->validate([
+            'hero_banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
+            'about_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
+        ]);
+
+        if ($request->hasFile('hero_banner')) {
+            $oldBanner = CompanySetting::get('hero_banner');
+            if ($oldBanner && !str_starts_with($oldBanner, 'http')) {
+                Storage::disk('public')->delete($oldBanner);
+            }
+            $bannerPath = $request->file('hero_banner')->store('uploads/banners', 'public');
+            CompanySetting::set('hero_banner', $bannerPath);
+        }
+
+        if ($request->hasFile('about_image')) {
+            $oldAboutImg = CompanySetting::get('about_image');
+            if ($oldAboutImg && !str_starts_with($oldAboutImg, 'http')) {
+                Storage::disk('public')->delete($oldAboutImg);
+            }
+            $aboutImgPath = $request->file('about_image')->store('uploads/about', 'public');
+            CompanySetting::set('about_image', $aboutImgPath);
+        }
+
+        foreach ($request->except(['_token', 'hero_banner', 'about_image']) as $key => $value) {
             CompanySetting::set($key, $value);
         }
-        return redirect()->back()->with('success', 'Pengaturan website berhasil disimpan!');
+        return redirect()->back()->with('success', 'Pengaturan website dan profil perusahaan berhasil disimpan!');
     }
 }

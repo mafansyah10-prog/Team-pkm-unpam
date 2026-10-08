@@ -307,7 +307,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <label class="flex items-center gap-2 cursor-pointer select-none group">
                         <div class="relative">
-                            <input type="checkbox" name="remember" id="remember" class="sr-only peer">
+                            <input type="checkbox" name="remember" id="remember" value="1" {{ old('remember') ? 'checked' : '' }} class="sr-only peer">
                             <div class="w-9 h-5 bg-white/15 border border-white/20 rounded-full peer-checked:bg-brand-600 peer-checked:border-brand-500 transition-all duration-200"></div>
                             <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200 peer-checked:translate-x-4"></div>
                         </div>

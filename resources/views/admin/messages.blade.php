@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 
-@section('page_title', 'Inbox Pesan & Permintaan Penawaran (RFQ)')
+@section('page_title', 'Inbox Pesan Pengaduan & Masukan Pelanggan')
 
 @section('content')
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 class="font-bold text-slate-900 text-sm">Semua Pesan Masuk ({{ $messages->count() }})</h3>
+        <h3 class="font-bold text-slate-900 text-sm">Semua Pesan Pengaduan & Masukan Masuk ({{ $messages->count() }})</h3>
     </div>
 
     <div class="divide-y divide-slate-100">
@@ -17,7 +17,11 @@
                     @if($msg->company)
                     <span class="bg-slate-100 text-slate-700 text-[11px] font-semibold px-2 py-0.5 rounded">{{ $msg->company }}</span>
                     @endif
-                    @if($msg->service_type)
+                    @if(str_contains($msg->subject ?? '', 'PENGADUAN') || $msg->service_type === 'Pengaduan & Masukan')
+                    <span class="bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                        <i class="fa-solid fa-bullhorn text-amber-700"></i> Pengaduan / Masukan
+                    </span>
+                    @elseif($msg->service_type)
                     <span class="bg-brand-100 text-brand-800 text-[11px] font-bold px-2 py-0.5 rounded">{{ $msg->service_type }}</span>
                     @endif
                     @if(!$msg->is_read)
@@ -41,7 +45,7 @@
             </div>
 
             <div class="flex items-center gap-2 self-end md:self-center">
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $msg->phone) }}?text=Halo%20{{ urlencode($msg->name) }},%20kami%20dari%20Consoltainer%20merespons%20permintaan%20penawaran%20Anda." target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1">
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $msg->phone) }}?text=Halo%20{{ urlencode($msg->name) }},%20kami%20dari%20PT.%20Consoltainer%20merespons%20laporan%20pengaduan/masukan%20Anda." target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1">
                     <i class="fa-brands fa-whatsapp"></i> Balas WA
                 </a>
 
@@ -63,8 +67,8 @@
         </div>
         @empty
         <div class="p-12 text-center text-slate-400">
-            <i class="fa-solid fa-inbox text-4xl mb-3 block text-slate-300"></i>
-            Tidak ada pesan masuk atau permintaan penawaran.
+            <i class="fa-solid fa-bullhorn text-4xl mb-3 block text-slate-300"></i>
+            Tidak ada pesan pengaduan atau masukan masuk.
         </div>
         @endforelse
     </div>

@@ -39,11 +39,11 @@
 
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
-                <span class="text-xs font-semibold text-slate-500 uppercase">Pesan / RFQ Masuk</span>
+                <span class="text-xs font-semibold text-slate-500 uppercase">Pengaduan & Masukan</span>
                 <span class="text-2xl font-black text-slate-900 block mt-1">{{ $stats['unread_messages'] }}</span>
             </div>
             <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-inbox"></i>
+                <i class="fa-solid fa-bullhorn"></i>
             </div>
         </div>
     </div>
@@ -64,10 +64,10 @@
         </div>
     </div>
 
-    <!-- Recent Messages / RFQs -->
+    <!-- Recent Complaints / Feedback -->
     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-            <h3 class="font-bold text-slate-900 text-sm">Pesan Masuk & Permintaan Penawaran (RFQ) Terbaru</h3>
+            <h3 class="font-bold text-slate-900 text-sm">Pesan Pengaduan & Masukan Pelanggan Terbaru</h3>
             <a href="{{ route('admin.messages') }}" class="text-xs font-bold text-brand-600 hover:text-brand-800">Lihat Semua Inbox</a>
         </div>
 

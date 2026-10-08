@@ -3,95 +3,98 @@
 @section('title', 'PT. CONSOLTAINER TRANSPORT LOGISTIC - CTL LINE | LCL Consolidator Specialist')
 
 @section('content')
-<!-- Hero Section -->
-<section class="relative bg-gradient-to-br from-brand-900 via-brand-800 to-slate-900 text-white pt-12 pb-24 lg:pt-20 lg:pb-32 overflow-hidden">
-    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-    
+<!-- Hero Section with Solid Corporate Navy Background & Optional Dynamic Admin Banner -->
+<section class="relative bg-brand-900 text-white pt-14 pb-24 lg:pt-20 lg:pb-28 overflow-hidden">
+    @if(!empty($companySettings['hero_banner']))
+    <div class="absolute inset-0 z-0">
+        <img src="{{ str_starts_with($companySettings['hero_banner'], 'http') ? $companySettings['hero_banner'] : asset('storage/' . $companySettings['hero_banner']) }}" alt="Hero Banner" class="w-full h-full object-cover opacity-30">
+        <div class="absolute inset-0 bg-gradient-to-r from-brand-950 via-brand-900/90 to-brand-900/80"></div>
+    </div>
+    @endif
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            <!-- Hero Left Text -->
+            <!-- Hero Left: Value Proposition -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="inline-flex items-center space-x-2 bg-brand-700/60 border border-brand-500/30 px-3.5 py-1.5 rounded-full text-xs font-semibold text-amber-300">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span>Indonesia's Leading LCL Consolidator</span>
+                <div class="inline-flex items-center space-x-2 bg-brand-800 border border-brand-700 px-4 py-1.5 rounded-full text-xs font-bold text-amber-400 animate-fade-in-down">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span>Indonesia's Leading LCL Consolidator & Ocean Freight</span>
                 </div>
                 
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-white">
-                    Moving Your Business <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">Forward</span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-white animate-fade-in-up delay-100">
+                    {{ $companySettings['hero_title'] ?? 'Moving Your Business Forward' }}
                 </h1>
                 
-                <p class="text-lg sm:text-xl text-slate-300 max-w-2xl font-light leading-relaxed">
-                    Spesialis konsolidasi kargo <strong>LCL (Less than Container Load)</strong>, FCL, dan solusi pengurusan ekspor-impor terpercaya dengan jaringan rute ke seluruh pelabuhan utama dunia.
+                <p class="text-base sm:text-lg text-slate-200 max-w-2xl font-normal leading-relaxed animate-fade-in-up delay-200">
+                    {{ $companySettings['hero_subtitle'] ?? 'Spesialis konsolidasi kargo LCL (Less than Container Load), FCL, dan solusi pengurusan ekspor-impor terpercaya dengan jaringan pelayaran langsung ke 450+ pelabuhan utama dunia.' }}
                 </p>
 
-                <div class="flex flex-wrap gap-4 pt-2">
-                    <a href="{{ route('contact') }}" class="px-6 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-lg hover:shadow-amber-500/25 transition transform active:scale-95 flex items-center gap-2">
-                        <i class="fa-solid fa-paper-plane text-slate-900"></i> Minta Penawaran (RFQ)
+                <!-- CTA Action Buttons -->
+                <div class="flex flex-wrap gap-4 pt-2 animate-fade-in-up delay-300">
+                    <a href="{{ route('contact') }}" class="px-7 py-3.5 rounded-xl font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 shadow-lg transition transform active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-headset text-slate-900"></i> Hubungi Kami
                     </a>
-                    <a href="{{ route('services') }}" class="px-6 py-3.5 rounded-xl font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur transition">
-                        Eksplor Layanan Kami
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companySettings['whatsapp'] ?? '6281299887766') }}?text=Halo%20Consoltainer,%20saya%20ingin%20konsultasi%20pengiriman%20kargo" target="_blank" class="px-6 py-3.5 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg text-white"></i> Chat WhatsApp
+                    </a>
+                    <a href="{{ route('services') }}" class="px-6 py-3.5 rounded-xl font-bold text-white bg-brand-800 hover:bg-brand-700 border border-brand-600 transition">
+                        Eksplor Layanan
                     </a>
                 </div>
 
                 <!-- Trust Badges -->
-                <div class="pt-6 flex flex-wrap items-center gap-6 text-xs text-slate-400 border-t border-white/10">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-check text-emerald-400"></i> Konsolidasi Kargo Aman</span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-warehouse text-amber-400"></i> Dedicated CFS Depot</span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-file-contract text-blue-400"></i> PPJK Bea Cukai Resmi</span>
+                <div class="pt-6 flex flex-wrap items-center gap-6 text-xs text-slate-300 border-t border-brand-800 animate-fade-in-up delay-400">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-shield-check text-emerald-400 text-sm"></i> Konsolidasi Kargo Aman</span>
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-warehouse text-amber-400 text-sm"></i> Dedicated CFS Depot</span>
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-file-contract text-sky-400 text-sm"></i> PPJK Bea Cukai Resmi</span>
                 </div>
             </div>
 
-            <!-- Hero Right: Quick Request Quotation Form Card -->
-            <div class="lg:col-span-5">
-                <div class="bg-white rounded-2xl shadow-2xl p-6 text-slate-800 border border-slate-100">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-                        <div>
-                            <h3 class="font-extrabold text-slate-900 text-base">Minta Penawaran Cepat (RFQ)</h3>
-                            <p class="text-[11px] text-slate-500">Dapatkan tarif kompetitif dalam 1 jam kerja</p>
+            <!-- Hero Right: Solid Feature & Credential Cards -->
+            <div class="lg:col-span-5 space-y-4">
+                
+                <!-- Main Featured Solid Card: Fasilitas Gudang & CFS Depot -->
+                <div class="bg-white rounded-3xl p-6 shadow-2xl space-y-3 text-slate-900 border border-slate-100 animate-fade-in-scale delay-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-700 text-lg">
+                            <i class="fa-solid fa-warehouse"></i>
                         </div>
-                        <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-full">Free Quote</span>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-900">Dedicated CFS Depot & Warehouse</h3>
+                            <p class="text-xs text-slate-500">Tanjung Priok & Tanjung Perak</p>
+                        </div>
                     </div>
-
-                    <form action="{{ route('contact.store') }}" method="POST" class="space-y-3 text-xs">
-                        @csrf
-                        <div>
-                            <label class="block font-bold text-slate-700 uppercase mb-1">Nama Lengkap *</label>
-                            <input type="text" name="name" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Budi Santoso">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block font-bold text-slate-700 uppercase mb-1">Email *</label>
-                                <input type="email" name="email" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="budi@email.com">
-                            </div>
-                            <div>
-                                <label class="block font-bold text-slate-700 uppercase mb-1">Telepon / WhatsApp *</label>
-                                <input type="text" name="phone" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="0812xxxx">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold text-slate-700 uppercase mb-1">Layanan Kargo</label>
-                            <select name="service_type" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
-                                <option value="LCL Consolidation">LCL Consolidation Specialist</option>
-                                <option value="FCL Ocean Freight">Full Container Load (FCL)</option>
-                                <option value="Air Freight">Air Freight Consolidator</option>
-                                <option value="Customs PPJK">Customs Clearance PPJK</option>
-                                <option value="Warehousing">Warehousing & CFS Depot</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold text-slate-700 uppercase mb-1">Deskripsi Kargo / Rute *</label>
-                            <textarea name="message" rows="2" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Jenis barang, volume, rute pengiriman..."></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-bold rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2 mt-2">
-                            <i class="fa-solid fa-paper-plane text-amber-400"></i> Kirim Permintaan Penawaran
-                        </button>
-                    </form>
+                    <p class="text-xs text-slate-600 leading-relaxed pt-1">
+                        Fasilitas pergudangan modern terintegrasi untuk proses <em>stuffing</em> dan <em>stripping</em> kargo LCL dengan pengawasan keamanan penuh 24/7.
+                    </p>
                 </div>
+
+                <!-- Secondary Card 1: PPJK & Legalitas Kepabeanan -->
+                <div class="bg-white rounded-2xl p-5 shadow-lg text-slate-900 border border-slate-100 flex items-start gap-4 animate-fade-in-up delay-300">
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 flex-shrink-0">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-900">Customs Clearance & PPJK Resmi</h4>
+                        <p class="text-xs text-slate-500 mt-0.5 leading-snug">
+                            Didukung tim ahli kepabeanan bersertifikasi untuk kelancaran jalur hijau ekspor dan impor.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Secondary Card 2: Jaringan Global Terpercaya -->
+                <div class="bg-white rounded-2xl p-5 shadow-lg text-slate-900 border border-slate-100 flex items-start gap-4 animate-fade-in-up delay-400">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 flex-shrink-0">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-900">Jaringan Logistik Global</h4>
+                        <p class="text-xs text-slate-500 mt-0.5 leading-snug">
+                            Koneksi terpercaya ke 450+ pelabuhan di Asia, Eropa, Timur Tengah, dan Amerika.
+                        </p>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -99,18 +102,18 @@
 </section>
 
 <!-- Stats Counter Bar -->
-<section class="bg-white border-y border-slate-200 py-10 relative -mt-6 z-20 max-w-6xl mx-auto rounded-2xl shadow-xl px-6">
+<section class="bg-white border-y border-slate-200 py-10 relative -mt-6 z-20 max-w-6xl mx-auto rounded-2xl shadow-xl px-6 reveal">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-slate-100">
         <div class="pt-2 md:pt-0">
-            <span class="text-3xl sm:text-4xl font-extrabold text-brand-700 block">120,000+</span>
+            <span class="text-3xl sm:text-4xl font-extrabold text-brand-700 block">{{ $companySettings['total_teus'] ?? '120,000+' }}</span>
             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1 block">TEUs Konsolidasi/Thn</span>
         </div>
         <div class="pt-2 md:pt-0">
-            <span class="text-3xl sm:text-4xl font-extrabold text-brand-700 block">450+</span>
+            <span class="text-3xl sm:text-4xl font-extrabold text-brand-700 block">{{ $companySettings['total_ports'] ?? '450+' }}</span>
             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1 block">Destinasi Pelabuhan Dunia</span>
         </div>
         <div class="pt-2 md:pt-0">
-            <span class="text-3xl sm:text-4xl font-extrabold text-brand-700 block">18+</span>
+            <span class="text-3xl sm:text-4xl font-extrabold text-brand-700 block">{{ $companySettings['experience_years'] ?? '18' }}+</span>
             <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1 block">Tahun Pengalaman Logistik</span>
         </div>
         <div class="pt-2 md:pt-0">
@@ -121,7 +124,7 @@
 </section>
 
 <!-- Services Overview Section -->
-<section class="py-20 bg-slate-50">
+<section class="py-20 bg-slate-50 reveal">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-3xl mx-auto mb-16">
             <span class="text-xs font-bold uppercase tracking-widest text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Layanan Terpadu</span>
@@ -169,7 +172,7 @@
 </section>
 
 <!-- Products / Logistics Solutions -->
-<section class="py-20 bg-white border-t border-slate-200">
+<section class="py-20 bg-white border-t border-slate-200 reveal">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-3xl mx-auto mb-16">
             <span class="text-xs font-bold uppercase tracking-widest text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Solusi Spesifik</span>
@@ -206,7 +209,7 @@
 </section>
 
 <!-- Testimonials Section -->
-<section class="py-20 bg-brand-900 text-white relative overflow-hidden">
+<section class="py-20 bg-brand-900 text-white relative overflow-hidden reveal">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center max-w-2xl mx-auto mb-16">
             <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-800 px-3 py-1 rounded-full">Testimoni Klien</span>
@@ -239,8 +242,34 @@
     </div>
 </section>
 
+<!-- Customer Care & Quality Assurance (Suara Pelanggan & Pengaduan) -->
+<section class="py-16 bg-slate-100 border-t border-slate-200 reveal">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-r from-brand-900 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div class="space-y-3 text-center lg:text-left z-10 max-w-2xl">
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-white/10 px-3.5 py-1 rounded-full inline-block">
+                    <i class="fa-solid fa-medal mr-1"></i> Quality & Customer Satisfaction
+                </span>
+                <h3 class="text-2xl sm:text-3xl font-black text-white">Kepuasan Anda Adalah Komitmen Mutu Kami</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    Punya saran, masukan perbaikan, atau laporan kendala layanan kargo? Kami menyediakan saluran resmi penjaminan mutu untuk memastikan pelayanan yang selalu lebih baik bagi bisnis Anda.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-4 z-10">
+                <a href="{{ route('contact') }}" class="px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-bullhorn text-brand-900"></i> Form Masukan & Pengaduan
+                </a>
+            </div>
+            <!-- Decorative Icon Backdrop -->
+            <div class="absolute -right-8 -bottom-8 opacity-5 text-white text-9xl pointer-events-none">
+                <i class="fa-solid fa-handshake-angle"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Call to Action Banner -->
-<section class="py-16 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900">
+<section class="py-16 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 reveal">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-8">
         <div class="space-y-2 text-center lg:text-left">
             <h2 class="text-3xl font-extrabold">Siap Mengirimkan Kargo LCL Anda Hari Ini?</h2>

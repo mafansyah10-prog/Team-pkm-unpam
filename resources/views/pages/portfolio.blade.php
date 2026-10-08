@@ -18,9 +18,9 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach($portfolios as $portfolio)
             <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between group">
-                @if($portfolio->image)
+                @if($portfolio->image_url)
                 <div class="h-52 overflow-hidden relative">
-                    <img src="{{ $portfolio->image }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <img src="{{ $portfolio->image_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     @if($portfolio->cargo_type)
                     <span class="absolute top-4 left-4 bg-brand-900/80 backdrop-blur text-white text-[11px] font-bold px-3 py-1 rounded-md">
                         {{ $portfolio->cargo_type }}

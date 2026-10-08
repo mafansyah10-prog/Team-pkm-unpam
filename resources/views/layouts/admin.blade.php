@@ -57,15 +57,15 @@
         <div>
             <!-- Brand Logo -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800/80 bg-[#061325]">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
+                <div class="flex items-center gap-3 select-none cursor-default">
                     <div class="bg-white p-1 rounded-lg shadow-sm">
-                        <img src="{{ asset('images/ctl-logo.svg') }}" alt="CTL LINE" class="h-9 w-auto">
+                        <img src="{{ asset('images/ctl-logo.svg') }}" alt="CTL LINE" class="h-9 w-auto pointer-events-none">
                     </div>
                     <div>
                         <span class="font-black text-white text-base tracking-tight block leading-tight">CTL LINE</span>
                         <span class="text-[9px] font-bold text-amber-400 tracking-wider uppercase block">Admin Back-Office</span>
                     </div>
-                </a>
+                </div>
                 <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-white p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
@@ -101,7 +101,7 @@
                 <div class="pt-4 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Inquiry & Pengaturan</div>
 
                 <a href="{{ route('admin.messages') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition {{ request()->routeIs('admin.messages*') ? 'bg-brand-600 text-white font-bold shadow-lg shadow-brand-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
-                    <i class="fa-solid fa-inbox text-sm w-5 {{ request()->routeIs('admin.messages*') ? 'text-white' : 'text-slate-400' }}"></i> Pesan & RFQ
+                    <i class="fa-solid fa-bullhorn text-sm w-5 {{ request()->routeIs('admin.messages*') ? 'text-white' : 'text-slate-400' }}"></i> Pengaduan & Masukan
                 </a>
                 <a href="{{ route('admin.settings') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition {{ request()->routeIs('admin.settings*') ? 'bg-brand-600 text-white font-bold shadow-lg shadow-brand-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
                     <i class="fa-solid fa-gear text-sm w-5 {{ request()->routeIs('admin.settings*') ? 'text-white' : 'text-slate-400' }}"></i> Pengaturan Website
@@ -157,9 +157,38 @@
             </div>
             @endif
 
+            @if($errors->any())
+            <div class="mb-6 p-4 bg-rose-50 border border-rose-300 rounded-xl text-rose-800 text-sm shadow-sm">
+                <div class="flex items-center gap-2 font-bold mb-2">
+                    <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> Terdapat kesalahan:
+                </div>
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
             @yield('content')
         </main>
     </div>
 
 </body>
+<script>
+function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.classList.remove('hidden');
+            preview.querySelector('img').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.classList.add('hidden');
+        preview.querySelector('img').src = '';
+    }
+}
+</script>
 </html>

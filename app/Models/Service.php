@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Service extends Model
 {
@@ -22,7 +23,13 @@ class Service extends Model
     ];
 
     protected $casts = [
-        'features' => 'array',
+        'features'    => 'array',
         'is_featured' => 'boolean',
     ];
+
+    public function getImageUrlAttribute(): string
+    {
+        if (!$this->image) return '';
+        return str_starts_with($this->image, 'http') ? $this->image : Storage::url($this->image);
+    }
 }

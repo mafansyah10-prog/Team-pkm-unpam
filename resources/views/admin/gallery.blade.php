@@ -3,11 +3,11 @@
 @section('page_title', 'Kelola Galeri Operasional')
 
 @section('content')
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<div x-data="{ editModalOpen: false, editItem: {} }" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
         <h3 class="font-bold text-slate-900 text-sm mb-4 border-b border-slate-100 pb-3">Upload Foto Galeri Baru</h3>
         
-        <form action="{{ route('admin.gallery.store') }}" method="POST" class="space-y-4 text-xs">
+        <form action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
             @csrf
             <div>
                 <label class="block font-bold text-slate-700 uppercase mb-1">Judul / Keterangan Foto *</label>
@@ -20,8 +20,12 @@
             </div>
 
             <div>
-                <label class="block font-bold text-slate-700 uppercase mb-1">URL Gambar Foto *</label>
-                <input type="text" name="image" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm" placeholder="https://images.unsplash.com/...">
+                <label class="block font-bold text-slate-700 uppercase mb-1">Upload Foto *</label>
+                <input type="file" name="image" accept="image/*" required onchange="previewImage(this,'gallery_image_preview')"
+                    class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-600 file:text-white hover:file:bg-brand-700 cursor-pointer">
+                <div id="gallery_image_preview" class="mt-2 hidden">
+                    <img src="" alt="Preview" class="w-full h-28 object-cover rounded-xl border border-slate-200">
+                </div>
             </div>
 
             <div>
@@ -44,23 +48,61 @@
             @foreach($gallery as $item)
             <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200 flex flex-col justify-between">
                 <div class="h-32 overflow-hidden relative">
-                    <img src="{{ $item->image }}" alt="{{ $item->title }}" class="w-full h-full object-cover">
+                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover">
                     <span class="absolute bottom-2 left-2 bg-brand-900/80 text-white text-[10px] px-2 py-0.5 rounded font-semibold">
                         {{ $item->category }}
                     </span>
                 </div>
                 <div class="p-3 flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-900 truncate mr-2">{{ $item->title }}</span>
-                    <form action="{{ route('admin.gallery.delete', $item->id) }}" method="POST" onsubmit="return confirm('Hapus foto ini?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-rose-600 hover:text-rose-800 text-xs">
-                            <i class="fa-solid fa-trash"></i>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" @click="editItem = {{ json_encode($item) }}; editModalOpen = true" class="text-amber-600 hover:text-amber-800 text-xs font-bold">
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                    </form>
+                        <form action="{{ route('admin.gallery.delete', $item->id) }}" method="POST" onsubmit="return confirm('Hapus foto ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-rose-600 hover:text-rose-800 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             @endforeach
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div x-show="editModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 overflow-y-auto max-h-[90vh]">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <h3 class="font-bold text-slate-900 text-base">Edit Foto Galeri</h3>
+                <button @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+            </div>
+            <form :action="'{{ url('admin/gallery/update') }}/' + editItem.id" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
+                @csrf
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Judul / Keterangan Foto *</label>
+                    <input type="text" name="title" x-model="editItem.title" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Kategori *</label>
+                    <input type="text" name="category" x-model="editItem.category" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Deskripsi Tambahan</label>
+                    <textarea name="description" rows="2" x-model="editItem.description" class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Ganti Foto (Opsional)</label>
+                    <input type="file" name="image" accept="image/*" class="w-full px-3 py-2 bg-slate-50 border rounded-xl text-sm">
+                </div>
+                <div class="flex items-center justify-end gap-3 pt-3 border-t">
+                    <button type="button" @click="editModalOpen = false" class="px-4 py-2 border rounded-xl font-bold text-slate-600">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow">Simpan Perubahan</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
