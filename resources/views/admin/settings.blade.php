@@ -220,49 +220,5 @@
             </button>
         </div>
     </form>
-
-    <!-- Card Ubah Password Admin -->
-    <div class="mt-8 pt-8 border-t border-slate-200">
-        <div class="flex items-center gap-2.5 text-slate-900 font-bold text-sm mb-2">
-            <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
-                <i class="fa-solid fa-key text-sm"></i>
-            </div>
-            <div>
-                <h4 class="text-sm font-bold text-slate-900">Keamanan Akun & Ubah Password Admin</h4>
-                <p class="text-xs text-slate-500 font-normal">Perbarui kata sandi akun administrator untuk masuk ke panel ini.</p>
-            </div>
-        </div>
-
-        @if($errors->has('current_password') || $errors->has('new_password'))
-        <div class="mb-4 mt-3 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs space-y-1">
-            @error('current_password') <p><i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ $message }}</p> @enderror
-            @error('new_password') <p><i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ $message }}</p> @enderror
-        </div>
-        @endif
-
-        <form action="{{ route('admin.password.update') }}" method="POST" class="mt-4 space-y-4">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block font-bold text-slate-700 uppercase text-[11px] mb-1">Password Saat Ini *</label>
-                    <input type="password" name="current_password" required placeholder="Masukkan password lama" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 uppercase text-[11px] mb-1">Password Baru *</label>
-                    <input type="password" name="new_password" required placeholder="Minimal 6 karakter" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 uppercase text-[11px] mb-1">Konfirmasi Password Baru *</label>
-                    <input type="password" name="new_password_confirmation" required placeholder="Ulangi password baru" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-brand-500">
-                </div>
-            </div>
-
-            <div class="flex justify-end pt-2">
-                <button type="submit" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow transition text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-lock"></i> Perbarui Password Admin
-                </button>
-            </div>
-        </form>
-    </div>
 </div>
 @endsection
