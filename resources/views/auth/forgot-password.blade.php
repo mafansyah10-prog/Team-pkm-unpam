@@ -206,26 +206,8 @@
                 <form method="POST" action="{{ route('admin.forgot-password.send-otp') }}" @submit="loading = true">
                     @csrf
 
-                    <!-- Email Input -->
-                    <div class="mb-5">
-                        <label for="email" class="block text-slate-300 text-xs font-bold uppercase mb-2">
-                            <i class="fa-solid fa-envelope text-brand-400 mr-1.5"></i>Email Terdaftar Administrator *
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value="{{ old('email', $email ?: 'admin@consoltainer.com') }}"
-                            required
-                            placeholder="admin@consoltainer.com"
-                            class="input-field w-full bg-white/10 border {{ $errors->has('email') ? 'border-rose-500 text-rose-200' : 'border-white/15 text-white' }} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-400 focus:bg-white/15"
-                        >
-                        @error('email')
-                        <p class="mt-1.5 text-rose-400 text-xs flex items-center gap-1">
-                            <i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
+                    <!-- Hidden Email Administrator (Otomatis dari Profil) -->
+                    <input type="hidden" name="email" value="{{ old('email', $email ?: 'admin@consoltainer.com') }}">
 
                     <!-- Channel Selection: WhatsApp vs Gmail -->
                     <div class="mb-6">
