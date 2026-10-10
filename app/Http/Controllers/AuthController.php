@@ -193,10 +193,20 @@ class AuthController extends Controller
         // Kirim otomatis sesuai saluran yang dipilih
         if ($request->channel === 'whatsapp') {
             $waResult = WhatsAppService::sendOtp($adminPhone, $otp, $user->name);
+            if (!$waResult['success']) {
+                return back()->withInput()->withErrors([
+                    'channel' => 'Gagal mengirim WhatsApp otomatis: ' . $waResult['message'] . ' Silakan masukkan Token Fonnte di Profil Admin (/admin/profile).',
+                ]);
+            }
             $channelLabel = 'WhatsApp Admin (' . $adminPhone . ')';
         } else {
             // Pengiriman via Gmail / Email secara otomatis
             $mailResult = OtpMailService::sendOtp($adminEmail, $otp, $user->name);
+            if (!$mailResult['success']) {
+                return back()->withInput()->withErrors([
+                    'channel' => 'Gagal mengirim email otomatis: ' . $mailResult['message'] . ' Pastikan Akun Gmail & Sandi Aplikasi (App Password) sudah diisi di Profil Admin (/admin/profile).',
+                ]);
+            }
             $channelLabel = 'Gmail Admin (' . $adminEmail . ')';
         }
 

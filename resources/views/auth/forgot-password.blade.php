@@ -255,6 +255,15 @@
                                 </div>
                             </label>
                         </div>
+                        @error('channel')
+                        <div class="mt-3 p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs flex items-start gap-2.5">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-400 mt-0.5 text-sm flex-shrink-0"></i>
+                            <div>
+                                <p class="font-bold text-rose-200">Gagal Mengirimkan OTP:</p>
+                                <p class="mt-0.5 leading-relaxed">{{ $message }}</p>
+                            </div>
+                        </div>
+                        @enderror
                     </div>
 
                     <!-- Submit Button -->
