@@ -479,4 +479,40 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Password admin berhasil diperbarui! Silakan gunakan password baru ini untuk login berikutnya.');
     }
+
+    /**
+     * Show the admin profile & OTP contact settings page.
+     */
+    public function profile()
+    {
+        $user = Auth::user();
+        return view('admin.profile', compact('user'));
+    }
+
+    /**
+     * Update admin profile (Name, Gmail, WhatsApp/Phone).
+     */
+    public function profileUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'required|string|max:50',
+        ], [
+            'name.required'  => 'Nama administrator wajib diisi.',
+            'email.required' => 'Alamat Gmail/Email wajib diisi.',
+            'email.email'    => 'Format email tidak valid.',
+            'email.unique'   => 'Alamat email ini sudah digunakan oleh akun lain.',
+            'phone.required' => 'Nomor WhatsApp / Telepon wajib diisi untuk verifikasi OTP.',
+        ]);
+
+        $user->name  = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profil Administrator berhasil diperbarui! Nomor WhatsApp (' . $user->phone . ') dan Gmail (' . $user->email . ') ini sekarang otomatis terhubung untuk pengiriman kode OTP reset password.');
+    }
 }

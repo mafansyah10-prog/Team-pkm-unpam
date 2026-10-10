@@ -94,10 +94,29 @@ class AuthController extends Controller
         $email = $request->query('email', '');
         $channel = $request->query('channel', 'whatsapp');
 
-        $companyWa = CompanySetting::get('whatsapp') ?: '+62 812 9988 7766';
-        $companyEmail = CompanySetting::get('email') ?: 'info@consoltainer.co.id';
+        // Cari user admin berdasarkan email atau gunakan user admin pertama
+        $adminUser = null;
+        if (!empty($email)) {
+            $adminUser = User::where('email', $email)->first();
+        }
+        if (!$adminUser) {
+            $adminUser = User::first();
+        }
 
-        return view('auth.forgot-password', compact('step', 'email', 'channel', 'companyWa', 'companyEmail'));
+        $adminEmail = $adminUser ? $adminUser->email : 'admin@consoltainer.com';
+        $adminPhone = ($adminUser && !empty($adminUser->phone)) ? $adminUser->phone : (CompanySetting::get('whatsapp') ?: '+62 812 9988 7766');
+
+        if (empty($email)) {
+            $email = $adminEmail;
+        }
+
+        return view('auth.forgot-password', [
+            'step'         => $step,
+            'email'        => $email,
+            'channel'      => $channel,
+            'companyWa'    => $adminPhone,
+            'companyEmail' => $adminEmail,
+        ]);
     }
 
     /**
@@ -123,8 +142,9 @@ class AuthController extends Controller
             ]);
         }
 
-        $companyWa = CompanySetting::get('whatsapp') ?: '+62 812 9988 7766';
-        $registeredEmail = $user->email;
+        // Ambil nomor WhatsApp dan email terupdate langsung dari profil admin
+        $adminPhone = !empty($user->phone) ? $user->phone : (CompanySetting::get('whatsapp') ?: '+62 812 9988 7766');
+        $adminEmail = $user->email;
 
         // Invalidate OTP aktif sebelumnya untuk email ini
         AdminPasswordReset::where('email', $user->email)
@@ -136,7 +156,7 @@ class AuthController extends Controller
 
         AdminPasswordReset::create([
             'email'      => $user->email,
-            'phone'      => $companyWa,
+            'phone'      => $adminPhone,
             'otp'        => $otp,
             'channel'    => $request->channel,
             'expires_at' => now()->addMinutes(10),
@@ -146,7 +166,7 @@ class AuthController extends Controller
         // Siapkan tautan WhatsApp Direct jika saluran WhatsApp
         $waUrl = null;
         if ($request->channel === 'whatsapp') {
-            $cleanPhone = preg_replace('/[^0-9]/', '', $companyWa);
+            $cleanPhone = preg_replace('/[^0-9]/', '', $adminPhone);
             if (str_starts_with($cleanPhone, '0')) {
                 $cleanPhone = '62' . substr($cleanPhone, 1);
             } elseif (str_starts_with($cleanPhone, '8')) {
@@ -170,7 +190,7 @@ class AuthController extends Controller
             }
         }
 
-        $channelLabel = $request->channel === 'whatsapp' ? 'WhatsApp resmi (' . $companyWa . ')' : 'Gmail (' . $registeredEmail . ')';
+        $channelLabel = $request->channel === 'whatsapp' ? 'WhatsApp Profil Admin (' . $adminPhone . ')' : 'Gmail Profil Admin (' . $adminEmail . ')';
 
         return redirect()->route('admin.forgot-password', [
             'step'    => 'verify',

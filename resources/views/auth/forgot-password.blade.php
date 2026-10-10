@@ -241,9 +241,9 @@
                                     <i class="fa-brands fa-whatsapp text-lg"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-white leading-tight">WhatsApp</p>
+                                    <p class="text-xs font-bold text-white leading-tight">WhatsApp Admin</p>
                                     <p class="text-[11px] text-emerald-400 font-mono mt-0.5">{{ $companyWa }}</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">Kirim otomatis ke WA Perusahaan</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">Otomatis tersinkron dari Profil Admin</p>
                                 </div>
                             </label>
 
@@ -255,9 +255,9 @@
                                     <i class="fa-solid fa-envelope text-sm"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-white leading-tight">Gmail / Email</p>
+                                    <p class="text-xs font-bold text-white leading-tight">Gmail Admin</p>
                                     <p class="text-[11px] text-rose-300 truncate mt-0.5">{{ $companyEmail }}</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">Kirim ke Inbox Gmail resmi</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">Otomatis tersinkron dari Profil Admin</p>
                                 </div>
                             </label>
                         </div>
