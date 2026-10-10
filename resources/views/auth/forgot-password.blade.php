@@ -192,15 +192,15 @@
             </div>
             @endif
 
-            <!-- Info Pengiriman Otomatis pada Tahap 2 (Tidak perlu klik WhatsApp manual lagi) -->
+            <!-- Info Pengiriman Otomatis pada Tahap 2 -->
             @if($step === '2')
             <div class="mb-4 p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs flex items-center gap-3 shadow-lg">
-                <div class="w-9 h-9 rounded-lg {{ $channel === 'email' ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400' }} flex items-center justify-center flex-shrink-0">
-                    <i class="{{ $channel === 'email' ? 'fa-solid fa-envelope text-base' : 'fa-brands fa-whatsapp text-xl' }}"></i>
+                <div class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-envelope text-base"></i>
                 </div>
                 <div class="flex-1">
-                    <p class="font-bold text-white text-xs">Pesan OTP Terkirim Otomatis</p>
-                    <p class="text-[11px] text-slate-400">Periksa pesan masuk di {{ $channel === 'email' ? 'Gmail' : 'WhatsApp' }} Anda, lalu masukkan 6 digit angka di bawah ini.</p>
+                    <p class="font-bold text-white text-xs">Pesan OTP Terkirim ke Gmail</p>
+                    <p class="text-[11px] text-slate-400">Periksa kotak masuk Gmail Anda ({{ $companyEmail }}), lalu masukkan 6 digit angka di bawah ini.</p>
                 </div>
             </div>
             @endif
@@ -209,54 +209,38 @@
             <div class="glass-card rounded-2xl p-7 shadow-2xl">
 
                 @if($step === '1')
-                <!-- ================= TAHAP 1: KIRIM OTP ================= -->
-                <div class="mb-4 pb-3 border-b border-white/10">
+                <!-- ================= TAHAP 1: KIRIM OTP KE GMAIL ================= -->
+                <div class="mb-5 pb-3 border-b border-white/10">
                     <span class="text-[11px] uppercase tracking-wider font-extrabold text-brand-400 block mb-0.5">Tahap 1 dari 4</span>
-                    <h2 class="text-lg font-bold text-white">Kirim Kode OTP</h2>
-                    <p class="text-xs text-slate-400 mt-1">Pilih saluran pengiriman kode verifikasi yang terdaftar di Profil Admin.</p>
+                    <h2 class="text-lg font-bold text-white">Kirim Kode OTP ke Gmail</h2>
+                    <p class="text-xs text-slate-400 mt-1">Kode verifikasi 6-digit resmi akan otomatis dikirimkan ke kotak masuk Gmail Administrator.</p>
                 </div>
 
                 <form method="POST" action="{{ route('admin.forgot-password.send-otp') }}" @submit="loading = true">
                     @csrf
                     <!-- Hidden Email Administrator -->
-                    <input type="hidden" name="email" value="{{ old('email', $email ?: 'admin@consoltainer.com') }}">
+                    <input type="hidden" name="email" value="{{ old('email', $companyEmail ?: 'm.afansyah10@gmail.com') }}">
 
-                    <!-- Channel Selection -->
-                    <div class="mb-6">
-                        <label class="block text-slate-300 text-xs font-bold uppercase mb-2.5">
-                            <i class="fa-solid fa-paper-plane text-brand-400 mr-1.5"></i>Pilih Saluran Pengiriman OTP *
+                    <!-- Card Akun Tujuan Gmail -->
+                    <div class="mb-6 p-4 rounded-xl bg-gradient-to-r from-rose-600/15 to-rose-900/10 border border-rose-500/30">
+                        <label class="block text-slate-300 text-xs font-bold uppercase mb-2">
+                            <i class="fa-solid fa-paper-plane text-rose-400 mr-1.5"></i>Tujuan Pengiriman Resmi OTP:
                         </label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <!-- WhatsApp Option -->
-                            <label class="p-3.5 rounded-xl border cursor-pointer transition flex items-start gap-3"
-                                   :class="channel === 'whatsapp' ? 'bg-emerald-600/20 border-emerald-500 ring-2 ring-emerald-500/30' : 'bg-white/5 border-white/10 hover:bg-white/10'">
-                                <input type="radio" name="channel" value="whatsapp" x-model="channel" class="sr-only">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-500/30 border border-emerald-400/40 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                                </div>
-                                <div class="overflow-hidden">
-                                    <p class="text-xs font-bold text-white leading-tight">WhatsApp Admin</p>
-                                    <p class="text-[11px] text-emerald-400 font-mono mt-0.5 truncate">{{ $companyWa }}</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">Sinkron Profil Admin</p>
-                                </div>
-                            </label>
-
-                            <!-- Gmail Option -->
-                            <label class="p-3.5 rounded-xl border cursor-pointer transition flex items-start gap-3"
-                                   :class="channel === 'email' ? 'bg-rose-600/20 border-rose-500 ring-2 ring-rose-500/30' : 'bg-white/5 border-white/10 hover:bg-white/10'">
-                                <input type="radio" name="channel" value="email" x-model="channel" class="sr-only">
-                                <div class="w-8 h-8 rounded-lg bg-rose-500/30 border border-rose-400/40 text-rose-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <i class="fa-solid fa-envelope text-sm"></i>
-                                </div>
-                                <div class="overflow-hidden">
-                                    <p class="text-xs font-bold text-white leading-tight">Gmail Admin</p>
-                                    <p class="text-[11px] text-rose-300 truncate mt-0.5">{{ $companyEmail }}</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">Sinkron Profil Admin</p>
-                                </div>
-                            </label>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-rose-500/30 border border-rose-400/40 text-rose-400 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-brands fa-google text-lg"></i>
+                            </div>
+                            <div class="overflow-hidden">
+                                <p class="text-xs font-bold text-white leading-tight">Gmail Administrator</p>
+                                <p class="text-sm text-rose-300 font-mono font-bold truncate mt-0.5">{{ $companyEmail }}</p>
+                                <p class="text-[10px] text-slate-400 mt-1 flex items-center gap-1">
+                                    <i class="fa-solid fa-shield-halved text-emerald-400"></i> Otomatis tersinkron dari Profil Admin
+                                </p>
+                            </div>
                         </div>
-                        @error('channel')
-                        <div class="mt-3 p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs flex items-start gap-2.5">
+
+                        @error('email')
+                        <div class="mt-3 p-3 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs flex items-start gap-2">
                             <i class="fa-solid fa-triangle-exclamation text-rose-400 mt-0.5 text-sm flex-shrink-0"></i>
                             <div>
                                 <p class="font-bold text-rose-200">Gagal Mengirimkan OTP:</p>
@@ -274,11 +258,11 @@
                     >
                         <span x-show="!loading" class="flex items-center gap-2">
                             <i class="fa-solid fa-paper-plane"></i>
-                            Kirim Kode OTP (Lanjut ke Tahap 2)
+                            Kirim Kode OTP ke Gmail (Lanjut ke Tahap 2)
                         </span>
                         <span x-show="loading" x-cloak class="flex items-center gap-2">
                             <i class="fa-solid fa-spinner fa-spin"></i>
-                            Sedang Mengirim...
+                            Sedang Mengirim ke Gmail...
                         </span>
                     </button>
                 </form>
@@ -288,7 +272,7 @@
                 <div class="mb-4 pb-3 border-b border-white/10">
                     <span class="text-[11px] uppercase tracking-wider font-extrabold text-brand-400 block mb-0.5">Tahap 2 dari 4</span>
                     <h2 class="text-lg font-bold text-white">Verifikasi OTP 6 Digit</h2>
-                    <p class="text-xs text-slate-400 mt-1">Masukkan 6 digit angka yang Anda terima melalui {{ $channel === 'email' ? 'Gmail' : 'WhatsApp' }}.</p>
+                    <p class="text-xs text-slate-400 mt-1">Masukkan 6 digit angka yang Anda terima melalui Gmail ({{ $companyEmail }}).</p>
                 </div>
 
                 <form method="POST" action="{{ route('admin.forgot-password.verify-otp') }}" @submit="loading = true">
@@ -297,10 +281,10 @@
 
                     <div class="mb-4 p-3 bg-white/5 rounded-xl border border-white/10 flex items-center justify-between text-xs">
                         <span class="text-slate-300 text-xs flex items-center gap-2">
-                            <i class="fa-solid fa-user-shield text-brand-400"></i> Akun: <strong class="text-white font-mono">{{ $email }}</strong>
+                            <i class="fa-solid fa-envelope text-rose-400"></i> Akun Gmail: <strong class="text-white font-mono">{{ $email }}</strong>
                         </span>
                         <a href="{{ route('admin.forgot-password', ['step' => '1', 'email' => $email]) }}" class="text-brand-400 hover:text-brand-300 text-[11px] font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-arrow-left text-[10px]"></i> Ganti Saluran
+                            <i class="fa-solid fa-arrow-left text-[10px]"></i> Kirim Ulang
                         </a>
                     </div>
 
@@ -360,7 +344,7 @@
                                 :disabled="timerRunning"
                                 class="text-xs text-brand-400 hover:text-brand-300 disabled:text-slate-500 font-semibold transition"
                             >
-                                <span x-show="!timerRunning"><i class="fa-solid fa-rotate-right mr-1"></i> Kirim Ulang Kode OTP</span>
+                                <span x-show="!timerRunning"><i class="fa-solid fa-rotate-right mr-1"></i> Kirim Ulang Kode OTP ke Gmail</span>
                                 <span x-show="timerRunning" x-cloak>Kirim ulang dalam <span x-text="countdown" class="font-mono font-bold text-amber-400"></span> detik</span>
                             </button>
                         </form>

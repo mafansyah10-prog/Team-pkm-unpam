@@ -108,7 +108,7 @@ class AuthController extends Controller
         }
 
         $email = $request->query('email', '');
-        $channel = $request->query('channel', 'whatsapp');
+        $channel = 'email';
 
         // Cari user admin berdasarkan email atau gunakan user admin pertama
         $adminUser = null;
@@ -132,7 +132,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.forgot-password', [
                     'step'    => '2',
                     'email'   => $email,
-                    'channel' => $channel,
+                    'channel' => 'email',
                 ])->withErrors(['otp' => 'Sesi verifikasi belum selesai. Silakan verifikasi kode OTP 6-digit terlebih dahulu.']);
             }
         }
@@ -140,25 +140,22 @@ class AuthController extends Controller
         return view('auth.forgot-password', [
             'step'         => $step,
             'email'        => $email,
-            'channel'      => $channel,
+            'channel'      => 'email',
             'companyWa'    => $adminPhone,
             'companyEmail' => $adminEmail,
         ]);
     }
 
     /**
-     * TAHAP 1: Generate & Send OTP via WhatsApp or Gmail.
+     * TAHAP 1: Generate & Send OTP via Gmail secara otomatis.
      */
     public function sendOtp(Request $request)
     {
         $request->validate([
-            'email'   => 'required|email',
-            'channel' => 'required|in:whatsapp,email',
+            'email' => 'required|email',
         ], [
-            'email.required'   => 'Alamat email administrator wajib diisi.',
-            'email.email'      => 'Format alamat email tidak valid.',
-            'channel.required' => 'Pilih metode pengiriman OTP.',
-            'channel.in'       => 'Pilihan saluran OTP harus WhatsApp atau Gmail.',
+            'email.required' => 'Alamat email administrator wajib diisi.',
+            'email.email'    => 'Format alamat email tidak valid.',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -169,8 +166,6 @@ class AuthController extends Controller
             ]);
         }
 
-        // Ambil nomor WhatsApp dan email terupdate langsung dari profil admin
-        $adminPhone = !empty($user->phone) ? $user->phone : (CompanySetting::get('whatsapp') ?: '+62 812 9988 7766');
         $adminEmail = $user->email;
 
         // Invalidate OTP aktif sebelumnya untuk email ini
@@ -183,40 +178,28 @@ class AuthController extends Controller
 
         AdminPasswordReset::create([
             'email'      => $user->email,
-            'phone'      => $adminPhone,
+            'phone'      => $user->phone ?? '',
             'otp'        => $otp,
-            'channel'    => $request->channel,
+            'channel'    => 'email',
             'expires_at' => now()->addMinutes(10),
             'is_used'    => false,
         ]);
 
-        // Kirim otomatis sesuai saluran yang dipilih
-        if ($request->channel === 'whatsapp') {
-            $waResult = WhatsAppService::sendOtp($adminPhone, $otp, $user->name);
-            if (!$waResult['success']) {
-                return back()->withInput()->withErrors([
-                    'channel' => 'Gagal mengirim WhatsApp otomatis: ' . $waResult['message'] . ' Silakan masukkan Token Fonnte di Profil Admin (/admin/profile).',
-                ]);
-            }
-            $channelLabel = 'WhatsApp Admin (' . $adminPhone . ')';
-        } else {
-            // Pengiriman via Gmail / Email secara otomatis
-            $mailResult = OtpMailService::sendOtp($adminEmail, $otp, $user->name);
-            if (!$mailResult['success']) {
-                return back()->withInput()->withErrors([
-                    'channel' => 'Gagal mengirim email otomatis: ' . $mailResult['message'] . ' Pastikan Akun Gmail & Sandi Aplikasi (App Password) sudah diisi di Profil Admin (/admin/profile).',
-                ]);
-            }
-            $channelLabel = 'Gmail Admin (' . $adminEmail . ')';
+        // Pengiriman via Gmail secara otomatis
+        $mailResult = OtpMailService::sendOtp($adminEmail, $otp, $user->name);
+        if (!$mailResult['success']) {
+            return back()->withInput()->withErrors([
+                'email' => 'Gagal mengirim email otomatis: ' . $mailResult['message'] . ' Pastikan Akun Gmail & Sandi Aplikasi (App Password) sudah diisi di Profil Admin (/admin/profile).',
+            ]);
         }
 
         // Lanjut ke TAHAP 2: Verifikasi Kode OTP 6 Digit
         return redirect()->route('admin.forgot-password', [
             'step'    => '2',
             'email'   => $user->email,
-            'channel' => $request->channel,
-        ])->with('success', 'Kode OTP 6-digit rahasia telah berhasil dikirimkan secara otomatis ke ' . $channelLabel . '. Silakan periksa pesan masuk pada perangkat Anda.')
-          ->with('channel_sent', $request->channel);
+            'channel' => 'email',
+        ])->with('success', 'Kode OTP 6-digit rahasia telah berhasil dikirimkan secara otomatis ke alamat Gmail ' . $adminEmail . '. Silakan periksa kotak masuk atau spam pada Gmail Anda.')
+          ->with('channel_sent', 'email');
     }
 
     /**
