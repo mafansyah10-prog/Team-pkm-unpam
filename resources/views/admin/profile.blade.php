@@ -159,6 +159,85 @@
                 </p>
             </div>
 
+            <!-- 5. Pengaturan Pengiriman Otomatis Gmail (SMTP) -->
+            <div class="p-4 rounded-xl bg-rose-50/60 border border-rose-200">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="block text-xs font-bold text-rose-950 uppercase">
+                        <i class="fa-brands fa-google text-rose-600 mr-1.5"></i>Pengaturan Pengiriman Otomatis Gmail (Google SMTP)
+                    </label>
+                    <span class="text-[11px] font-bold text-rose-700 bg-rose-100/80 px-2.5 py-0.5 rounded-full">
+                        Kirim Otomatis ke Inbox Gmail
+                    </span>
+                </div>
+                <p class="text-[11px] text-rose-900 mb-3 leading-relaxed">
+                    Agar kode OTP dapat <strong>otomatis terkirim ke kotak masuk Gmail</strong> tanpa manual, masukkan akun Gmail pengirim dan Sandi Aplikasi Google (App Password) di bawah ini:
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label for="mail_username" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+                            Akun Gmail Pengirim *
+                        </label>
+                        <input 
+                            type="email" 
+                            id="mail_username" 
+                            name="mail_username" 
+                            value="{{ old('mail_username', $mailUsername ?? '') }}" 
+                            placeholder="namaemail@gmail.com"
+                            class="w-full px-3.5 py-2 bg-white border border-rose-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="mail_password" class="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+                            Sandi Aplikasi Google (App Password 16 Digit) *
+                        </label>
+                        <input 
+                            type="password" 
+                            id="mail_password" 
+                            name="mail_password" 
+                            value="{{ old('mail_password', $mailPassword ?? '') }}" 
+                            placeholder="xxxx xxxx xxxx xxxx"
+                            class="w-full px-3.5 py-2 bg-white border border-rose-300 rounded-xl text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
+                        >
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label for="mail_host" class="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                            Host SMTP (Default: smtp.gmail.com)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="mail_host" 
+                            name="mail_host" 
+                            value="{{ old('mail_host', $mailHost ?? 'smtp.gmail.com') }}" 
+                            class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700"
+                        >
+                    </div>
+                    <div>
+                        <label for="mail_port" class="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                            Port SMTP (Default: 587)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="mail_port" 
+                            name="mail_port" 
+                            value="{{ old('mail_port', $mailPort ?? '587') }}" 
+                            class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-mono text-slate-700"
+                        >
+                    </div>
+                </div>
+
+                <div class="mt-2.5 pt-2 border-t border-rose-200/60 flex items-center justify-between text-[11px] text-rose-800">
+                    <span>💡 Cara buat Sandi Aplikasi: Buka Akun Google > Keamanan > Verifikasi 2 Langkah > Sandi Aplikasi.</span>
+                    <a href="https://myaccount.google.com/apppasswords" target="_blank" class="font-bold underline text-rose-700 hover:text-rose-900 flex items-center gap-1">
+                        Buka Google App Passwords <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                    </a>
+                </div>
+            </div>
+
             <!-- Visual Preview Card -->
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
                 <p class="text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">Pratinjau Tampilan di Halaman Lupa Password:</p>

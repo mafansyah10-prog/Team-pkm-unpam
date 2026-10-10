@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Services\WhatsAppService;
+use App\Services\OtpMailService;
 
 class AuthController extends Controller
 {
@@ -194,18 +195,8 @@ class AuthController extends Controller
             $waResult = WhatsAppService::sendOtp($adminPhone, $otp, $user->name);
             $channelLabel = 'WhatsApp Admin (' . $adminPhone . ')';
         } else {
-            // Pengiriman via Gmail / Email
-            try {
-                Mail::raw(
-                    "Halo " . $user->name . ",\n\nKami menerima permintaan untuk mereset password akun Back-Office PT. Consoltainer Transport Logistic.\n\nKode OTP Verifikasi Anda:\n" . $otp . "\n\nKode ini berlaku selama 10 menit. Jika Anda tidak merasa melakukan permintaan ini, abaikan pesan ini.\n\nSalam,\nPT. CONSOLTAINER TRANSPORT LOGISTIC",
-                    function ($msg) use ($user) {
-                        $msg->to($user->email)
-                            ->subject('[OTP] Kode Reset Password Admin - PT. Consoltainer');
-                    }
-                );
-            } catch (\Throwable $e) {
-                // Lanjutkan jika mail driver belum disetting
-            }
+            // Pengiriman via Gmail / Email secara otomatis
+            $mailResult = OtpMailService::sendOtp($adminEmail, $otp, $user->name);
             $channelLabel = 'Gmail Admin (' . $adminEmail . ')';
         }
 

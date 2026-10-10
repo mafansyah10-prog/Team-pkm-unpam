@@ -486,22 +486,38 @@ class AdminController extends Controller
     public function profile()
     {
         $user = Auth::user();
-        $fonnteToken = env('FONNTE_TOKEN') ?: CompanySetting::get('fonnte_token', '');
-        return view('admin.profile', compact('user', 'fonnteToken'));
+        $fonnteToken  = env('FONNTE_TOKEN') ?: CompanySetting::get('fonnte_token', '');
+        $mailUsername = CompanySetting::get('mail_username') ?: env('MAIL_USERNAME', '');
+        $mailPassword = CompanySetting::get('mail_password') ?: env('MAIL_PASSWORD', '');
+        $mailHost     = CompanySetting::get('mail_host') ?: env('MAIL_HOST', 'smtp.gmail.com');
+        $mailPort     = CompanySetting::get('mail_port') ?: env('MAIL_PORT', '587');
+
+        return view('admin.profile', compact(
+            'user',
+            'fonnteToken',
+            'mailUsername',
+            'mailPassword',
+            'mailHost',
+            'mailPort'
+        ));
     }
 
     /**
-     * Update admin profile (Name, Gmail, WhatsApp/Phone, and Fonnte Token).
+     * Update admin profile (Name, Gmail, WhatsApp/Phone, Fonnte Token, and Gmail/SMTP).
      */
     public function profileUpdate(Request $request)
     {
         $user = Auth::user();
 
         $request->validate([
-            'name'         => 'required|string|max:255',
-            'email'        => 'required|email|max:255|unique:users,email,' . $user->id,
-            'phone'        => 'required|string|max:50',
-            'fonnte_token' => 'nullable|string|max:255',
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone'         => 'required|string|max:50',
+            'fonnte_token'  => 'nullable|string|max:255',
+            'mail_username' => 'nullable|string|max:255',
+            'mail_password' => 'nullable|string|max:255',
+            'mail_host'     => 'nullable|string|max:255',
+            'mail_port'     => 'nullable|string|max:10',
         ], [
             'name.required'  => 'Nama administrator wajib diisi.',
             'email.required' => 'Alamat Gmail/Email wajib diisi.',
@@ -519,6 +535,19 @@ class AdminController extends Controller
             CompanySetting::set('fonnte_token', trim($request->fonnte_token));
         }
 
-        return redirect()->back()->with('success', 'Profil Administrator & WhatsApp Gateway berhasil diperbarui! OTP sekarang dikirim secara otomatis ke nomor WhatsApp (' . $user->phone . ') atau Gmail (' . $user->email . ').');
+        if ($request->has('mail_username')) {
+            CompanySetting::set('mail_username', trim($request->mail_username));
+        }
+        if ($request->has('mail_password')) {
+            CompanySetting::set('mail_password', trim($request->mail_password));
+        }
+        if ($request->has('mail_host')) {
+            CompanySetting::set('mail_host', trim($request->mail_host));
+        }
+        if ($request->has('mail_port')) {
+            CompanySetting::set('mail_port', trim($request->mail_port));
+        }
+
+        return redirect()->back()->with('success', 'Profil Administrator, WhatsApp Gateway, dan Pengaturan Gmail SMTP berhasil diperbarui! Kode OTP sekarang otomatis terkirim ke WhatsApp (' . $user->phone . ') atau Gmail (' . $user->email . ').');
     }
 }
