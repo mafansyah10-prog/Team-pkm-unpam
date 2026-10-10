@@ -486,20 +486,22 @@ class AdminController extends Controller
     public function profile()
     {
         $user = Auth::user();
-        return view('admin.profile', compact('user'));
+        $fonnteToken = env('FONNTE_TOKEN') ?: CompanySetting::get('fonnte_token', '');
+        return view('admin.profile', compact('user', 'fonnteToken'));
     }
 
     /**
-     * Update admin profile (Name, Gmail, WhatsApp/Phone).
+     * Update admin profile (Name, Gmail, WhatsApp/Phone, and Fonnte Token).
      */
     public function profileUpdate(Request $request)
     {
         $user = Auth::user();
 
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'required|string|max:50',
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone'        => 'required|string|max:50',
+            'fonnte_token' => 'nullable|string|max:255',
         ], [
             'name.required'  => 'Nama administrator wajib diisi.',
             'email.required' => 'Alamat Gmail/Email wajib diisi.',
@@ -513,6 +515,10 @@ class AdminController extends Controller
         $user->phone = $request->phone;
         $user->save();
 
-        return redirect()->back()->with('success', 'Profil Administrator berhasil diperbarui! Nomor WhatsApp (' . $user->phone . ') dan Gmail (' . $user->email . ') ini sekarang otomatis terhubung untuk pengiriman kode OTP reset password.');
+        if ($request->has('fonnte_token')) {
+            CompanySetting::set('fonnte_token', trim($request->fonnte_token));
+        }
+
+        return redirect()->back()->with('success', 'Profil Administrator & WhatsApp Gateway berhasil diperbarui! OTP sekarang dikirim secara otomatis ke nomor WhatsApp (' . $user->phone . ') atau Gmail (' . $user->email . ').');
     }
 }

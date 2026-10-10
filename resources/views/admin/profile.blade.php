@@ -133,6 +133,32 @@
                 </p>
             </div>
 
+            <!-- 4. Token WhatsApp Gateway (Fonnte API) -->
+            <div class="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200">
+                <div class="flex items-center justify-between mb-2">
+                    <label for="fonnte_token" class="block text-xs font-bold text-emerald-950 uppercase">
+                        <i class="fa-solid fa-key text-emerald-600 mr-1.5"></i>Token WhatsApp Gateway (Fonnte API)
+                    </label>
+                    <a href="https://fonnte.com" target="_blank" class="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 underline flex items-center gap-1">
+                        Daftar Fonnte Gratis <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                    </a>
+                </div>
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="fonnte_token" 
+                        name="fonnte_token" 
+                        value="{{ old('fonnte_token', $fonnteToken ?? '') }}" 
+                        placeholder="Contoh: a1b2c3d4e5f6g7h8..."
+                        class="w-full px-4 py-2.5 pl-10 bg-white border border-emerald-300 rounded-xl text-sm font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+                    >
+                    <i class="fa-solid fa-shield-halved absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-600 text-xs"></i>
+                </div>
+                <p class="text-[11px] text-emerald-800 mt-1.5 leading-relaxed">
+                    <strong>Penting untuk Kirim Otomatis:</strong> Masukkan Token dari akun Fonnte Anda agar setiap kali admin meminta reset password, kode OTP 6-digit langsung terkirim otomatis ke WhatsApp target tanpa perlu membuka aplikasi WhatsApp manual.
+                </p>
+            </div>
+
             <!-- Visual Preview Card -->
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
                 <p class="text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">Pratinjau Tampilan di Halaman Lupa Password:</p>

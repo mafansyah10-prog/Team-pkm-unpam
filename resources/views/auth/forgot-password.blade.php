@@ -192,23 +192,17 @@
             </div>
             @endif
 
-            <!-- Direct App Access Button pada Tahap 2 (Hanya membuka aplikasi untuk mengecek pesan masuk, OTP tetap rahasia) -->
+            <!-- Info Pengiriman Otomatis pada Tahap 2 (Tidak perlu klik WhatsApp manual lagi) -->
             @if($step === '2')
-                @if(session('wa_url'))
-                <div class="mb-4">
-                    <a href="{{ session('wa_url') }}" target="_blank" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Buka WhatsApp & Cek Pesan Masuk OTP
-                    </a>
-                    <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP dirahasiakan dan terkirim langsung ke WhatsApp Anda.</p>
+            <div class="mb-4 p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs flex items-center gap-3 shadow-lg">
+                <div class="w-9 h-9 rounded-lg {{ $channel === 'email' ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400' }} flex items-center justify-center flex-shrink-0">
+                    <i class="{{ $channel === 'email' ? 'fa-solid fa-envelope text-base' : 'fa-brands fa-whatsapp text-xl' }}"></i>
                 </div>
-                @elseif(session('channel_sent') === 'email' || request('channel') === 'email')
-                <div class="mb-4">
-                    <a href="https://mail.google.com" target="_blank" class="w-full py-3.5 px-4 bg-rose-600 hover:bg-rose-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
-                        <i class="fa-solid fa-envelope text-base"></i> Buka Kotak Masuk Gmail untuk Cek OTP
-                    </a>
-                    <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP dirahasiakan dan terkirim langsung ke Gmail Anda.</p>
+                <div class="flex-1">
+                    <p class="font-bold text-white text-xs">Pesan OTP Terkirim Otomatis</p>
+                    <p class="text-[11px] text-slate-400">Periksa pesan masuk di {{ $channel === 'email' ? 'Gmail' : 'WhatsApp' }} Anda, lalu masukkan 6 digit angka di bawah ini.</p>
                 </div>
-                @endif
+            </div>
             @endif
 
             <!-- Main Card Container -->

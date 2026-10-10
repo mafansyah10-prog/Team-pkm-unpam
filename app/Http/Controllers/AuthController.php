@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Services\WhatsAppService;
 
 class AuthController extends Controller
 {
@@ -188,18 +189,10 @@ class AuthController extends Controller
             'is_used'    => false,
         ]);
 
-        // Siapkan tautan WhatsApp Direct jika saluran WhatsApp
-        $waUrl = null;
+        // Kirim otomatis sesuai saluran yang dipilih
         if ($request->channel === 'whatsapp') {
-            $cleanPhone = preg_replace('/[^0-9]/', '', $adminPhone);
-            if (str_starts_with($cleanPhone, '0')) {
-                $cleanPhone = '62' . substr($cleanPhone, 1);
-            } elseif (str_starts_with($cleanPhone, '8')) {
-                $cleanPhone = '62' . $cleanPhone;
-            }
-
-            $waMessage = "🔐 [PT. CONSOLTAINER TRANSPORT LOGISTIC]\n\nKode OTP Verifikasi Reset Password Akun Admin Anda adalah:\n👉 " . $otp . " 👈\n\nKode ini berlaku selama 10 menit. Jangan berikan kode ini kepada siapa pun demi keamanan akun.";
-            $waUrl = "https://api.whatsapp.com/send?phone=" . $cleanPhone . "&text=" . urlencode($waMessage);
+            $waResult = WhatsAppService::sendOtp($adminPhone, $otp, $user->name);
+            $channelLabel = 'WhatsApp Admin (' . $adminPhone . ')';
         } else {
             // Pengiriman via Gmail / Email
             try {
@@ -213,17 +206,15 @@ class AuthController extends Controller
             } catch (\Throwable $e) {
                 // Lanjutkan jika mail driver belum disetting
             }
+            $channelLabel = 'Gmail Admin (' . $adminEmail . ')';
         }
-
-        $channelLabel = $request->channel === 'whatsapp' ? 'WhatsApp Profil Admin (' . $adminPhone . ')' : 'Gmail Profil Admin (' . $adminEmail . ')';
 
         // Lanjut ke TAHAP 2: Verifikasi Kode OTP 6 Digit
         return redirect()->route('admin.forgot-password', [
             'step'    => '2',
             'email'   => $user->email,
             'channel' => $request->channel,
-        ])->with('success', 'Kode OTP 6-digit rahasia telah berhasil dikirimkan ke ' . $channelLabel . '. Silakan periksa pesan masuk Anda.')
-          ->with('wa_url', $waUrl)
+        ])->with('success', 'Kode OTP 6-digit rahasia telah berhasil dikirimkan secara otomatis ke ' . $channelLabel . '. Silakan periksa pesan masuk pada perangkat Anda.')
           ->with('channel_sent', $request->channel);
     }
 
