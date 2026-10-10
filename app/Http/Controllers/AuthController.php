@@ -196,9 +196,9 @@ class AuthController extends Controller
             'step'    => 'verify',
             'email'   => $user->email,
             'channel' => $request->channel,
-        ])->with('success', 'Kode OTP 6-digit berhasil dibuat dan dikirim ke ' . $channelLabel . '!')
+        ])->with('success', 'Kode OTP 6-digit rahasia telah berhasil dikirimkan ke ' . $channelLabel . '. Silakan periksa pesan masuk Anda.')
           ->with('wa_url', $waUrl)
-          ->with('demo_otp', $otp);
+          ->with('channel_sent', $request->channel);
     }
 
     /**

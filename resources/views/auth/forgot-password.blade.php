@@ -164,37 +164,31 @@
                 </div>
             </div>
 
-            <!-- Flash & OTP Demo Notifications -->
+            <!-- Flash Notification -->
             @if(session('success'))
             <div class="mb-4 p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-3">
                 <i class="fa-solid fa-circle-check text-base text-emerald-400 flex-shrink-0 mt-0.5"></i>
                 <div class="space-y-1">
-                    <p class="font-bold text-emerald-200">Berhasil Dikirim!</p>
+                    <p class="font-bold text-emerald-200">OTP Berhasil Dikirim!</p>
                     <p>{{ session('success') }}</p>
                 </div>
             </div>
             @endif
 
-            <!-- Banner Otomatis Kode OTP Demo / Simulasi -->
-            @if(session('demo_otp'))
-            <div class="mb-5 p-4 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs shadow-lg">
-                <div class="flex items-center justify-between mb-1.5">
-                    <span class="font-bold flex items-center gap-1.5 text-amber-300">
-                        <i class="fa-solid fa-key"></i> KODE OTP VERIFIKASI RESMI:
-                    </span>
-                    <span class="text-[10px] bg-amber-400/20 px-2 py-0.5 rounded font-mono font-bold">10 MENIT</span>
-                </div>
-                <div class="flex items-center justify-between bg-black/40 p-2.5 rounded-lg border border-amber-400/30 my-2">
-                    <span class="font-mono text-xl tracking-[0.3em] font-black text-amber-400 pl-2">{{ session('demo_otp') }}</span>
-                    <button type="button" onclick="navigator.clipboard.writeText('{{ session('demo_otp') }}'); alert('Kode OTP disalin: {{ session('demo_otp') }}');" class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 rounded text-[11px] font-semibold transition">
-                        <i class="fa-solid fa-copy mr-1"></i> Salin
-                    </button>
-                </div>
-                @if(session('wa_url'))
-                <a href="{{ session('wa_url') }}" target="_blank" class="mt-2 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-center flex items-center justify-center gap-2 transition">
-                    <i class="fa-brands fa-whatsapp text-sm"></i> Buka Pesan WhatsApp Langsung
+            <!-- Direct App Access Button (Hanya membuka WhatsApp atau Gmail, OTP 100% rahasia dan tidak ditampilkan di layar web) -->
+            @if(session('wa_url'))
+            <div class="mb-4">
+                <a href="{{ session('wa_url') }}" target="_blank" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Buka WhatsApp & Cek Pesan OTP
                 </a>
-                @endif
+                <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP bersifat rahasia dan hanya terkirim langsung ke WhatsApp Anda.</p>
+            </div>
+            @elseif(session('channel_sent') === 'email' || request('channel') === 'email')
+            <div class="mb-4">
+                <a href="https://mail.google.com" target="_blank" class="w-full py-3 px-4 bg-rose-600 hover:bg-rose-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
+                    <i class="fa-solid fa-envelope text-base"></i> Buka Kotak Masuk Gmail untuk Cek OTP
+                </a>
+                <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP bersifat rahasia dan hanya terkirim langsung ke Gmail Anda.</p>
             </div>
             @endif
 
@@ -269,12 +263,11 @@
                     <input type="hidden" name="email" value="{{ $email }}">
 
                     <div class="mb-4 p-3 bg-white/5 rounded-xl border border-white/10 flex items-center justify-between text-xs">
-                        <div>
-                            <span class="text-slate-400 block text-[10px]">Email Administrator:</span>
-                            <span class="font-bold text-white">{{ $email }}</span>
-                        </div>
-                        <a href="{{ route('admin.forgot-password', ['step' => 'request', 'email' => $email]) }}" class="text-brand-400 hover:text-brand-300 text-[11px] font-semibold underline">
-                            Ganti
+                        <span class="text-slate-300 text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-user-shield text-brand-400"></i> Akun Admin: <strong class="text-white font-mono">{{ $email }}</strong>
+                        </span>
+                        <a href="{{ route('admin.forgot-password', ['step' => 'request', 'email' => $email]) }}" class="text-brand-400 hover:text-brand-300 text-[11px] font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-left text-[10px]"></i> Kirim Ulang OTP
                         </a>
                     </div>
 
