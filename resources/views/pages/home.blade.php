@@ -134,18 +134,18 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
             @foreach($featuredServices as $service)
-            <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
+            <div class="bg-white rounded-2xl p-4 sm:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
                 <div>
-                    <div class="w-14 h-14 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-brand-600 group-hover:text-white transition">
+                    <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg sm:text-2xl mb-3 sm:mb-6 group-hover:bg-brand-600 group-hover:text-white transition">
                         <i class="fa-solid fa-boxes-stacked"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition">{{ $service->title }}</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed mb-6">{{ $service->short_description }}</p>
+                    <h3 class="text-xs sm:text-xl font-bold text-slate-900 mb-1.5 sm:mb-3 leading-snug group-hover:text-brand-600 transition line-clamp-2">{{ $service->title }}</h3>
+                    <p class="text-[10px] sm:text-sm text-slate-600 leading-relaxed mb-3 sm:mb-6 line-clamp-2 sm:line-clamp-none">{{ $service->short_description }}</p>
                     
                     @if($service->features)
-                    <ul class="space-y-2 mb-6 border-t border-slate-100 pt-4 text-xs font-medium text-slate-700">
+                    <ul class="hidden sm:block space-y-2 mb-6 border-t border-slate-100 pt-4 text-xs font-medium text-slate-700">
                         @foreach(array_slice($service->features, 0, 3) as $feature)
                         <li class="flex items-center gap-2">
                             <i class="fa-solid fa-check text-emerald-500"></i>
@@ -156,15 +156,15 @@
                     @endif
                 </div>
 
-                <a href="{{ route('services.show', $service->slug) }}" class="inline-flex items-center text-sm font-bold text-brand-600 group-hover:text-brand-800 transition">
-                    Pelajari Selengkapnya <i class="fa-solid fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"></i>
+                <a href="{{ route('services.show', $service->slug) }}" class="inline-flex items-center text-[11px] sm:text-sm font-bold text-brand-600 group-hover:text-brand-800 transition">
+                    Pelajari <i class="fa-solid fa-arrow-right ml-1 sm:ml-2 text-[10px] sm:text-xs group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
             @endforeach
         </div>
 
-        <div class="text-center mt-12">
-            <a href="{{ route('services') }}" class="inline-flex items-center px-6 py-3 rounded-xl font-bold text-brand-700 bg-white border border-brand-200 hover:bg-brand-50 shadow-sm transition">
+        <div class="text-center mt-8 sm:mt-12">
+            <a href="{{ route('services') }}" class="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold text-xs sm:text-sm text-brand-700 bg-white border border-brand-200 hover:bg-brand-50 shadow-sm transition">
                 Lihat Semua Layanan <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
             </a>
         </div>
@@ -182,24 +182,24 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
             @foreach($featuredProducts as $product)
             <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between group">
                 @if($product->image)
-                <div class="h-48 overflow-hidden relative">
+                <div class="h-32 sm:h-48 overflow-hidden relative">
                     <img src="{{ $product->image }}" alt="{{ $product->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    <span class="absolute top-4 left-4 bg-brand-900/80 backdrop-blur text-white text-xs font-bold px-3 py-1 rounded-md">
+                    <span class="absolute top-2 left-2 sm:top-4 sm:left-4 bg-brand-900/80 backdrop-blur text-white text-[9px] sm:text-xs font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-md">
                         {{ $product->category }}
                     </span>
                 </div>
                 @endif
-                <div class="p-6 flex-grow flex flex-col justify-between">
+                <div class="p-3 sm:p-6 flex-grow flex flex-col justify-between">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">{{ $product->title }}</h3>
-                        <p class="text-xs text-slate-600 line-clamp-3 mb-4">{{ $product->short_description }}</p>
+                        <h3 class="text-xs sm:text-lg font-bold text-slate-900 mb-1 leading-snug line-clamp-2">{{ $product->title }}</h3>
+                        <p class="text-[10px] sm:text-xs text-slate-600 line-clamp-2 mb-3">{{ $product->short_description }}</p>
                     </div>
-                    <a href="{{ route('products.show', $product->slug) }}" class="inline-flex items-center text-xs font-bold text-brand-600 hover:text-brand-800">
-                        Detail Spesifikasi <i class="fa-solid fa-arrow-right ml-1"></i>
+                    <a href="{{ route('products.show', $product->slug) }}" class="inline-flex items-center text-[11px] sm:text-xs font-bold text-brand-600 hover:text-brand-800">
+                        Detail <i class="fa-solid fa-arrow-right ml-1"></i>
                     </a>
                 </div>
             </div>

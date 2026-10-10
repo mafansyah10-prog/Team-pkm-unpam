@@ -28,23 +28,25 @@
             @endforeach
         </div>
 
-        <!-- Gallery Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Gallery Grid (2 Kolom di Mobile, 3 Kolom di Desktop) -->
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             @forelse($galleryItems as $item)
-            <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition group">
-                <div class="h-64 overflow-hidden relative">
+            <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition group flex flex-col justify-between">
+                <div class="h-36 sm:h-64 overflow-hidden relative">
                     <img src="{{ $item->image }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    <span class="absolute top-4 left-4 bg-brand-900/80 backdrop-blur text-white text-[11px] font-bold px-3 py-1 rounded-md">
+                    <span class="absolute top-2 left-2 sm:top-4 sm:left-4 bg-brand-900/80 backdrop-blur text-white text-[9px] sm:text-[11px] font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-md">
                         {{ $item->category }}
                     </span>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-base font-bold text-slate-900 mb-1.5">{{ $item->title }}</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">{{ $item->description }}</p>
+                <div class="p-3 sm:p-6 flex-grow flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xs sm:text-base font-bold text-slate-900 mb-1 leading-snug line-clamp-2">{{ $item->title }}</h3>
+                        <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed line-clamp-2 sm:line-clamp-none">{{ $item->description }}</p>
+                    </div>
                 </div>
             </div>
             @empty
-            <div class="col-span-3 py-12 text-center text-slate-400">
+            <div class="col-span-2 lg:col-span-3 py-12 text-center text-slate-400">
                 <i class="fa-solid fa-images text-4xl mb-3 block text-slate-300"></i>
                 Belum ada foto dalam kategori ini.
             </div>

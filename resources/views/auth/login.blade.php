@@ -181,8 +181,38 @@
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0, 82, 163, 0.6); }
         .btn-login:active { transform: translateY(0); }
     </style>
-</head>
-<body class="font-sans antialiased bg-[#040d18] min-h-screen relative" x-data="{ showPwd: false, loading: false }">
+<body class="font-sans antialiased bg-[#040d18] min-h-screen relative" 
+      x-data="{ 
+          showPwd: false, 
+          loading: false, 
+          showEmailDropdown: false, 
+          savedEmails: [],
+          init() {
+              let stored = JSON.parse(localStorage.getItem('admin_saved_accounts') || '[]');
+              const serverEmail = '{{ $rememberedEmail ?? '' }}';
+              if (serverEmail && !stored.includes(serverEmail)) {
+                  stored.unshift(serverEmail);
+              }
+              if (stored.length === 0) {
+                  stored = ['admin@consoltainer.com'];
+              }
+              this.savedEmails = stored;
+          },
+          selectEmail(email) {
+              const el = document.getElementById('email');
+              if (el) el.value = email;
+              const rem = document.getElementById('remember');
+              if (rem) rem.checked = true;
+              this.showEmailDropdown = false;
+              const pwd = document.getElementById('password');
+              if (pwd) pwd.focus();
+          },
+          removeEmail(index, event) {
+              if (event) event.stopPropagation();
+              this.savedEmails.splice(index, 1);
+              localStorage.setItem('admin_saved_accounts', JSON.stringify(this.savedEmails));
+          }
+      }">
 
     <!-- ====== LOGO WATERMARK BACKGROUND (fixed to viewport) ====== -->
     <div class="logo-bg-wrap" style="position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;">
@@ -248,23 +278,97 @@
             <form id="loginForm" method="POST" action="{{ route('admin.login.post') }}" @submit="loading = true" novalidate>
                 @csrf
 
-                <!-- Email Field -->
-                <div class="mb-5">
-                    <label for="email" class="block text-slate-300 text-sm font-semibold mb-2">
-                        <i class="fa-solid fa-envelope text-brand-400 mr-1.5"></i>Alamat Email
-                    </label>
+                <!-- Email Field with Saved Accounts Dropdown (Fitur Ingatkan Saya) -->
+                <div class="mb-5 relative" @click.outside="showEmailDropdown = false">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="email" class="block text-slate-300 text-sm font-semibold">
+                            <i class="fa-solid fa-envelope text-brand-400 mr-1.5"></i>Alamat Email
+                        </label>
+                        <!-- Button untuk menampilkan list akun yang tersimpan lewat fitur Ingatkan Saya -->
+                        <button
+                            type="button"
+                            x-show="savedEmails.length > 0"
+                            @click="showEmailDropdown = !showEmailDropdown"
+                            class="text-[11px] font-semibold text-brand-400 hover:text-brand-300 transition flex items-center gap-1.5 py-0.5 px-2 rounded-lg hover:bg-white/5 cursor-pointer"
+                            title="Tampilkan daftar email tersimpan"
+                        >
+                            <i class="fa-solid fa-clock-rotate-left text-[10px]"></i>
+                            <span>Akun Tersimpan</span>
+                            <span class="bg-brand-500/25 text-brand-300 border border-brand-500/40 text-[9px] px-1.5 py-0.2 rounded-full font-bold" x-text="savedEmails.length"></span>
+                            <i class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200" :class="showEmailDropdown ? 'rotate-180' : ''"></i>
+                        </button>
+                    </div>
+
                     <div class="relative">
                         <input
                             type="email"
                             id="email"
                             name="email"
-                            value="{{ old('email') }}"
-                            autocomplete="email"
+                            value="{{ old('email', $rememberedEmail ?? '') }}"
+                            autocomplete="username email"
+                            @focus="if(savedEmails.length > 0) showEmailDropdown = true"
                             placeholder="admin@consoltainer.com"
-                            class="input-field w-full bg-white/10 border {{ $errors->has('email') ? 'border-rose-500/80 text-rose-200' : 'border-white/15 text-white' }} placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-400 focus:bg-white/15"
+                            class="input-field w-full bg-white/10 border {{ $errors->has('email') ? 'border-rose-500/80 text-rose-200' : 'border-white/15 text-white' }} placeholder-slate-500 rounded-xl px-4 py-3 pr-10 text-sm focus:outline-none focus:border-brand-400 focus:bg-white/15"
                             required
                         >
+                        <!-- Tombol Dropdown di dalam input email -->
+                        <button
+                            type="button"
+                            @click="showEmailDropdown = !showEmailDropdown"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition p-1"
+                            title="Pilih dari daftar email tersimpan"
+                        >
+                            <i class="fa-solid fa-caret-down text-sm transition-transform duration-200" :class="showEmailDropdown ? 'rotate-180 text-brand-400' : ''"></i>
+                        </button>
                     </div>
+
+                    <!-- Dropdown List Email Tersimpan (Lewat Fitur Ingatkan Saya) -->
+                    <div
+                        x-show="showEmailDropdown && savedEmails.length > 0"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-1"
+                        x-cloak
+                        class="absolute left-0 right-0 top-full mt-1.5 z-30 bg-[#0c1f36] border border-brand-500/30 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden divide-y divide-white/5"
+                    >
+                        <div class="px-3.5 py-2 bg-brand-950/70 flex items-center justify-between text-[11px] text-slate-400 font-semibold border-b border-white/10">
+                            <span class="flex items-center gap-1.5 text-brand-300">
+                                <i class="fa-solid fa-bookmark text-[10px]"></i> Akun Tersimpan (Ingatkan Saya)
+                            </span>
+                            <span class="text-[10px] text-slate-500">Klik untuk memilih</span>
+                        </div>
+
+                        <div class="max-h-48 overflow-y-auto">
+                            <template x-for="(savedMail, idx) in savedEmails" :key="savedMail">
+                                <div
+                                    @click="selectEmail(savedMail)"
+                                    class="px-3.5 py-2.5 flex items-center justify-between hover:bg-brand-600/25 cursor-pointer transition group"
+                                >
+                                    <div class="flex items-center gap-2.5 min-w-0">
+                                        <div class="w-7 h-7 rounded-lg bg-brand-600/30 border border-brand-500/40 text-brand-300 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-600 group-hover:text-white transition">
+                                            <i class="fa-solid fa-user text-xs"></i>
+                                        </div>
+                                        <div class="min-w-0 text-left">
+                                            <p class="text-xs font-semibold text-white group-hover:text-brand-200 truncate" x-text="savedMail"></p>
+                                            <p class="text-[10px] text-slate-400">Tersimpan dari sesi sebelumnya</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        @click="removeEmail(idx, $event)"
+                                        class="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg hover:bg-white/10 transition text-xs opacity-60 group-hover:opacity-100"
+                                        title="Hapus akun ini dari memori tersimpan"
+                                    >
+                                        <i class="fa-solid fa-trash-can text-[11px]"></i>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
                     @error('email')
                     <p class="mt-1.5 text-rose-400 text-xs flex items-center gap-1">
                         <i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}
@@ -274,11 +378,14 @@
 
                 <!-- Password Field -->
                 <div class="mb-6">
-                    <label for="password" class="block text-slate-300 text-sm font-semibold mb-2">
-                        <i class="fa-solid fa-lock text-brand-400 mr-1.5"></i>Password
-                    </label>
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="password" class="block text-slate-300 text-sm font-semibold">
+                            <i class="fa-solid fa-lock text-brand-400 mr-1.5"></i>Password
+                        </label>
+                    </div>
                     <div class="relative">
                         <input
+                            type="password"
                             :type="showPwd ? 'text' : 'password'"
                             id="password"
                             name="password"
@@ -307,20 +414,22 @@
                 <div class="flex items-center justify-between mb-6">
                     <label class="flex items-center gap-2 cursor-pointer select-none group">
                         <div class="relative">
-                            <input type="checkbox" name="remember" id="remember" value="1" {{ old('remember') ? 'checked' : '' }} class="sr-only peer">
+                            <input type="checkbox" name="remember" id="remember" value="1" {{ (old('remember') || !empty($rememberChecked)) ? 'checked' : '' }} class="sr-only peer">
                             <div class="w-9 h-5 bg-white/15 border border-white/20 rounded-full peer-checked:bg-brand-600 peer-checked:border-brand-500 transition-all duration-200"></div>
                             <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200 peer-checked:translate-x-4"></div>
                         </div>
                         <span class="text-slate-400 text-xs font-medium group-hover:text-slate-300 transition">Ingat saya</span>
                     </label>
-                    <span class="text-slate-500 text-xs">v2.0 Secure Portal</span>
+                    <span class="text-slate-500 text-xs flex items-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-emerald-400 text-[10px]"></i> Sesi Tersimpan
+                    </span>
                 </div>
 
                 <!-- Submit Button -->
                 <button
                     type="submit"
                     id="submitBtn"
-                    class="btn-login w-full text-white font-bold py-3.5 rounded-xl text-sm tracking-wide flex items-center justify-center gap-2.5 disabled:opacity-70"
+                    class="btn-login w-full text-white font-bold py-3.5 rounded-xl text-sm tracking-wide flex items-center justify-center gap-2.5 disabled:opacity-70 shadow-lg"
                     :disabled="loading"
                 >
                     <span x-show="!loading" class="flex items-center gap-2">
@@ -357,6 +466,51 @@
         </div><!-- end footer -->
     </div><!-- end login card -->
     </div><!-- end scrollable content wrapper -->
+
+    <!-- Persistent Remember Me Script (Cookie & LocalStorage Synchronization) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const rememberCheckbox = document.getElementById('remember');
+            const loginForm = document.getElementById('loginForm');
+
+            // 1. Sinkronisasi dari localStorage jika nilai dari server kosong
+            if (emailInput) {
+                const storedEmail = localStorage.getItem('admin_remember_email');
+                const storedRemember = localStorage.getItem('admin_remember_active');
+
+                if (!emailInput.value && storedEmail && storedRemember === '1') {
+                    emailInput.value = storedEmail;
+                    if (rememberCheckbox) rememberCheckbox.checked = true;
+                    if (passwordInput) passwordInput.focus();
+                } else if (emailInput.value) {
+                    if (rememberCheckbox) rememberCheckbox.checked = true;
+                }
+            }
+
+            // 2. Simpan status dan email saat form dikirim
+            if (loginForm) {
+                loginForm.addEventListener('submit', function () {
+                    if (rememberCheckbox && rememberCheckbox.checked && emailInput && emailInput.value.trim()) {
+                        const email = emailInput.value.trim().toLowerCase();
+                        localStorage.setItem('admin_remember_email', email);
+                        localStorage.setItem('admin_remember_active', '1');
+
+                        // Simpan ke daftar akun tersimpan lewat fitur Ingatkan Saya
+                        let saved = JSON.parse(localStorage.getItem('admin_saved_accounts') || '[]');
+                        if (!saved.includes(email)) {
+                            saved.unshift(email);
+                            localStorage.setItem('admin_saved_accounts', JSON.stringify(saved));
+                        }
+                    } else {
+                        localStorage.removeItem('admin_remember_email');
+                        localStorage.removeItem('admin_remember_active');
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

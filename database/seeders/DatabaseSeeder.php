@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@consoltainer.com'],
             [
                 'name' => 'Admin Consoltainer',
-                'password' => Hash::make('admin123'),
+                'password' => Hash::make('Admin123'),
             ]
         );
 

@@ -141,8 +141,8 @@
                             </div>
                         </div>
 
-                        <!-- Cards Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Cards Grid (2 Kolom di Mobile, 3 Kolom di Desktop) -->
+                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                             @foreach($grp['cards'] as $card)
                             <article class="packaging-card group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden flex flex-col"
                                      data-code="{{ strtolower($card['code']) }}"

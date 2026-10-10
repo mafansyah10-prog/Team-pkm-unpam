@@ -62,28 +62,28 @@
 <!-- Vision & Mission Section -->
 <section class="py-20 bg-slate-50 border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-2 gap-3 sm:gap-8">
             <!-- Vision -->
-            <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-4 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-xl mb-6">
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-base sm:text-xl mb-3 sm:mb-6">
                         <i class="fa-solid fa-eye"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Visi Perusahaan</h3>
-                    <p class="text-slate-600 leading-relaxed">
+                    <h3 class="text-sm sm:text-2xl font-bold text-slate-900 mb-2 sm:mb-4">Visi Perusahaan</h3>
+                    <p class="text-[11px] sm:text-base text-slate-600 leading-relaxed">
                         {{ $companySettings['vision'] ?? 'Menjadi penyedia layanan LCL Consolidator dan solusi logistik terpercaya nomor 1 di Indonesia dengan jangkauan global terintegrasi.' }}
                     </p>
                 </div>
             </div>
 
             <!-- Mission -->
-            <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-4 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl mb-6">
+                    <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base sm:text-xl mb-3 sm:mb-6">
                         <i class="fa-solid fa-bullseye"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Misi Perusahaan</h3>
-                    <p class="text-slate-600 leading-relaxed">
+                    <h3 class="text-sm sm:text-2xl font-bold text-slate-900 mb-2 sm:mb-4">Misi Perusahaan</h3>
+                    <p class="text-[11px] sm:text-base text-slate-600 leading-relaxed">
                         {{ $companySettings['mission'] ?? 'Memberikan efisiensi biaya pengiriman LCL, keamanan kargo, dan pelayanan pelanggan berstandar internasional.' }}
                     </p>
                 </div>
@@ -100,34 +100,34 @@
             <h2 class="text-3xl font-extrabold text-slate-900 mt-3">Nilai-Nilai Utama Kami</h2>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
-                <div class="w-12 h-12 mx-auto rounded-full bg-blue-100 text-brand-600 flex items-center justify-center text-lg mb-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            <div class="p-4 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full bg-blue-100 text-brand-600 flex items-center justify-center text-sm sm:text-lg mb-2 sm:mb-4">
                     <i class="fa-solid fa-handshake"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-2">Integritas</h4>
-                <p class="text-xs text-slate-600">Transparansi tarif dan komitmen penuh terhadap keselamatan kargo klien.</p>
+                <h4 class="font-bold text-xs sm:text-base text-slate-900 mb-1 sm:mb-2">Integritas</h4>
+                <p class="text-[10px] sm:text-xs text-slate-600">Transparansi tarif dan komitmen penuh terhadap keselamatan kargo klien.</p>
             </div>
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
-                <div class="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg mb-4">
+            <div class="p-4 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm sm:text-lg mb-2 sm:mb-4">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-2">Kecepatan</h4>
-                <p class="text-xs text-slate-600">Respon cepat permintaan penawaran dan dwelling time CFS minimal.</p>
+                <h4 class="font-bold text-xs sm:text-base text-slate-900 mb-1 sm:mb-2">Kecepatan</h4>
+                <p class="text-[10px] sm:text-xs text-slate-600">Respon cepat permintaan penawaran dan dwelling time CFS minimal.</p>
             </div>
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
-                <div class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg mb-4">
+            <div class="p-4 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-sm sm:text-lg mb-2 sm:mb-4">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-2">Keandalan</h4>
-                <p class="text-xs text-slate-600">Jadwal pelayaran regular weekly direct call dengan tingkat on-time 99.8%.</p>
+                <h4 class="font-bold text-xs sm:text-base text-slate-900 mb-1 sm:mb-2">Keandalan</h4>
+                <p class="text-[10px] sm:text-xs text-slate-600">Jadwal pelayaran regular weekly direct call dengan tingkat on-time 99.8%.</p>
             </div>
-            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
-                <div class="w-12 h-12 mx-auto rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-lg mb-4">
+            <div class="p-4 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-sm sm:text-lg mb-2 sm:mb-4">
                     <i class="fa-solid fa-earth-americas"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-2">Jangkauan Global</h4>
-                <p class="text-xs text-slate-600">Didukung jaringan agen mitra terpercaya di lebih dari 30 negara.</p>
+                <h4 class="font-bold text-xs sm:text-base text-slate-900 mb-1 sm:mb-2">Jangkauan Global</h4>
+                <p class="text-[10px] sm:text-xs text-slate-600">Didukung jaringan agen mitra terpercaya di lebih dari 30 negara.</p>
             </div>
         </div>
     </div>

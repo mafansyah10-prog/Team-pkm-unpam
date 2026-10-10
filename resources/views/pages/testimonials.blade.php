@@ -15,25 +15,25 @@
 
 <section class="py-20 bg-slate-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             @foreach($testimonials as $testi)
-            <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-3.5 sm:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
                 <div>
-                    <div class="flex text-amber-500 text-sm mb-4">
+                    <div class="flex text-amber-500 text-xs sm:text-sm mb-2 sm:mb-4">
                         @for($i = 0; $i < $testi->rating; $i++)
-                            <i class="fa-solid fa-star mr-1"></i>
+                            <i class="fa-solid fa-star mr-0.5 sm:mr-1"></i>
                         @endfor
                     </div>
-                    <p class="text-slate-700 text-sm italic leading-relaxed mb-6">"{{ $testi->content }}"</p>
+                    <p class="text-slate-700 text-xs sm:text-sm italic leading-relaxed mb-3 sm:mb-6 line-clamp-3 sm:line-clamp-none">"{{ $testi->content }}"</p>
                 </div>
-                <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
-                    <div class="w-12 h-12 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-sm">
+                <div class="flex items-center gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-slate-100">
+                    <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0">
                         {{ substr($testi->name, 0, 2) }}
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-sm">{{ $testi->name }}</h4>
-                        <p class="text-xs text-slate-500">{{ $testi->position }}</p>
-                        <p class="text-[11px] font-semibold text-brand-700">{{ $testi->company }}</p>
+                    <div class="min-w-0 flex-1">
+                        <h4 class="font-bold text-slate-900 text-xs sm:text-sm truncate">{{ $testi->name }}</h4>
+                        <p class="text-[10px] sm:text-xs text-slate-500 truncate">{{ $testi->position }}</p>
+                        <p class="text-[9px] sm:text-[11px] font-semibold text-brand-700 truncate">{{ $testi->company }}</p>
                     </div>
                 </div>
             </div>

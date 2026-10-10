@@ -47,6 +47,8 @@
 
     <style>
         [x-cloak] { display: none !important; }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Smooth Entrance & Scroll Reveal Keyframes */
         @keyframes fadeInUp {
@@ -182,10 +184,7 @@
                 <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> {{ $companySettings['hours'] ?? 'Senin - Jumat: 08:30 - 17:30 WIB' }}</span>
             </div>
             <div class="flex items-center space-x-3">
-                <span class="bg-brand-800 px-2 py-0.5 rounded text-[11px] text-amber-400 font-semibold">
-                    <i class="fa-solid fa-dollar-sign mr-0.5"></i> Kurs USD: Rp {{ $companySettings['kurs_usd'] ?? '15.850' }}
-                </span>
-                <a href="{{ route('admin.dashboard') }}" class="text-slate-300 hover:text-white transition flex items-center gap-1 font-medium">
+                <a href="{{ route('admin.dashboard') }}" class="text-slate-300 hover:text-white transition flex items-center gap-1.5 font-medium hover:text-amber-300">
                     <i class="fa-solid fa-lock text-[10px]"></i> Admin Portal
                 </a>
             </div>
@@ -197,59 +196,219 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <div class="flex items-center space-x-3 select-none cursor-default">
+                <a href="{{ route('home') }}" class="flex items-center space-x-3 select-none">
                     <img src="{{ asset('images/ctl-logo.svg') }}" alt="CTL LINE Logo" class="h-14 w-auto object-contain pointer-events-none">
                     <div>
                         <span class="text-lg font-black tracking-tight text-brand-900 block leading-tight">PT. CONSOLTAINER</span>
                         <span class="text-[10px] font-bold tracking-wider text-red-600 uppercase block">TRANSPORT LOGISTIC</span>
                     </div>
-                </div>
+                </a>
 
-                <!-- Desktop Nav Items -->
-                <nav class="hidden xl:flex items-center space-x-1 text-sm font-semibold text-slate-700">
-                    <a href="{{ route('home') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('home') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Beranda</a>
-                    <a href="{{ route('about') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('about') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Profil Perusahaan</a>
-                    <a href="{{ route('services') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('services*') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Layanan</a>
-                    <a href="{{ route('products') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('products*') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Produk</a>
-                    <a href="{{ route('packaging.guide') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('packaging.guide*') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Panduan Kemasan</a>
-                    <a href="{{ route('team') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('team') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Tim</a>
-                    <a href="{{ route('galeri') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('galeri') || request()->routeIs('gallery') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Galeri</a>
-                    <a href="{{ route('portfolio') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('portfolio*') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Portofolio</a>
-                    <a href="{{ route('testimonials') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('testimonials') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Testimoni</a>
-                    <a href="{{ route('contact') }}" class="px-3 py-2 rounded-lg hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('contact') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">Kontak</a>
+                <!-- Desktop Nav Items (Minimalist Categories) -->
+                <nav class="hidden lg:flex items-center space-x-1 text-sm font-semibold text-slate-700">
+                    <a href="{{ route('home') }}" class="px-3.5 py-2 rounded-xl hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('home') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">
+                        Beranda
+                    </a>
+
+                    <!-- Category: Perusahaan -->
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button @click="open = !open" class="px-3.5 py-2 rounded-xl inline-flex items-center gap-1.5 transition hover:text-brand-600 hover:bg-slate-50 {{ request()->routeIs('about') || request()->routeIs('team') || request()->routeIs('testimonials') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">
+                            <span>Perusahaan</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" :class="open ? 'rotate-180 text-brand-600' : 'text-slate-400'"></i>
+                        </button>
+                        <div x-show="open" 
+                             x-cloak
+                             x-transition:enter="transition ease-out duration-150" 
+                             x-transition:enter-start="opacity-0 translate-y-1 scale-95" 
+                             x-transition:enter-end="opacity-100 translate-y-0 scale-100" 
+                             x-transition:leave="transition ease-in duration-100" 
+                             x-transition:leave-start="opacity-100 translate-y-0 scale-100" 
+                             x-transition:leave-end="opacity-0 translate-y-1 scale-95" 
+                             class="absolute top-full left-0 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50">
+                            <a href="{{ route('about') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('about') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-building text-slate-400 w-4 text-center"></i>
+                                <span>Profil Perusahaan</span>
+                            </a>
+                            <a href="{{ route('team') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('team') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-users text-slate-400 w-4 text-center"></i>
+                                <span>Tim Kami</span>
+                            </a>
+                            <a href="{{ route('testimonials') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('testimonials') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-comments text-slate-400 w-4 text-center"></i>
+                                <span>Testimoni</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Category: Layanan & Produk -->
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button @click="open = !open" class="px-3.5 py-2 rounded-xl inline-flex items-center gap-1.5 transition hover:text-brand-600 hover:bg-slate-50 {{ request()->routeIs('services*') || request()->routeIs('products*') || request()->routeIs('packaging.guide*') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">
+                            <span>Layanan & Produk</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" :class="open ? 'rotate-180 text-brand-600' : 'text-slate-400'"></i>
+                        </button>
+                        <div x-show="open" 
+                             x-cloak
+                             x-transition:enter="transition ease-out duration-150" 
+                             x-transition:enter-start="opacity-0 translate-y-1 scale-95" 
+                             x-transition:enter-end="opacity-100 translate-y-0 scale-100" 
+                             x-transition:leave="transition ease-in duration-100" 
+                             x-transition:leave-start="opacity-100 translate-y-0 scale-100" 
+                             x-transition:leave-end="opacity-0 translate-y-1 scale-95" 
+                             class="absolute top-full left-0 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50">
+                            <a href="{{ route('services') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('services*') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-ship text-slate-400 w-4 text-center"></i>
+                                <span>Layanan Logistik</span>
+                            </a>
+                            <a href="{{ route('products') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('products*') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-boxes-packing text-slate-400 w-4 text-center"></i>
+                                <span>Produk Kargo</span>
+                            </a>
+                            <a href="{{ route('packaging.guide') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('packaging.guide*') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-barcode text-slate-400 w-4 text-center"></i>
+                                <span>Panduan Kemasan (CEISA 4.0)</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Category: Portofolio & Galeri -->
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button @click="open = !open" class="px-3.5 py-2 rounded-xl inline-flex items-center gap-1.5 transition hover:text-brand-600 hover:bg-slate-50 {{ request()->routeIs('portfolio*') || request()->routeIs('galeri') || request()->routeIs('gallery') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">
+                            <span>Portofolio & Galeri</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" :class="open ? 'rotate-180 text-brand-600' : 'text-slate-400'"></i>
+                        </button>
+                        <div x-show="open" 
+                             x-cloak
+                             x-transition:enter="transition ease-out duration-150" 
+                             x-transition:enter-start="opacity-0 translate-y-1 scale-95" 
+                             x-transition:enter-end="opacity-100 translate-y-0 scale-100" 
+                             x-transition:leave="transition ease-in duration-100" 
+                             x-transition:leave-start="opacity-100 translate-y-0 scale-100" 
+                             x-transition:leave-end="opacity-0 translate-y-1 scale-95" 
+                             class="absolute top-full left-0 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50">
+                            <a href="{{ route('portfolio') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('portfolio*') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-briefcase text-slate-400 w-4 text-center"></i>
+                                <span>Portofolio</span>
+                            </a>
+                            <a href="{{ route('galeri') }}" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition {{ request()->routeIs('galeri') || request()->routeIs('gallery') ? 'bg-brand-50 text-brand-600 font-bold' : '' }}">
+                                <i class="fa-solid fa-images text-slate-400 w-4 text-center"></i>
+                                <span>Galeri</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Direct: Kontak -->
+                    <a href="{{ route('contact') }}" class="px-3.5 py-2 rounded-xl hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('contact') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">
+                        Kontak
+                    </a>
                 </nav>
 
-                <!-- Action Button -->
-                <div class="hidden lg:flex items-center space-x-3">
-                    <a href="{{ route('contact') }}" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-md hover:shadow-lg transition transform active:scale-95">
-                        <i class="fa-solid fa-headset mr-2 text-amber-400"></i> Hubungi Kami
-                    </a>
-                </div>
-
                 <!-- Mobile Menu Button -->
-                <div class="xl:hidden flex items-center">
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 focus:outline-none">
+                <div class="lg:hidden flex items-center">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 focus:outline-none" aria-label="Toggle Navigation">
                         <i class="fa-solid" :class="mobileMenuOpen ? 'fa-xmark text-xl' : 'fa-bars text-xl'"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu -->
-        <div x-show="mobileMenuOpen" x-cloak class="xl:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2">
-            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Beranda</a>
-            <a href="{{ route('about') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Profil Perusahaan</a>
-            <a href="{{ route('services') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Layanan</a>
-            <a href="{{ route('products') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Produk</a>
-            <a href="{{ route('packaging.guide') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Panduan Kemasan (CEISA 4.0)</a>
-            <a href="{{ route('team') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Tim</a>
-            <a href="{{ route('galeri') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Galeri</a>
-            <a href="{{ route('portfolio') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Portofolio</a>
-            <a href="{{ route('testimonials') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Testimoni</a>
-            <a href="{{ route('contact') }}" class="block px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600">Kontak</a>
-            <div class="pt-3 border-t border-slate-100">
-                <a href="{{ route('contact') }}" class="w-full text-center block py-3 rounded-xl font-bold text-white bg-brand-700 hover:bg-brand-800 shadow">
-                    <i class="fa-solid fa-headset mr-1 text-amber-400"></i> Hubungi Kami & Pengaduan
+
+
+        <!-- Mobile Navigation Menu (Compact Minimalist Category Drawer) -->
+        <div x-show="mobileMenuOpen" 
+             x-cloak 
+             class="lg:hidden bg-white border-b border-slate-200 px-3.5 py-3 shadow-xl"
+             x-data="{ 
+                 activeCat: '{{ request()->routeIs('about') || request()->routeIs('team') || request()->routeIs('testimonials') ? 'perusahaan' : (request()->routeIs('services*') || request()->routeIs('products*') || request()->routeIs('packaging.guide*') ? 'layanan' : (request()->routeIs('portfolio*') || request()->routeIs('galeri') || request()->routeIs('gallery') ? 'media' : 'none')) }}' 
+             }">
+            
+            <div class="space-y-1.5">
+                <!-- Direct: Beranda -->
+                <a href="{{ route('home') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('home') ? 'bg-brand-50 text-brand-600' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-house text-slate-400 text-xs"></i>
+                        <span>Beranda</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300"></i>
+                </a>
+
+                <!-- Category Accordion: Perusahaan -->
+                <div class="rounded-xl border border-slate-100 overflow-hidden bg-slate-50/70">
+                    <button @click="activeCat = activeCat === 'perusahaan' ? 'none' : 'perusahaan'" class="w-full flex items-center justify-between px-3 py-2 text-xs font-bold transition {{ request()->routeIs('about') || request()->routeIs('team') || request()->routeIs('testimonials') ? 'text-brand-600 bg-brand-50/50' : 'text-slate-700' }}">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-building text-slate-400 text-xs"></i>
+                            <span>Perusahaan</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200 text-slate-400" :class="activeCat === 'perusahaan' ? 'rotate-180 text-brand-600' : ''"></i>
+                    </button>
+                    <div x-show="activeCat === 'perusahaan'" x-transition class="p-1.5 grid grid-cols-2 gap-1.5 bg-white border-t border-slate-100">
+                        <a href="{{ route('about') }}" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('about') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-circle-info text-[9px] text-slate-400"></i>
+                            <span class="truncate">Profil</span>
+                        </a>
+                        <a href="{{ route('team') }}" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('team') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-users text-[9px] text-slate-400"></i>
+                            <span class="truncate">Tim Kami</span>
+                        </a>
+                        <a href="{{ route('testimonials') }}" class="col-span-2 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('testimonials') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-comments text-[9px] text-slate-400"></i>
+                            <span class="truncate">Testimoni Klien</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Category Accordion: Layanan & Produk -->
+                <div class="rounded-xl border border-slate-100 overflow-hidden bg-slate-50/70">
+                    <button @click="activeCat = activeCat === 'layanan' ? 'none' : 'layanan'" class="w-full flex items-center justify-between px-3 py-2 text-xs font-bold transition {{ request()->routeIs('services*') || request()->routeIs('products*') || request()->routeIs('packaging.guide*') ? 'text-brand-600 bg-brand-50/50' : 'text-slate-700' }}">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-boxes-packing text-slate-400 text-xs"></i>
+                            <span>Layanan & Produk</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200 text-slate-400" :class="activeCat === 'layanan' ? 'rotate-180 text-brand-600' : ''"></i>
+                    </button>
+                    <div x-show="activeCat === 'layanan'" x-transition class="p-1.5 grid grid-cols-2 gap-1.5 bg-white border-t border-slate-100">
+                        <a href="{{ route('services') }}" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('services*') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-ship text-[9px] text-slate-400"></i>
+                            <span class="truncate">Layanan</span>
+                        </a>
+                        <a href="{{ route('products') }}" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('products*') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-box text-[9px] text-slate-400"></i>
+                            <span class="truncate">Produk</span>
+                        </a>
+                        <a href="{{ route('packaging.guide') }}" class="col-span-2 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('packaging.guide*') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-barcode text-[9px] text-slate-400"></i>
+                            <span class="truncate">Panduan Kemasan (CEISA 4.0)</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Category Accordion: Portofolio & Galeri -->
+                <div class="rounded-xl border border-slate-100 overflow-hidden bg-slate-50/70">
+                    <button @click="activeCat = activeCat === 'media' ? 'none' : 'media'" class="w-full flex items-center justify-between px-3 py-2 text-xs font-bold transition {{ request()->routeIs('portfolio*') || request()->routeIs('galeri') || request()->routeIs('gallery') ? 'text-brand-600 bg-brand-50/50' : 'text-slate-700' }}">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-images text-slate-400 text-xs"></i>
+                            <span>Portofolio & Galeri</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200 text-slate-400" :class="activeCat === 'media' ? 'rotate-180 text-brand-600' : ''"></i>
+                    </button>
+                    <div x-show="activeCat === 'media'" x-transition class="p-1.5 grid grid-cols-2 gap-1.5 bg-white border-t border-slate-100">
+                        <a href="{{ route('portfolio') }}" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('portfolio*') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-briefcase text-[9px] text-slate-400"></i>
+                            <span class="truncate">Portofolio</span>
+                        </a>
+                        <a href="{{ route('galeri') }}" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-600 flex items-center gap-1.5 transition {{ request()->routeIs('galeri') || request()->routeIs('gallery') ? 'bg-brand-50 text-brand-600 font-bold' : 'bg-slate-50' }}">
+                            <i class="fa-solid fa-camera text-[9px] text-slate-400"></i>
+                            <span class="truncate">Galeri</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Direct: Kontak -->
+                <a href="{{ route('contact') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('contact') ? 'bg-brand-50 text-brand-600' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-slate-400 text-xs"></i>
+                        <span>Kontak</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300"></i>
                 </a>
             </div>
         </div>
@@ -261,9 +420,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-brand-900 text-slate-300 pt-16 pb-8 border-t border-brand-800">
+    <footer class="bg-brand-900 text-slate-300 pt-16 pb-12 border-t border-brand-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-brand-800">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
                 <div class="lg:col-span-2 space-y-4">
                     <div class="flex items-center space-x-3">
                         <div class="bg-white p-1.5 rounded-xl">
@@ -285,28 +444,31 @@
                     </div>
                 </div>
 
-                <div>
-                    <h4 class="text-white font-bold text-base mb-4 tracking-wider uppercase text-xs">Perusahaan</h4>
-                    <ul class="space-y-2.5 text-sm">
-                        <li><a href="{{ route('about') }}" class="hover:text-white transition">Tentang Kami</a></li>
-                        <li><a href="{{ route('team') }}" class="hover:text-white transition">Dewan Direksi & Tim</a></li>
-                        <li><a href="{{ route('portfolio') }}" class="hover:text-white transition">Portofolio Kargo</a></li>
-                        <li><a href="{{ route('galeri') }}" class="hover:text-white transition">Galeri Operasional</a></li>
-                        <li><a href="{{ route('testimonials') }}" class="hover:text-white transition">Testimoni Klien</a></li>
-                        <li><a href="{{ route('packaging.guide') }}" class="hover:text-white transition flex items-center gap-1.5 text-amber-300 hover:text-amber-200 font-medium"><i class="fa-solid fa-boxes-stacked text-xs"></i> Panduan Jenis Kemasan</a></li>
-                        <li><a href="{{ route('contact', ['tab' => 'feedback']) }}" class="text-slate-300 hover:text-white transition font-medium"><i class="fa-solid fa-bullhorn text-xs mr-1 text-amber-400"></i> Layanan Pengaduan</a></li>
-                    </ul>
-                </div>
+                <!-- Perusahaan & Layanan Utama (Kiri - Kanan di Mobile & Desktop) -->
+                <div class="col-span-1 lg:col-span-2 grid grid-cols-2 gap-4 sm:gap-8">
+                    <div>
+                        <h4 class="text-white font-bold text-xs mb-4 tracking-wider uppercase">Perusahaan</h4>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-400">
+                            <li><a href="{{ route('about') }}" class="hover:text-white transition">Tentang Kami</a></li>
+                            <li><a href="{{ route('team') }}" class="hover:text-white transition">Dewan Direksi & Tim</a></li>
+                            <li><a href="{{ route('portfolio') }}" class="hover:text-white transition">Portofolio Kargo</a></li>
+                            <li><a href="{{ route('galeri') }}" class="hover:text-white transition">Galeri Operasional</a></li>
+                            <li><a href="{{ route('testimonials') }}" class="hover:text-white transition">Testimoni Klien</a></li>
+                            <li><a href="{{ route('packaging.guide') }}" class="hover:text-white transition flex items-center gap-1 text-amber-300 hover:text-amber-200 font-medium"><i class="fa-solid fa-boxes-stacked text-[10px]"></i> Panduan Kemasan</a></li>
+                            <li><a href="{{ route('contact', ['tab' => 'feedback']) }}" class="text-slate-300 hover:text-white transition font-medium"><i class="fa-solid fa-bullhorn text-[10px] mr-1 text-amber-400"></i> Pengaduan</a></li>
+                        </ul>
+                    </div>
 
-                <div>
-                    <h4 class="text-white font-bold text-base mb-4 tracking-wider uppercase text-xs">Layanan Utama</h4>
-                    <ul class="space-y-2.5 text-sm">
-                        <li><a href="{{ route('services') }}" class="hover:text-white transition">LCL Consolidation</a></li>
-                        <li><a href="{{ route('services') }}" class="hover:text-white transition">Full Container Load (FCL)</a></li>
-                        <li><a href="{{ route('services') }}" class="hover:text-white transition">Air Freight Consolidator</a></li>
-                        <li><a href="{{ route('services') }}" class="hover:text-white transition">Customs Brokerage (PPJK)</a></li>
-                        <li><a href="{{ route('services') }}" class="hover:text-white transition">CFS Warehousing & Depot</a></li>
-                    </ul>
+                    <div>
+                        <h4 class="text-white font-bold text-xs mb-4 tracking-wider uppercase">Layanan Utama</h4>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-400">
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">LCL Consolidation</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Full Container Load (FCL)</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Air Freight Consolidator</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Customs Brokerage (PPJK)</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">CFS Warehousing & Depot</a></li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div>
@@ -331,24 +493,10 @@
                     </div>
                 </div>
             </div>
-
-            <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-400 gap-4">
-                <p>&copy; {{ date('Y') }} <strong>PT. CONSOLTAINER TRANSPORT LOGISTIC</strong>. All Rights Reserved.</p>
-                <div class="flex space-x-6">
-                    <a href="{{ route('about') }}" class="hover:text-white transition">Profil</a>
-                    <a href="{{ route('services') }}" class="hover:text-white transition">Layanan</a>
-                    <a href="{{ route('contact') }}" class="hover:text-white transition">Hubungi Kami</a>
-                    <a href="{{ route('admin.dashboard') }}" class="hover:text-white transition">Admin Panel</a>
-                </div>
-            </div>
         </div>
     </footer>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/6281299887766?text=Halo%20PT.%20CONSOLTAINER%20TRANSPORT%20LOGISTIC,%20saya%20ingin%20konsultasi%20pengiriman%20kargo" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full p-3.5 shadow-2xl flex items-center justify-center transition transform hover:scale-110 group" title="Chat WhatsApp Customer Support">
-        <i class="fa-brands fa-whatsapp text-2xl"></i>
-        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out font-bold text-xs pl-0 group-hover:pl-2">Chat Tim Logistik</span>
-    </a>
+
 
     <!-- Page Entrance & Scroll Reveal Script -->
     <script>

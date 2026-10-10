@@ -4,18 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
     /**
      * Show the admin login form.
      */
-    public function showLogin()
+    public function showLogin(Request $request)
     {
         if (Auth::check()) {
             return redirect()->route('admin.dashboard');
         }
-        return view('auth.login');
+
+        $rememberedEmail = $request->cookie('admin_remember_email', '');
+        $rememberChecked = $request->cookie('admin_remember_active', '0') === '1';
+
+        return view('auth.login', compact('rememberedEmail', 'rememberChecked'));
     }
 
     /**
@@ -38,12 +43,23 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
+            if ($remember) {
+                // Simpan email dan status aktif Ingat Saya selama 1 tahun (525.600 menit)
+                Cookie::queue('admin_remember_email', $request->email, 525600);
+                Cookie::queue('admin_remember_active', '1', 525600);
+            } else {
+                // Hapus cookie jika fitur Ingat Saya dimatikan
+                Cookie::queue(Cookie::forget('admin_remember_email'));
+                Cookie::queue(Cookie::forget('admin_remember_active'));
+            }
+
             return redirect()->intended(route('admin.dashboard'))
                 ->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');
         }
 
         return back()
-            ->withInput($request->only('email'))
+            ->withInput($request->only('email', 'remember'))
             ->withErrors(['email' => 'Email atau password yang Anda masukkan salah.']);
     }
 

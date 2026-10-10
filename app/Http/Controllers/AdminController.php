@@ -13,6 +13,8 @@ use App\Models\CompanySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -449,5 +451,32 @@ class AdminController extends Controller
             CompanySetting::set($key, $value);
         }
         return redirect()->back()->with('success', 'Pengaturan website dan profil perusahaan berhasil disimpan!');
+    }
+
+    /**
+     * Update admin account password.
+     */
+    public function passwordUpdate(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password'     => 'required|string|min:6|confirmed',
+        ], [
+            'current_password.required' => 'Password lama wajib diisi.',
+            'new_password.required'     => 'Password baru wajib diisi.',
+            'new_password.min'          => 'Password baru minimal 6 karakter.',
+            'new_password.confirmed'    => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'Password lama yang Anda masukkan salah.']);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->back()->with('success', 'Password admin berhasil diperbarui! Silakan gunakan password baru ini untuk login berikutnya.');
     }
 }

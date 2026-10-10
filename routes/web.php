@@ -91,4 +91,5 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     // Website Settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::post('/settings/update', [AdminController::class, 'settingsUpdate'])->name('settings.update');
+    Route::post('/password/update', [AdminController::class, 'passwordUpdate'])->name('password.update');
 });

@@ -73,13 +73,35 @@
 
         <div class="space-y-3">
             @forelse($recentMessages as $msg)
-            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-start justify-between gap-3 text-xs">
-                <div>
+            @php
+                $cleanPhone = preg_replace('/[^0-9]/', '', $msg->phone ?? '');
+                if (str_starts_with($cleanPhone, '0')) {
+                    $cleanPhone = '62' . substr($cleanPhone, 1);
+                } elseif (str_starts_with($cleanPhone, '8')) {
+                    $cleanPhone = '62' . $cleanPhone;
+                }
+                $waText = "Halo Bapak/Ibu " . $msg->name . ", kami dari PT. Consoltainer merespons laporan Anda perihal: " . ($msg->subject ?? 'Pengaduan Layanan');
+                $gmailSubject = "Tanggapan Laporan: " . ($msg->subject ?? 'Pengaduan Pelanggan');
+            @endphp
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                <div class="flex-1">
                     <span class="font-bold text-slate-900 text-sm block">{{ $msg->name }}</span>
                     <span class="text-slate-500">{{ $msg->email }} | {{ $msg->phone }}</span>
                     <p class="text-slate-700 mt-1 line-clamp-1">{{ $msg->message }}</p>
                 </div>
-                <span class="text-[10px] text-slate-400 whitespace-nowrap">{{ $msg->created_at->diffForHumans() }}</span>
+                <div class="flex items-center gap-2 self-end sm:self-center">
+                    @if(!empty($cleanPhone))
+                    <a href="https://api.whatsapp.com/send?phone={{ $cleanPhone }}&text={{ urlencode($waText) }}" target="_blank" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-sm" title="Balas WA">
+                        <i class="fa-brands fa-whatsapp"></i> WA
+                    </a>
+                    @endif
+                    @if(!empty($msg->email))
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ urlencode($msg->email) }}&su={{ urlencode($gmailSubject) }}" target="_blank" class="px-2 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-sm" title="Balas Gmail">
+                        <i class="fa-brands fa-google"></i> Gmail
+                    </a>
+                    @endif
+                    <span class="text-[10px] text-slate-400 whitespace-nowrap pl-2">{{ $msg->created_at->diffForHumans() }}</span>
+                </div>
             </div>
             @empty
             <p class="text-xs text-slate-400 text-center py-6">Belum ada pesan masuk.</p>

@@ -29,25 +29,61 @@
                     @endif
                 </div>
 
-                <div class="text-xs text-slate-500 flex flex-wrap gap-4">
-                    <span><i class="fa-solid fa-envelope mr-1"></i> {{ $msg->email }}</span>
-                    <span><i class="fa-solid fa-phone mr-1"></i> {{ $msg->phone }}</span>
-                    <span><i class="fa-solid fa-clock mr-1"></i> {{ $msg->created_at->format('d M Y, H:i') }} WIB</span>
+                @php
+                    // Normalisasi nomor telepon ke format internasional WhatsApp (62xxx)
+                    $cleanPhone = preg_replace('/[^0-9]/', '', $msg->phone ?? '');
+                    if (str_starts_with($cleanPhone, '0')) {
+                        $cleanPhone = '62' . substr($cleanPhone, 1);
+                    } elseif (str_starts_with($cleanPhone, '8')) {
+                        $cleanPhone = '62' . $cleanPhone;
+                    }
+
+                    // Teks pesan WhatsApp otomatis
+                    $waText = "Halo Bapak/Ibu " . $msg->name . ",\n\nKami dari Manajemen PT. CONSOLTAINER TRANSPORT LOGISTIC merespons laporan pengaduan/masukan yang Anda kirimkan melalui website kami:\n\nPerihal: " . ($msg->subject ?? 'Pengaduan / Masukan Layanan') . "\n\nTerima kasih, mohon konfirmasi agar kami dapat memberikan solusi terbaik.";
+
+                    // Template subjek dan isi email Gmail otomatis
+                    $gmailSubject = "Tanggapan Laporan: " . ($msg->subject ?? 'Pengaduan & Masukan Pelanggan');
+                    $gmailBody = "Halo Bapak/Ibu " . $msg->name . ",\n\nTerima kasih telah menghubungi Manajemen PT. CONSOLTAINER TRANSPORT LOGISTIC.\n\nMengenai pengaduan/masukan yang Anda sampaikan:\n\"" . Str::limit($msg->message, 150) . "\"\n\nBerikut tanggapan dan tindak lanjut dari kami:\n\n---\nSalam hormat,\nTim Mutu & Layanan Pelanggan\nPT. CONSOLTAINER TRANSPORT LOGISTIC\nWebsite: www.consoltainer.co.id";
+                @endphp
+
+                <div class="text-xs text-slate-500 flex flex-wrap gap-4 items-center">
+                    @if($msg->email)
+                    <a href="mailto:{{ $msg->email }}?subject={{ urlencode($gmailSubject) }}" class="text-slate-600 hover:text-brand-600 font-medium transition flex items-center gap-1" title="Kirim email via mail client">
+                        <i class="fa-solid fa-envelope text-brand-500"></i> {{ $msg->email }}
+                    </a>
+                    @endif
+
+                    @if($msg->phone)
+                    <a href="tel:{{ $msg->phone }}" class="text-slate-600 hover:text-emerald-600 font-medium transition flex items-center gap-1" title="Telepon">
+                        <i class="fa-solid fa-phone text-emerald-500"></i> {{ $msg->phone }}
+                    </a>
+                    @endif
+
+                    <span><i class="fa-solid fa-clock text-slate-400 mr-1"></i> {{ $msg->created_at->format('d M Y, H:i') }} WIB</span>
                 </div>
 
                 @if($msg->subject)
                 <p class="text-xs font-bold text-brand-700 mt-1">Subjek: {{ $msg->subject }}</p>
                 @endif
 
-                <p class="text-xs text-slate-700 bg-white p-3 rounded-xl border border-slate-200 mt-2 leading-relaxed">
+                <p class="text-xs text-slate-700 bg-white p-3 rounded-xl border border-slate-200 mt-2 leading-relaxed whitespace-pre-line">
                     {{ $msg->message }}
                 </p>
             </div>
 
-            <div class="flex items-center gap-2 self-end md:self-center">
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $msg->phone) }}?text=Halo%20{{ urlencode($msg->name) }},%20kami%20dari%20PT.%20Consoltainer%20merespons%20laporan%20pengaduan/masukan%20Anda." target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1">
-                    <i class="fa-brands fa-whatsapp"></i> Balas WA
+            <!-- Action Reply Buttons -->
+            <div class="flex items-center flex-wrap gap-2 self-end md:self-center">
+                @if(!empty($cleanPhone))
+                <a href="https://api.whatsapp.com/send?phone={{ $cleanPhone }}&text={{ urlencode($waText) }}" target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm hover:shadow" title="Balas via WhatsApp langsung ke {{ $cleanPhone }}">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Balas WA
                 </a>
+                @endif
+
+                @if(!empty($msg->email))
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ urlencode($msg->email) }}&su={{ urlencode($gmailSubject) }}&body={{ urlencode($gmailBody) }}" target="_blank" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm hover:shadow" title="Buka Gmail Web langsung ke {{ $msg->email }}">
+                    <i class="fa-brands fa-google text-xs"></i> Balas Gmail
+                </a>
+                @endif
 
                 <form action="{{ route('admin.messages.toggle', $msg->id) }}" method="POST">
                     @csrf
