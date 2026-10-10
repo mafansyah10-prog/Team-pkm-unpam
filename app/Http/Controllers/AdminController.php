@@ -503,7 +503,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Update admin profile (Name, Gmail, WhatsApp/Phone, Fonnte Token, and Gmail/SMTP).
+     * Update admin profile (Name, and Gmail SMTP OTP Settings).
      */
     public function profileUpdate(Request $request)
     {
@@ -511,43 +511,26 @@ class AdminController extends Controller
 
         $request->validate([
             'name'          => 'required|string|max:255',
-            'email'         => 'required|email|max:255|unique:users,email,' . $user->id,
-            'phone'         => 'required|string|max:50',
-            'fonnte_token'  => 'nullable|string|max:255',
-            'mail_username' => 'nullable|string|max:255',
-            'mail_password' => 'nullable|string|max:255',
+            'mail_username' => 'required|email|max:255',
+            'mail_password' => 'required|string|max:255',
             'mail_host'     => 'nullable|string|max:255',
             'mail_port'     => 'nullable|string|max:10',
         ], [
-            'name.required'  => 'Nama administrator wajib diisi.',
-            'email.required' => 'Alamat Gmail/Email wajib diisi.',
-            'email.email'    => 'Format email tidak valid.',
-            'email.unique'   => 'Alamat email ini sudah digunakan oleh akun lain.',
-            'phone.required' => 'Nomor WhatsApp / Telepon wajib diisi untuk verifikasi OTP.',
+            'name.required'          => 'Nama administrator wajib diisi.',
+            'mail_username.required' => 'Alamat Gmail Administrator wajib diisi.',
+            'mail_username.email'    => 'Format alamat Gmail tidak valid.',
+            'mail_password.required' => 'Sandi Aplikasi Google (16 Digit) wajib diisi.',
         ]);
 
         $user->name  = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
+        $user->email = trim($request->mail_username);
         $user->save();
 
-        if ($request->has('fonnte_token')) {
-            CompanySetting::set('fonnte_token', trim($request->fonnte_token));
-        }
+        CompanySetting::set('mail_username', trim($request->mail_username));
+        CompanySetting::set('mail_password', trim($request->mail_password));
+        CompanySetting::set('mail_host', trim($request->input('mail_host', 'smtp.gmail.com')));
+        CompanySetting::set('mail_port', trim($request->input('mail_port', '587')));
 
-        if ($request->has('mail_username')) {
-            CompanySetting::set('mail_username', trim($request->mail_username));
-        }
-        if ($request->has('mail_password')) {
-            CompanySetting::set('mail_password', trim($request->mail_password));
-        }
-        if ($request->has('mail_host')) {
-            CompanySetting::set('mail_host', trim($request->mail_host));
-        }
-        if ($request->has('mail_port')) {
-            CompanySetting::set('mail_port', trim($request->mail_port));
-        }
-
-        return redirect()->back()->with('success', 'Profil Administrator, WhatsApp Gateway, dan Pengaturan Gmail SMTP berhasil diperbarui! Kode OTP sekarang otomatis terkirim ke WhatsApp (' . $user->phone . ') atau Gmail (' . $user->email . ').');
+        return redirect()->back()->with('success', 'Pengaturan Pengiriman OTP Administrator berhasil diperbarui! Kode OTP 6-digit sekarang otomatis dikirimkan ke Gmail: ' . $user->email);
     }
 }

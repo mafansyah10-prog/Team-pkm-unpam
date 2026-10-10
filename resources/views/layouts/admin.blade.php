@@ -107,7 +107,7 @@
                     <i class="fa-solid fa-gear text-sm w-5 {{ request()->routeIs('admin.settings*') ? 'text-white' : 'text-slate-400' }}"></i> Pengaturan Website
                 </a>
                 <a href="{{ route('admin.profile') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition {{ request()->routeIs('admin.profile*') ? 'bg-brand-600 text-white font-bold shadow-lg shadow-brand-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
-                    <i class="fa-solid fa-user-shield text-sm w-5 {{ request()->routeIs('admin.profile*') ? 'text-white' : 'text-slate-400' }}"></i> Profil Admin & Kontak OTP
+                    <i class="fa-solid fa-shield-halved text-sm w-5 {{ request()->routeIs('admin.profile*') ? 'text-white' : 'text-slate-400' }}"></i> Pengaturan Pengiriman OTP
                 </a>
             </nav>
         </div>
