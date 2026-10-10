@@ -41,6 +41,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Forgot Password & OTP Reset Routes
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
+    Route::post('/forgot-password/send-otp', [AuthController::class, 'sendOtp'])->name('forgot-password.send-otp');
+    Route::post('/forgot-password/verify', [AuthController::class, 'verifyOtpAndReset'])->name('forgot-password.verify');
 });
 
 // Admin Back-Office Panel (protected by AdminAuth middleware)

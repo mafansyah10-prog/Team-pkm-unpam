@@ -382,6 +382,9 @@
                         <label for="password" class="block text-slate-300 text-sm font-semibold">
                             <i class="fa-solid fa-lock text-brand-400 mr-1.5"></i>Password
                         </label>
+                        <a href="{{ route('admin.forgot-password') }}" class="text-xs font-semibold text-brand-400 hover:text-brand-300 transition flex items-center gap-1">
+                            <i class="fa-solid fa-key text-[10px]"></i> Lupa Password?
+                        </a>
                     </div>
                     <div class="relative">
                         <input
