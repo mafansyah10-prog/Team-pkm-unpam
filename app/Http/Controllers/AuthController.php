@@ -82,7 +82,11 @@ class AuthController extends Controller
     }
 
     /**
-     * Show Forgot Password & OTP Reset View.
+     * Show Forgot Password & OTP Reset View (4 Tahapan).
+     * Tahap 1: Kirim OTP (Pilih WhatsApp / Gmail)
+     * Tahap 2: Verifikasi OTP 6 Digit Angka
+     * Tahap 3: Masukkan Password Baru
+     * Tahap 4: Selesai
      */
     public function showForgotPassword(Request $request)
     {
@@ -90,7 +94,17 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $step = $request->query('step', 'request'); // 'request' | 'verify'
+        $step = (string) $request->query('step', '1');
+        // Normalisasi parameter step
+        if ($step === 'request')  $step = '1';
+        if ($step === 'verify')   $step = '2';
+        if ($step === 'password') $step = '3';
+        if ($step === 'success')  $step = '4';
+
+        if (!in_array($step, ['1', '2', '3', '4'])) {
+            $step = '1';
+        }
+
         $email = $request->query('email', '');
         $channel = $request->query('channel', 'whatsapp');
 
@@ -110,6 +124,17 @@ class AuthController extends Controller
             $email = $adminEmail;
         }
 
+        // Proteksi Tahap 3: Harus sudah lulus verifikasi OTP pada Tahap 2
+        if ($step === '3') {
+            if (session('otp_verified_email') !== $email) {
+                return redirect()->route('admin.forgot-password', [
+                    'step'    => '2',
+                    'email'   => $email,
+                    'channel' => $channel,
+                ])->withErrors(['otp' => 'Sesi verifikasi belum selesai. Silakan verifikasi kode OTP 6-digit terlebih dahulu.']);
+            }
+        }
+
         return view('auth.forgot-password', [
             'step'         => $step,
             'email'        => $email,
@@ -120,7 +145,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Generate & Send OTP via WhatsApp or Gmail.
+     * TAHAP 1: Generate & Send OTP via WhatsApp or Gmail.
      */
     public function sendOtp(Request $request)
     {
@@ -151,7 +176,7 @@ class AuthController extends Controller
             ->where('is_used', false)
             ->update(['is_used' => true]);
 
-        // Generate kode OTP 6-digit angka acak
+        // Generate kode OTP 6-digit angka acak murni
         $otp = str_pad((string) random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
 
         AdminPasswordReset::create([
@@ -192,8 +217,9 @@ class AuthController extends Controller
 
         $channelLabel = $request->channel === 'whatsapp' ? 'WhatsApp Profil Admin (' . $adminPhone . ')' : 'Gmail Profil Admin (' . $adminEmail . ')';
 
+        // Lanjut ke TAHAP 2: Verifikasi Kode OTP 6 Digit
         return redirect()->route('admin.forgot-password', [
-            'step'    => 'verify',
+            'step'    => '2',
             'email'   => $user->email,
             'channel' => $request->channel,
         ])->with('success', 'Kode OTP 6-digit rahasia telah berhasil dikirimkan ke ' . $channelLabel . '. Silakan periksa pesan masuk Anda.')
@@ -202,21 +228,17 @@ class AuthController extends Controller
     }
 
     /**
-     * Verify OTP and Reset the Password.
+     * TAHAP 2: Verifikasi OTP 6 digit angka saja.
      */
-    public function verifyOtpAndReset(Request $request)
+    public function verifyOtpOnly(Request $request)
     {
         $request->validate([
-            'email'                 => 'required|email',
-            'otp'                   => 'required|string|size:6',
-            'password'              => 'required|string|min:6|confirmed',
+            'email' => 'required|email',
+            'otp'   => ['required', 'regex:/^[0-9]{6}$/'],
         ], [
-            'email.required'        => 'Email administrator wajib diisi.',
-            'otp.required'          => 'Kode OTP wajib diisi.',
-            'otp.size'              => 'Kode OTP harus berupa 6 digit angka.',
-            'password.required'     => 'Password baru wajib diisi.',
-            'password.min'          => 'Password baru minimal 6 karakter.',
-            'password.confirmed'    => 'Konfirmasi password baru tidak cocok.',
+            'email.required' => 'Email administrator wajib diisi.',
+            'otp.required'   => 'Kode OTP 6-digit wajib diisi.',
+            'otp.regex'      => 'Kode OTP harus berupa 6 digit angka saja (0-9).',
         ]);
 
         $reset = AdminPasswordReset::where('email', $request->email)
@@ -227,8 +249,43 @@ class AuthController extends Controller
             ->first();
 
         if (!$reset) {
-            return back()->withInput($request->except('password', 'password_confirmation'))
-                ->withErrors(['otp' => 'Kode OTP tidak valid atau sudah kedaluwarsa. Silakan periksa kembali atau lakukan kirim ulang kode baru.']);
+            return back()->withInput()
+                ->withErrors(['otp' => 'Kode OTP 6-digit tidak valid atau sudah kedaluwarsa. Silakan periksa kembali pesan WhatsApp/Gmail Anda.']);
+        }
+
+        // Tandai verifikasi OTP berhasil pada sesi
+        session([
+            'otp_verified_email' => $request->email,
+            'otp_reset_id'       => $reset->id,
+        ]);
+
+        // Lanjut ke TAHAP 3: Memasukkan Password Baru
+        return redirect()->route('admin.forgot-password', [
+            'step'  => '3',
+            'email' => $request->email,
+        ])->with('success', 'Kode OTP 6-digit valid! Silakan masukkan password baru Anda.');
+    }
+
+    /**
+     * TAHAP 3: Simpan Password Baru setelah OTP terverifikasi.
+     */
+    public function resetPasswordOnly(Request $request)
+    {
+        $request->validate([
+            'email'                 => 'required|email',
+            'password'              => 'required|string|min:6|confirmed',
+        ], [
+            'email.required'        => 'Email administrator wajib diisi.',
+            'password.required'     => 'Password baru wajib diisi.',
+            'password.min'          => 'Password baru minimal 6 karakter.',
+            'password.confirmed'    => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        if (session('otp_verified_email') !== $request->email) {
+            return redirect()->route('admin.forgot-password', [
+                'step'  => '1',
+                'email' => $request->email,
+            ])->withErrors(['email' => 'Sesi verifikasi OTP Anda telah berakhir. Silakan minta kode OTP baru.']);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
@@ -236,9 +293,25 @@ class AuthController extends Controller
         $user->save();
 
         // Tandai OTP telah digunakan
-        $reset->update(['is_used' => true]);
+        $resetId = session('otp_reset_id');
+        if ($resetId) {
+            AdminPasswordReset::where('id', $resetId)->update(['is_used' => true]);
+        }
 
-        return redirect()->route('admin.login')
-            ->with('success', 'Selamat! Password akun admin Anda berhasil diperbarui. Silakan login menggunakan password baru.');
+        // Bersihkan sesi verifikasi
+        session()->forget(['otp_verified_email', 'otp_reset_id']);
+
+        // Lanjut ke TAHAP 4: Selesai
+        return redirect()->route('admin.forgot-password', [
+            'step' => '4',
+        ])->with('success', 'Password berhasil diperbarui.');
+    }
+
+    /**
+     * Legacy single-step reset fallback.
+     */
+    public function verifyOtpAndReset(Request $request)
+    {
+        return $this->resetPasswordOnly($request);
     }
 }

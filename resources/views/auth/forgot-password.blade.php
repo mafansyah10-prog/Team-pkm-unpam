@@ -1,96 +1,80 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password Admin (OTP) – CTL LINE | PT. CONSOLTAINER TRANSPORT LOGISTIC</title>
-    <meta name="description" content="Layanan verifikasi OTP untuk reset password administrator Back-Office CTL LINE.">
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS CDN -->
+    <title>Reset Password Admin (4 Tahapan) – PT. CONSOLTAINER TRANSPORT LOGISTIC</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/ctl-logo.svg') }}">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"Space Grotesk"', 'monospace'],
+                    },
                     colors: {
                         brand: {
-                            50: '#f0f7ff', 100: '#e0effe', 200: '#bae0fd',
-                            300: '#7cc5fb', 400: '#36a7f7', 500: '#0066cc',
-                            600: '#0052a3', 700: '#003d7a', 800: '#002952',
-                            900: '#001429', 950: '#07152b',
+                            50:  '#e6f0fa',
+                            100: '#cce0f5',
+                            400: '#1a7ad4',
+                            500: '#0052a3',
+                            600: '#003d7a',
+                            700: '#002952',
+                            800: '#001429',
+                            900: '#000a14',
                         }
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
-                    },
-                    keyframes: {
-                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
-
     <style>
         [x-cloak] { display: none !important; }
-
-        .logo-bg-wrap {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
+        .glass-card {
+            background: rgba(10, 25, 47, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
-
+        .center-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 720px;
+            height: 720px;
+            background: radial-gradient(circle, rgba(0, 82, 163, 0.28) 0%, rgba(0, 41, 82, 0.12) 45%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+        }
         .logo-bg-center {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: min(75vw, 640px);
+            width: 520px;
             height: auto;
-            opacity: 0.04;
-            filter: invert(1) sepia(1) saturate(2) hue-rotate(180deg) blur(0.5px);
-        }
-
-        .center-glow {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 800px; height: 800px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,102,204,0.18) 0%, rgba(0,20,41,0) 70%);
+            max-width: 85vw;
+            opacity: 0.05;
+            filter: grayscale(100%) brightness(200%);
             pointer-events: none;
+            user-select: none;
         }
-
-        .glass-card {
-            background: rgba(10, 25, 47, 0.75);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(0, 102, 204, 0.2);
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 32px 64px rgba(0,0,0,0.5);
-        }
-
         .input-field {
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
         .input-field:focus {
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.3);
+            box-shadow: 0 0 0 3px rgba(0, 82, 163, 0.35);
         }
-
         .btn-action {
-            background: linear-gradient(135deg, #0066cc 0%, #003d7a 100%);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #0052a3 0%, #1a7ad4 100%);
+            transition: all 0.2s ease;
         }
         .btn-action:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0, 82, 163, 0.6); }
         .btn-action:active { transform: translateY(0); }
@@ -116,7 +100,7 @@
               }, 1000);
           },
           init() {
-              if (this.step === 'verify') {
+              if (this.step === '2' || this.step === 'verify') {
                   this.startCountdown();
               }
           }
@@ -144,66 +128,106 @@
                     </div>
                 </div>
                 <h1 class="text-2xl font-bold text-white mb-1">Reset Password Administrator</h1>
-                <p class="text-slate-400 text-xs">Verifikasi identitas resmi dengan kode OTP 6-Digit</p>
+                <p class="text-slate-400 text-xs">Alur 4 Tahapan Verifikasi Resmi & Aman</p>
             </div>
 
-            <!-- Steps Progress Indicator -->
-            <div class="flex items-center justify-between mb-6 px-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold {{ $step === 'request' ? 'bg-brand-500 text-white shadow-lg ring-4 ring-brand-500/20' : 'bg-emerald-500 text-white' }}">
-                        <i class="fa-solid {{ $step === 'request' ? 'fa-1' : 'fa-check' }}"></i>
+            <!-- 4 Steps Progress Indicator -->
+            <div class="mb-6 px-1">
+                <div class="flex items-center justify-between relative">
+                    <!-- Step 1 Indicator -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md
+                            {{ $step === '1' ? 'bg-brand-500 text-white ring-4 ring-brand-500/30 scale-110' : ($step > '1' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-slate-400') }}">
+                            @if($step > '1') <i class="fa-solid fa-check text-xs"></i> @else 1 @endif
+                        </div>
+                        <span class="text-[10px] font-bold mt-1.5 {{ $step === '1' ? 'text-white' : ($step > '1' ? 'text-emerald-400' : 'text-slate-500') }}">Kirim OTP</span>
                     </div>
-                    <span class="text-xs font-semibold {{ $step === 'request' ? 'text-white' : 'text-slate-400' }}">Kirim OTP</span>
-                </div>
-                <div class="h-0.5 flex-1 mx-3 {{ $step === 'verify' ? 'bg-brand-500' : 'bg-white/15' }}"></div>
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold {{ $step === 'verify' ? 'bg-brand-500 text-white shadow-lg ring-4 ring-brand-500/20' : 'bg-white/15 text-slate-400' }}">
-                        2
+
+                    <!-- Line 1-2 -->
+                    <div class="flex-1 h-0.5 mx-1 -mt-4 transition-all {{ $step > '1' ? 'bg-emerald-500' : 'bg-white/15' }}"></div>
+
+                    <!-- Step 2 Indicator -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md
+                            {{ $step === '2' ? 'bg-brand-500 text-white ring-4 ring-brand-500/30 scale-110' : ($step > '2' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-slate-400') }}">
+                            @if($step > '2') <i class="fa-solid fa-check text-xs"></i> @else 2 @endif
+                        </div>
+                        <span class="text-[10px] font-bold mt-1.5 {{ $step === '2' ? 'text-white' : ($step > '2' ? 'text-emerald-400' : 'text-slate-500') }}">Verifikasi OTP</span>
                     </div>
-                    <span class="text-xs font-semibold {{ $step === 'verify' ? 'text-white' : 'text-slate-400' }}">Verifikasi & Sandi Baru</span>
+
+                    <!-- Line 2-3 -->
+                    <div class="flex-1 h-0.5 mx-1 -mt-4 transition-all {{ $step > '2' ? 'bg-emerald-500' : 'bg-white/15' }}"></div>
+
+                    <!-- Step 3 Indicator -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md
+                            {{ $step === '3' ? 'bg-brand-500 text-white ring-4 ring-brand-500/30 scale-110' : ($step > '3' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-slate-400') }}">
+                            @if($step > '3') <i class="fa-solid fa-check text-xs"></i> @else 3 @endif
+                        </div>
+                        <span class="text-[10px] font-bold mt-1.5 {{ $step === '3' ? 'text-white' : ($step > '3' ? 'text-emerald-400' : 'text-slate-500') }}">Password Baru</span>
+                    </div>
+
+                    <!-- Line 3-4 -->
+                    <div class="flex-1 h-0.5 mx-1 -mt-4 transition-all {{ $step >= '4' ? 'bg-emerald-500' : 'bg-white/15' }}"></div>
+
+                    <!-- Step 4 Indicator -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-md
+                            {{ $step === '4' ? 'bg-emerald-500 text-white ring-4 ring-emerald-500/30 scale-110' : 'bg-white/10 text-slate-400' }}">
+                            @if($step === '4') <i class="fa-solid fa-check text-xs"></i> @else 4 @endif
+                        </div>
+                        <span class="text-[10px] font-bold mt-1.5 {{ $step === '4' ? 'text-emerald-400 font-bold' : 'text-slate-500' }}">Selesai</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Flash Notification -->
-            @if(session('success'))
+            @if(session('success') && $step !== '4')
             <div class="mb-4 p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-3">
                 <i class="fa-solid fa-circle-check text-base text-emerald-400 flex-shrink-0 mt-0.5"></i>
                 <div class="space-y-1">
-                    <p class="font-bold text-emerald-200">OTP Berhasil Dikirim!</p>
+                    <p class="font-bold text-emerald-200">Informasi Berhasil:</p>
                     <p>{{ session('success') }}</p>
                 </div>
             </div>
             @endif
 
-            <!-- Direct App Access Button (Hanya membuka WhatsApp atau Gmail, OTP 100% rahasia dan tidak ditampilkan di layar web) -->
-            @if(session('wa_url'))
-            <div class="mb-4">
-                <a href="{{ session('wa_url') }}" target="_blank" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Buka WhatsApp & Cek Pesan OTP
-                </a>
-                <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP bersifat rahasia dan hanya terkirim langsung ke WhatsApp Anda.</p>
-            </div>
-            @elseif(session('channel_sent') === 'email' || request('channel') === 'email')
-            <div class="mb-4">
-                <a href="https://mail.google.com" target="_blank" class="w-full py-3 px-4 bg-rose-600 hover:bg-rose-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
-                    <i class="fa-solid fa-envelope text-base"></i> Buka Kotak Masuk Gmail untuk Cek OTP
-                </a>
-                <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP bersifat rahasia dan hanya terkirim langsung ke Gmail Anda.</p>
-            </div>
+            <!-- Direct App Access Button pada Tahap 2 (Hanya membuka aplikasi untuk mengecek pesan masuk, OTP tetap rahasia) -->
+            @if($step === '2')
+                @if(session('wa_url'))
+                <div class="mb-4">
+                    <a href="{{ session('wa_url') }}" target="_blank" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Buka WhatsApp & Cek Pesan Masuk OTP
+                    </a>
+                    <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP dirahasiakan dan terkirim langsung ke WhatsApp Anda.</p>
+                </div>
+                @elseif(session('channel_sent') === 'email' || request('channel') === 'email')
+                <div class="mb-4">
+                    <a href="https://mail.google.com" target="_blank" class="w-full py-3.5 px-4 bg-rose-600 hover:bg-rose-500 text-white text-xs rounded-xl font-bold text-center flex items-center justify-center gap-2 shadow-lg transition">
+                        <i class="fa-solid fa-envelope text-base"></i> Buka Kotak Masuk Gmail untuk Cek OTP
+                    </a>
+                    <p class="text-[11px] text-slate-400 text-center mt-1.5 italic">Kode OTP dirahasiakan dan terkirim langsung ke Gmail Anda.</p>
+                </div>
+                @endif
             @endif
 
-            <!-- Main Form Card -->
+            <!-- Main Card Container -->
             <div class="glass-card rounded-2xl p-7 shadow-2xl">
 
-                @if($step === 'request')
-                <!-- ================= STEP 1: REQUEST OTP ================= -->
+                @if($step === '1')
+                <!-- ================= TAHAP 1: KIRIM OTP ================= -->
+                <div class="mb-4 pb-3 border-b border-white/10">
+                    <span class="text-[11px] uppercase tracking-wider font-extrabold text-brand-400 block mb-0.5">Tahap 1 dari 4</span>
+                    <h2 class="text-lg font-bold text-white">Kirim Kode OTP</h2>
+                    <p class="text-xs text-slate-400 mt-1">Pilih saluran pengiriman kode verifikasi yang terdaftar di Profil Admin.</p>
+                </div>
+
                 <form method="POST" action="{{ route('admin.forgot-password.send-otp') }}" @submit="loading = true">
                     @csrf
-
-                    <!-- Hidden Email Administrator (Otomatis dari Profil) -->
+                    <!-- Hidden Email Administrator -->
                     <input type="hidden" name="email" value="{{ old('email', $email ?: 'admin@consoltainer.com') }}">
 
-                    <!-- Channel Selection: WhatsApp vs Gmail -->
+                    <!-- Channel Selection -->
                     <div class="mb-6">
                         <label class="block text-slate-300 text-xs font-bold uppercase mb-2.5">
                             <i class="fa-solid fa-paper-plane text-brand-400 mr-1.5"></i>Pilih Saluran Pengiriman OTP *
@@ -216,10 +240,10 @@
                                 <div class="w-8 h-8 rounded-lg bg-emerald-500/30 border border-emerald-400/40 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                                     <i class="fa-brands fa-whatsapp text-lg"></i>
                                 </div>
-                                <div>
+                                <div class="overflow-hidden">
                                     <p class="text-xs font-bold text-white leading-tight">WhatsApp Admin</p>
-                                    <p class="text-[11px] text-emerald-400 font-mono mt-0.5">{{ $companyWa }}</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">Otomatis tersinkron dari Profil Admin</p>
+                                    <p class="text-[11px] text-emerald-400 font-mono mt-0.5 truncate">{{ $companyWa }}</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">Sinkron Profil Admin</p>
                                 </div>
                             </label>
 
@@ -230,16 +254,16 @@
                                 <div class="w-8 h-8 rounded-lg bg-rose-500/30 border border-rose-400/40 text-rose-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                                     <i class="fa-solid fa-envelope text-sm"></i>
                                 </div>
-                                <div>
+                                <div class="overflow-hidden">
                                     <p class="text-xs font-bold text-white leading-tight">Gmail Admin</p>
                                     <p class="text-[11px] text-rose-300 truncate mt-0.5">{{ $companyEmail }}</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">Otomatis tersinkron dari Profil Admin</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">Sinkron Profil Admin</p>
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Submit Request Button -->
+                    <!-- Submit Button -->
                     <button
                         type="submit"
                         class="btn-action w-full text-white font-bold py-3.5 rounded-xl text-sm tracking-wide flex items-center justify-center gap-2 shadow-lg disabled:opacity-70"
@@ -247,106 +271,78 @@
                     >
                         <span x-show="!loading" class="flex items-center gap-2">
                             <i class="fa-solid fa-paper-plane"></i>
-                            Kirim Kode OTP Sekarang
+                            Kirim Kode OTP (Lanjut ke Tahap 2)
                         </span>
                         <span x-show="loading" x-cloak class="flex items-center gap-2">
                             <i class="fa-solid fa-spinner fa-spin"></i>
-                            Sedang Memproses...
+                            Sedang Mengirim...
                         </span>
                     </button>
                 </form>
 
-                @else
-                <!-- ================= STEP 2: VERIFY OTP & RESET PASSWORD ================= -->
-                <form method="POST" action="{{ route('admin.forgot-password.verify') }}" @submit="loading = true">
+                @elseif($step === '2')
+                <!-- ================= TAHAP 2: VERIFIKASI OTP 6 DIGIT ANGKA SAJA ================= -->
+                <div class="mb-4 pb-3 border-b border-white/10">
+                    <span class="text-[11px] uppercase tracking-wider font-extrabold text-brand-400 block mb-0.5">Tahap 2 dari 4</span>
+                    <h2 class="text-lg font-bold text-white">Verifikasi OTP 6 Digit</h2>
+                    <p class="text-xs text-slate-400 mt-1">Masukkan 6 digit angka yang Anda terima melalui {{ $channel === 'email' ? 'Gmail' : 'WhatsApp' }}.</p>
+                </div>
+
+                <form method="POST" action="{{ route('admin.forgot-password.verify-otp') }}" @submit="loading = true">
                     @csrf
                     <input type="hidden" name="email" value="{{ $email }}">
 
                     <div class="mb-4 p-3 bg-white/5 rounded-xl border border-white/10 flex items-center justify-between text-xs">
                         <span class="text-slate-300 text-xs flex items-center gap-2">
-                            <i class="fa-solid fa-user-shield text-brand-400"></i> Akun Admin: <strong class="text-white font-mono">{{ $email }}</strong>
+                            <i class="fa-solid fa-user-shield text-brand-400"></i> Akun: <strong class="text-white font-mono">{{ $email }}</strong>
                         </span>
-                        <a href="{{ route('admin.forgot-password', ['step' => 'request', 'email' => $email]) }}" class="text-brand-400 hover:text-brand-300 text-[11px] font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-rotate-left text-[10px]"></i> Kirim Ulang OTP
+                        <a href="{{ route('admin.forgot-password', ['step' => '1', 'email' => $email]) }}" class="text-brand-400 hover:text-brand-300 text-[11px] font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-left text-[10px]"></i> Ganti Saluran
                         </a>
                     </div>
 
-                    <!-- OTP Code Input -->
+                    <!-- Input 6 Digit Angka Saja -->
                     <div class="mb-5">
                         <label for="otp" class="block text-slate-300 text-xs font-bold uppercase mb-2">
-                            <i class="fa-solid fa-shield-halved text-brand-400 mr-1.5"></i>Kode OTP (6 Digit) *
+                            <i class="fa-solid fa-shield-halved text-brand-400 mr-1.5"></i>Kode OTP (6 Digit Angka Saja) *
                         </label>
                         <input
                             type="text"
                             id="otp"
                             name="otp"
-                            maxlength="6"
+                            inputmode="numeric"
                             pattern="[0-9]{6}"
+                            maxlength="6"
                             required
                             autofocus
-                            placeholder="Contoh: 123456"
-                            class="input-field w-full bg-white/10 border {{ $errors->has('otp') ? 'border-rose-500 text-rose-200' : 'border-white/15 text-white' }} rounded-xl px-4 py-3.5 text-center font-mono text-2xl tracking-[0.4em] font-black focus:outline-none focus:border-brand-400 focus:bg-white/15 placeholder:text-slate-600 placeholder:text-base placeholder:tracking-normal"
+                            placeholder="000000"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            class="input-field w-full bg-white/10 border {{ $errors->has('otp') ? 'border-rose-500 text-rose-200' : 'border-white/15 text-white' }} rounded-xl px-4 py-3.5 text-center font-mono text-3xl tracking-[0.5em] font-black focus:outline-none focus:border-brand-400 focus:bg-white/15 placeholder:text-slate-600 placeholder:text-xl placeholder:tracking-normal"
                         >
+                        <p class="text-[11px] text-slate-400 text-center mt-2 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-lock text-brand-400"></i>
+                            Hanya angka (0-9). Berlaku selama 10 menit.
+                        </p>
                         @error('otp')
-                        <p class="mt-1.5 text-rose-400 text-xs flex items-center gap-1">
+                        <p class="mt-2 text-rose-400 text-xs flex items-center justify-center gap-1">
                             <i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}
                         </p>
                         @enderror
                     </div>
 
-                    <!-- New Password Input -->
-                    <div class="mb-4">
-                        <label for="password" class="block text-slate-300 text-xs font-bold uppercase mb-2">
-                            <i class="fa-solid fa-lock text-brand-400 mr-1.5"></i>Password Baru *
-                        </label>
-                        <div class="relative">
-                            <input
-                                :type="showPwd ? 'text' : 'password'"
-                                id="password"
-                                name="password"
-                                required
-                                placeholder="Minimal 6 karakter"
-                                class="input-field w-full bg-white/10 border {{ $errors->has('password') ? 'border-rose-500 text-rose-200' : 'border-white/15 text-white' }} rounded-xl px-4 py-3 pr-11 text-sm focus:outline-none focus:border-brand-400 focus:bg-white/15"
-                            >
-                            <button type="button" @click="showPwd = !showPwd" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition p-1">
-                                <i :class="showPwd ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" class="text-xs"></i>
-                            </button>
-                        </div>
-                        @error('password')
-                        <p class="mt-1.5 text-rose-400 text-xs flex items-center gap-1">
-                            <i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
-
-                    <!-- Confirm New Password Input -->
-                    <div class="mb-6">
-                        <label for="password_confirmation" class="block text-slate-300 text-xs font-bold uppercase mb-2">
-                            <i class="fa-solid fa-lock-open text-brand-400 mr-1.5"></i>Ulangi Password Baru *
-                        </label>
-                        <input
-                            :type="showPwd ? 'text' : 'password'"
-                            id="password_confirmation"
-                            name="password_confirmation"
-                            required
-                            placeholder="Ketik ulang password baru"
-                            class="input-field w-full bg-white/10 border border-white/15 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-400 focus:bg-white/15"
-                        >
-                    </div>
-
-                    <!-- Submit Reset Button -->
+                    <!-- Submit Button -->
                     <button
                         type="submit"
                         class="btn-action w-full text-white font-bold py-3.5 rounded-xl text-sm tracking-wide flex items-center justify-center gap-2 shadow-lg disabled:opacity-70"
                         :disabled="loading"
                     >
                         <span x-show="!loading" class="flex items-center gap-2">
-                            <i class="fa-solid fa-check-circle"></i>
-                            Simpan Password Baru & Selesai
+                            <i class="fa-solid fa-check-shield"></i>
+                            Verifikasi OTP (Lanjut ke Tahap 3)
                         </span>
                         <span x-show="loading" x-cloak class="flex items-center gap-2">
                             <i class="fa-solid fa-spinner fa-spin"></i>
-                            Memverifikasi...
+                            Memvalidasi OTP...
                         </span>
                     </button>
 
@@ -367,14 +363,113 @@
                         </form>
                     </div>
                 </form>
+
+                @elseif($step === '3')
+                <!-- ================= TAHAP 3: MEMASUKKAN PASSWORD BARU ================= -->
+                <div class="mb-4 pb-3 border-b border-white/10">
+                    <span class="text-[11px] uppercase tracking-wider font-extrabold text-brand-400 block mb-0.5">Tahap 3 dari 4</span>
+                    <h2 class="text-lg font-bold text-white">Buat Password Baru</h2>
+                    <p class="text-xs text-slate-400 mt-1">Kode OTP berhasil diverifikasi. Tentukan password baru yang kuat untuk akun Anda.</p>
+                </div>
+
+                <form method="POST" action="{{ route('admin.forgot-password.reset-password') }}" @submit="loading = true">
+                    @csrf
+                    <input type="hidden" name="email" value="{{ $email }}">
+
+                    <!-- Password Baru Input -->
+                    <div class="mb-4">
+                        <label for="password" class="block text-slate-300 text-xs font-bold uppercase mb-2">
+                            <i class="fa-solid fa-lock text-brand-400 mr-1.5"></i>Password Baru *
+                        </label>
+                        <div class="relative">
+                            <input
+                                :type="showPwd ? 'text' : 'password'"
+                                id="password"
+                                name="password"
+                                required
+                                autofocus
+                                placeholder="Minimal 6 karakter"
+                                class="input-field w-full bg-white/10 border {{ $errors->has('password') ? 'border-rose-500 text-rose-200' : 'border-white/15 text-white' }} rounded-xl px-4 py-3 pr-11 text-sm focus:outline-none focus:border-brand-400 focus:bg-white/15"
+                            >
+                            <button type="button" @click="showPwd = !showPwd" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition p-1">
+                                <i :class="showPwd ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" class="text-xs"></i>
+                            </button>
+                        </div>
+                        @error('password')
+                        <p class="mt-1.5 text-rose-400 text-xs flex items-center gap-1">
+                            <i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}
+                        </p>
+                        @enderror
+                    </div>
+
+                    <!-- Confirm Password Input -->
+                    <div class="mb-6">
+                        <label for="password_confirmation" class="block text-slate-300 text-xs font-bold uppercase mb-2">
+                            <i class="fa-solid fa-lock-open text-brand-400 mr-1.5"></i>Ulangi Password Baru *
+                        </label>
+                        <input
+                            :type="showPwd ? 'text' : 'password'"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            required
+                            placeholder="Ketik ulang password baru"
+                            class="input-field w-full bg-white/10 border border-white/15 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-400 focus:bg-white/15"
+                        >
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        class="btn-action w-full text-white font-bold py-3.5 rounded-xl text-sm tracking-wide flex items-center justify-center gap-2 shadow-lg disabled:opacity-70"
+                        :disabled="loading"
+                    >
+                        <span x-show="!loading" class="flex items-center gap-2">
+                            <i class="fa-solid fa-check"></i>
+                            Simpan Password Baru (Selesaikan)
+                        </span>
+                        <span x-show="loading" x-cloak class="flex items-center gap-2">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            Menyimpan Password...
+                        </span>
+                    </button>
+                </form>
+
+                @else
+                <!-- ================= TAHAP 4: SELESAI ================= -->
+                <div class="text-center py-4">
+                    <!-- Success Icon Glow -->
+                    <div class="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                        <div class="absolute inset-0 bg-emerald-500/25 rounded-full filter blur-xl animate-pulse"></div>
+                        <div class="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 text-emerald-400 flex items-center justify-center relative z-10 shadow-lg">
+                            <i class="fa-solid fa-circle-check text-3xl"></i>
+                        </div>
+                    </div>
+
+                    <span class="text-[11px] uppercase tracking-wider font-extrabold text-emerald-400 block mb-1">Tahap 4 dari 4 Selesai</span>
+                    <h2 class="text-xl font-bold text-white mb-2">Password Berhasil Diperbarui!</h2>
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-xs mx-auto mb-6">
+                        Seluruh 4 tahapan verifikasi telah selesai dengan sukses. Akun administrator Anda telah diamankan dengan password baru dan siap digunakan kembali.
+                    </p>
+
+                    <!-- Back to Login Button -->
+                    <a
+                        href="{{ route('admin.login') }}"
+                        class="btn-action w-full py-4 px-6 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-2 shadow-2xl transition"
+                    >
+                        <i class="fa-solid fa-right-to-bracket text-base"></i>
+                        Masuk ke Admin Panel Sekarang
+                    </a>
+                </div>
                 @endif
 
+                @if($step !== '4')
                 <!-- Back to Login Link -->
                 <div class="mt-5 pt-4 border-t border-white/10 text-center">
                     <a href="{{ route('admin.login') }}" class="inline-flex items-center gap-2 text-slate-400 hover:text-white text-xs font-semibold transition">
                         <i class="fa-solid fa-arrow-left text-[10px]"></i> Kembali ke Halaman Login
                     </a>
                 </div>
+                @endif
 
             </div><!-- end glass card -->
 

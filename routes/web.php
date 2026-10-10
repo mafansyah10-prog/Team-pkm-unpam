@@ -42,9 +42,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Forgot Password & OTP Reset Routes
+    // Forgot Password & OTP Reset Routes (4 Tahapan Terpisah)
     Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot-password');
     Route::post('/forgot-password/send-otp', [AuthController::class, 'sendOtp'])->name('forgot-password.send-otp');
+    Route::post('/forgot-password/verify-otp', [AuthController::class, 'verifyOtpOnly'])->name('forgot-password.verify-otp');
+    Route::post('/forgot-password/reset-password', [AuthController::class, 'resetPasswordOnly'])->name('forgot-password.reset-password');
     Route::post('/forgot-password/verify', [AuthController::class, 'verifyOtpAndReset'])->name('forgot-password.verify');
 });
 
