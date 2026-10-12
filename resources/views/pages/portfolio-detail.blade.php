@@ -17,9 +17,9 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             <div class="lg:col-span-8 space-y-8">
-                @if($portfolio->image)
+                @if($portfolio->image_url)
                 <div class="rounded-2xl overflow-hidden shadow-lg h-96">
-                    <img src="{{ $portfolio->image }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
+                    <img src="{{ $portfolio->image_url }}" alt="{{ $portfolio->title }}" class="w-full h-full object-cover">
                 </div>
                 @endif
 

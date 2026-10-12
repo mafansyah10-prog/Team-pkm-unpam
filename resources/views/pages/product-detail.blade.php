@@ -20,9 +20,9 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             <div class="lg:col-span-8 space-y-8">
-                @if($product->image)
+                @if($product->image_url)
                 <div class="rounded-2xl overflow-hidden shadow-lg h-96">
-                    <img src="{{ $product->image }}" alt="{{ $product->title }}" class="w-full h-full object-cover">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->title }}" class="w-full h-full object-cover">
                 </div>
                 @endif
 

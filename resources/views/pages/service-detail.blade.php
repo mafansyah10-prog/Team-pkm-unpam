@@ -19,9 +19,9 @@
             
             <!-- Main Content -->
             <div class="lg:col-span-8 space-y-8">
-                @if($service->image)
+                @if($service->image_url)
                 <div class="rounded-2xl overflow-hidden shadow-lg h-96">
-                    <img src="{{ $service->image }}" alt="{{ $service->title }}" class="w-full h-full object-cover">
+                    <img src="{{ $service->image_url }}" alt="{{ $service->title }}" class="w-full h-full object-cover">
                 </div>
                 @endif
 
@@ -43,16 +43,6 @@
                     </ul>
                 </div>
                 @endif
-
-                <div class="p-8 bg-brand-50 border border-brand-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <div>
-                        <h4 class="text-lg font-bold text-brand-900">Butuh Konsultasi untuk Layanan Ini?</h4>
-                        <p class="text-xs text-brand-700 mt-1">Dapatkan penawaran tarif kompetitif dan jadwal pelayaran terbaik sekarang.</p>
-                    </div>
-                    <a href="{{ route('contact') }}" class="px-6 py-3 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow transition whitespace-nowrap">
-                        <i class="fa-solid fa-headset mr-1 text-amber-400"></i> Hubungi Kami
-                    </a>
-                </div>
             </div>
 
             <!-- Sidebar -->

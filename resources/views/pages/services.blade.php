@@ -18,9 +18,9 @@
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             @foreach($services as $service)
             <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-                @if($service->image)
+                @if($service->image_url)
                 <div class="h-32 sm:h-52 overflow-hidden relative">
-                    <img src="{{ $service->image }}" alt="{{ $service->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <img src="{{ $service->image_url }}" alt="{{ $service->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                 </div>
                 @endif
                 <div class="p-3 sm:p-8 flex-grow flex flex-col justify-between">

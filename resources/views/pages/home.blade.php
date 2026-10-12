@@ -266,9 +266,9 @@
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
             @foreach($featuredProducts as $product)
             <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between group">
-                @if($product->image)
+                @if($product->image_url)
                 <div class="h-32 sm:h-48 overflow-hidden relative">
-                    <img src="{{ $product->image }}" alt="{{ $product->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     <span class="absolute top-2 left-2 sm:top-4 sm:left-4 bg-brand-900/80 backdrop-blur text-white text-[9px] sm:text-xs font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-md">
                         {{ $product->category }}
                     </span>

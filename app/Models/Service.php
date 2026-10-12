@@ -27,9 +27,11 @@ class Service extends Model
         'is_featured' => 'boolean',
     ];
 
+    protected $appends = ['image_url'];
+
     public function getImageUrlAttribute(): string
     {
         if (!$this->image) return '';
-        return str_starts_with($this->image, 'http') ? $this->image : Storage::url($this->image);
+        return str_starts_with($this->image, 'http') ? $this->image : asset('storage/' . $this->image);
     }
 }
