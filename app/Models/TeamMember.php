@@ -16,6 +16,8 @@ class TeamMember extends Model
         'department',
         'department_id',
         'bio',
+        'responsibilities',
+        'authorities',
         'image',
         'email',
         'linkedin',

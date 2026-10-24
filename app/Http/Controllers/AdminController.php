@@ -189,10 +189,13 @@ class AdminController extends Controller
     public function teamStore(Request $request)
     {
         $data = $request->validate([
-            'name'          => 'required|string|max:255',
-            'position'      => 'required|string|max:255',
-            'department_id' => 'required|exists:departments,id',
-            'sort_order'    => 'nullable|integer',
+            'name'             => 'required|string|max:255',
+            'position'         => 'required|string|max:255',
+            'department_id'    => 'required|exists:departments,id',
+            'responsibilities' => 'nullable|string',
+            'authorities'      => 'nullable|string',
+            'bio'              => 'nullable|string',
+            'sort_order'       => 'nullable|integer',
         ]);
 
         $dept = Department::findOrFail($data['department_id']);
@@ -220,10 +223,13 @@ class AdminController extends Controller
     {
         $member = TeamMember::findOrFail($id);
         $data = $request->validate([
-            'name'          => 'required|string|max:255',
-            'position'      => 'required|string|max:255',
-            'department_id' => 'required|exists:departments,id',
-            'sort_order'    => 'nullable|integer',
+            'name'             => 'required|string|max:255',
+            'position'         => 'required|string|max:255',
+            'department_id'    => 'required|exists:departments,id',
+            'responsibilities' => 'nullable|string',
+            'authorities'      => 'nullable|string',
+            'bio'              => 'nullable|string',
+            'sort_order'       => 'nullable|integer',
         ]);
 
         $dept = Department::findOrFail($data['department_id']);

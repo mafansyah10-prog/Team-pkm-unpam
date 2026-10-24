@@ -180,9 +180,9 @@
 
                 <!-- Card Body -->
                 <div class="p-3 sm:p-5 flex-grow flex flex-col justify-between">
-                    @if(!empty($member->bio))
+                    @if(!empty($member->responsibilities) || !empty($member->bio))
                     <p class="text-[10px] sm:text-xs text-slate-600 leading-relaxed line-clamp-3 mb-3">
-                        {{ $member->bio }}
+                        {{ $member->responsibilities ?: $member->bio }}
                     </p>
                     @endif
 
@@ -245,10 +245,31 @@
                         </div>
                     </div>
 
-                    <template x-if="selectedMember.bio">
+                    <!-- Tanggung Jawab (Responsibilities) -->
+                    <template x-if="selectedMember.responsibilities">
+                        <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-100/80 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 flex items-center gap-1.5 mb-1.5">
+                                <i class="fa-solid fa-list-check text-blue-600"></i> Tanggung Jawab:
+                            </span>
+                            <p class="whitespace-pre-line font-medium text-slate-800" x-text="selectedMember.responsibilities"></p>
+                        </div>
+                    </template>
+
+                    <!-- Wewenang (Authorities) -->
+                    <template x-if="selectedMember.authorities">
+                        <div class="bg-amber-50/70 p-4 rounded-2xl border border-amber-100/80 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5 mb-1.5">
+                                <i class="fa-solid fa-shield-halved text-amber-600"></i> Wewenang:
+                            </span>
+                            <p class="whitespace-pre-line font-medium text-slate-800" x-text="selectedMember.authorities"></p>
+                        </div>
+                    </template>
+
+                    <!-- Fallback Deskripsi / Bio jika belum ada responsibilities & authorities -->
+                    <template x-if="!selectedMember.responsibilities && !selectedMember.authorities && selectedMember.bio">
                         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-700 leading-relaxed">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Tanggung Jawab & Wewenang:</span>
-                            <p x-text="selectedMember.bio"></p>
+                            <p class="whitespace-pre-line font-medium text-slate-800" x-text="selectedMember.bio"></p>
                         </div>
                     </template>
 

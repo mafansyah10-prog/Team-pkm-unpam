@@ -34,6 +34,8 @@
 
     openEditMember(item) {
         this.editMemberItem = Object.assign({}, item);
+        this.editMemberItem.responsibilities = item.responsibilities || '';
+        this.editMemberItem.authorities = item.authorities || '';
         this.editMemberModalOpen = true;
     },
 
@@ -258,11 +260,25 @@
                                 </div>
                             </td>
                             <td class="py-3 px-4">
-                                <span class="font-bold text-slate-800 block text-xs">
+                                <span class="font-bold text-slate-800 dark:text-slate-200 block text-xs">
                                     {{ $item->position }}
                                 </span>
                                 @if(str_contains(strtolower($item->position), 'manager') || str_contains(strtolower($item->position), 'pimpinan') || str_contains(strtolower($item->position), 'head'))
                                 <span class="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded inline-block mt-0.5">Manager Box</span>
+                                @endif
+                                @if($item->responsibilities || $item->authorities)
+                                <div class="flex flex-wrap items-center gap-1 mt-1">
+                                    @if($item->responsibilities)
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60" title="Tanggung Jawab terisi">
+                                        <i class="fa-solid fa-list-check text-[8px]"></i> TJ
+                                    </span>
+                                    @endif
+                                    @if($item->authorities)
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60" title="Wewenang terisi">
+                                        <i class="fa-solid fa-shield-halved text-[8px]"></i> Wewenang
+                                    </span>
+                                    @endif
+                                </div>
                                 @endif
                             </td>
                             <td class="py-3 px-4">
@@ -422,6 +438,22 @@
                                 Jabatan (Position) <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" name="position" list="presetPositions" required placeholder="Pilih / ketik jabatan..." class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm text-slate-900 dark:text-slate-100">
+                        </div>
+                    </div>
+
+                    <!-- Tanggung Jawab & Wewenang (Opsional) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1 text-[10px] flex items-center gap-1">
+                                <i class="fa-solid fa-list-check text-brand-600 dark:text-brand-400"></i> Tanggung Jawab (Opsional)
+                            </label>
+                            <textarea name="responsibilities" rows="2" placeholder="Rincian tugas pokok & kewajiban..." class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-medium focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm text-slate-900 dark:text-slate-100"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1 text-[10px] flex items-center gap-1">
+                                <i class="fa-solid fa-shield-halved text-amber-600 dark:text-amber-400"></i> Wewenang (Opsional)
+                            </label>
+                            <textarea name="authorities" rows="2" placeholder="Batas hak & otoritas jabatan..." class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-medium focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm text-slate-900 dark:text-slate-100"></textarea>
                         </div>
                     </div>
 
@@ -773,13 +805,16 @@
 
     <!-- 5. MODAL EDIT DATA ANGGOTA TIM -->
     <div x-show="editMemberModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-4">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-4 sm:p-6 overflow-y-auto max-h-[92vh]">
-            <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-xl p-4 sm:p-6 overflow-y-auto max-h-[92vh] text-slate-900 dark:text-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
                 <div>
-                    <h3 class="font-bold text-slate-900 text-base">Edit Data Anggota Tim</h3>
-                    <p class="text-xs text-slate-400">Sesuaikan nama, jabatan, dan kategori</p>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                        <i class="fa-solid fa-user-pen text-brand-600 dark:text-brand-400"></i>
+                        <span>Edit Data Anggota Tim</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 dark:text-slate-400">Sesuaikan nama, jabatan, kategori, tanggung jawab, dan wewenang</p>
                 </div>
-                <button @click="editMemberModalOpen = false" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button @click="editMemberModalOpen = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold transition">&times;</button>
             </div>
 
             <form :action="'{{ url('admin/team/update') }}/' + editMemberItem.id" method="POST" class="space-y-4 text-xs">
@@ -787,35 +822,63 @@
 
                 <!-- Nama Lengkap -->
                 <div>
-                    <label class="block font-bold text-slate-700 uppercase mb-1">Nama Lengkap & Gelar *</label>
-                    <input type="text" name="name" x-model="editMemberItem.name" required class="w-full px-3 py-2.5 bg-slate-50 border rounded-xl text-sm font-semibold">
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Nama Lengkap & Gelar *</label>
+                    <input type="text" name="name" x-model="editMemberItem.name" required class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-900 dark:text-slate-100 focus:border-brand-600 focus:ring-1 focus:ring-brand-600">
                 </div>
 
-                <!-- Kategori / Departemen (DROPDOWN DINAMIS) -->
-                <div>
-                    <label class="block font-bold text-slate-700 uppercase mb-1">Kategori / Departemen *</label>
-                    <select name="department_id" x-model="editMemberItem.department_id" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800">
-                        @foreach($departments as $d)
-                        <option value="{{ $d->id }}">
-                            {{ $d->name }}{{ $d->is_executive ? ' (Direksi)' : '' }}
-                        </option>
-                        @endforeach
-                    </select>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Kategori / Departemen (DROPDOWN DINAMIS) -->
+                    <div>
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Kategori / Departemen *</label>
+                        <select name="department_id" x-model="editMemberItem.department_id" required class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 focus:border-brand-600 focus:ring-1 focus:ring-brand-600">
+                            @foreach($departments as $d)
+                            <option value="{{ $d->id }}">
+                                {{ $d->name }}{{ $d->is_executive ? ' (Direksi)' : '' }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Jabatan -->
+                    <div>
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Jabatan (Position) *</label>
+                        <input type="text" name="position" list="presetPositions" x-model="editMemberItem.position" required class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-slate-100 focus:border-brand-600 focus:ring-1 focus:ring-brand-600">
+                    </div>
                 </div>
 
-                <!-- Jabatan -->
-                <div>
-                    <label class="block font-bold text-slate-700 uppercase mb-1">Jabatan (Position) *</label>
-                    <input type="text" name="position" list="presetPositions" x-model="editMemberItem.position" required class="w-full px-3 py-2.5 bg-slate-50 border rounded-xl text-sm font-semibold">
+                <!-- Tanggung Jawab (Responsibilities) -->
+                <div class="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase text-[11px] flex items-center gap-1.5">
+                            <i class="fa-solid fa-list-check text-blue-600 dark:text-blue-400"></i>
+                            <span>Tanggung Jawab (Responsibilities)</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400 font-medium">Tugas pokok & kewajiban</span>
+                    </div>
+                    <textarea name="responsibilities" x-model="editMemberItem.responsibilities" rows="3" placeholder="Contoh: Mengkoordinasikan proses custom clearance dokumen impor, memantau pengeluaran kontainer di pelabuhan, menyusun laporan operasional harian..." class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-medium text-slate-900 dark:text-slate-100 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 leading-relaxed"></textarea>
+                </div>
+
+                <!-- Wewenang (Authorities) -->
+                <div class="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase text-[11px] flex items-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved text-amber-600 dark:text-amber-400"></i>
+                            <span>Wewenang (Authorities)</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400 font-medium">Batas hak & otoritas kerja</span>
+                    </div>
+                    <textarea name="authorities" x-model="editMemberItem.authorities" rows="3" placeholder="Contoh: Menyetujui dokumen SPPB, otorisasi surat jalan armada pengiriman, memverifikasi berita acara serah terima kontainer..." class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-medium text-slate-900 dark:text-slate-100 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 leading-relaxed"></textarea>
                 </div>
 
                 <!-- Hidden Sort Order -->
                 <input type="hidden" name="sort_order" :value="editMemberItem.sort_order">
 
                 <!-- Action Buttons -->
-                <div class="flex items-center justify-end gap-3 pt-3 border-t">
-                    <button type="button" @click="editMemberModalOpen = false" class="px-4 py-2 border rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow transition">Simpan Perubahan</button>
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <button type="button" @click="editMemberModalOpen = false" class="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow transition inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                    </button>
                 </div>
             </form>
         </div>
