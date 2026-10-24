@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TeamMember;
+use App\Models\Department;
 use App\Models\GalleryItem;
 use App\Models\Portfolio;
 use App\Models\Testimonial;
@@ -20,8 +21,12 @@ class CompanyController extends Controller
 
     public function team()
     {
-        $teamMembers = TeamMember::orderBy('sort_order')->get();
-        return view('pages.team', compact('teamMembers'));
+        $departments = Department::with(['members' => function ($query) {
+            $query->orderBy('sort_order');
+        }])->orderBy('sort_order')->get();
+
+        $teamMembers = TeamMember::with('departmentModel')->orderBy('sort_order')->get();
+        return view('pages.team', compact('teamMembers', 'departments'));
     }
 
     public function gallery(Request $request)

@@ -209,9 +209,8 @@
 
                 <!-- Heading -->
                 <div class="mb-6">
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        <span>Selamat Datang</span>
-                        <span>👋</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        Selamat Datang
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-500 mt-1.5">
                         Login ke <span class="font-bold text-slate-800">Dashboard CTL LINE</span> untuk mulai mengelola operasional logistik Anda.
@@ -219,17 +218,17 @@
                 </div>
 
                 <!-- Info Banner (Aplikasi / Portal Admin) -->
-                <div class="mb-6 p-3.5 rounded-2xl bg-brand-50/80 border border-brand-200/70 flex items-center justify-between gap-3 shadow-xs">
-                    <div class="flex items-center gap-3">
+                <div class="mb-6 p-3 sm:p-3.5 rounded-2xl bg-brand-50/80 border border-brand-200/70 flex items-center justify-between gap-2.5 sm:gap-3 shadow-xs overflow-hidden">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
                         <div class="w-9 h-9 rounded-xl bg-brand-700 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
                             <i class="fa-solid fa-desktop text-sm"></i>
                         </div>
-                        <div class="min-w-0">
-                            <h4 class="font-bold text-xs text-slate-900">Portal Administrator CTL LINE</h4>
-                            <p class="text-[11px] text-slate-500 truncate">Akses cepat sistem kargo & tarif langsung dari browser HP Anda</p>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-bold text-xs text-slate-900 leading-tight">Portal Administrator CTL LINE</h4>
+                            <p class="text-[11px] text-slate-500 leading-snug mt-0.5 break-words">Akses cepat sistem kargo & tarif langsung dari browser HP Anda</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs flex-shrink-0"></i>
                 </div>
 
                 <!-- Alert Messages -->

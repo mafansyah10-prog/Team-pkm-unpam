@@ -43,7 +43,7 @@ class OtpMailService
             Config::set('mail.from.name', $fromName);
         }
 
-        $subject = '🔐 [OTP ' . $otp . '] Kode Verifikasi Reset Password Admin - PT. CONSOLTAINER';
+        $subject = '[OTP ' . $otp . '] Kode Verifikasi Reset Password Admin - PT. CONSOLTAINER';
 
         try {
             Mail::send('emails.admin-otp', [

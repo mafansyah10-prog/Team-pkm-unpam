@@ -18,24 +18,24 @@
             <div class="lg:col-span-7 space-y-4 sm:space-y-6">
                 <div class="inline-flex items-center space-x-2 bg-brand-800/90 border border-brand-700 px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold text-amber-400 animate-fade-in-down">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span>Indonesia's Leading LCL Consolidator & Ocean Freight</span>
+                    <span>Bagian dari Pan Groups · Freight Forwarding & Logistics Solutions</span>
                 </div>
 
                 @if(!empty($companySettings['hero_banner']))
                 <!-- Mobile Visual Banner: Tampil utuh 100% tanpa terpotong (Semua kapal, pesawat, dan peta terlihat) -->
                 <div class="lg:hidden rounded-xl overflow-hidden shadow-2xl border border-brand-700/60 bg-brand-950 animate-fade-in-scale">
                     <img src="{{ str_starts_with($companySettings['hero_banner'], 'http') ? $companySettings['hero_banner'] : asset('storage/' . $companySettings['hero_banner']) }}" 
-                         alt="{{ $companySettings['hero_title'] ?? 'Banner Logistik PT. Consoltainer' }}" 
+                         alt="{{ $companySettings['hero_title'] ?? 'Banner Logistik PT. Consoltainer Transport Logistics' }}" 
                          class="w-full h-auto object-contain block">
                 </div>
                 @endif
                 
                 <h1 class="text-2xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight leading-tight sm:leading-tight text-white animate-fade-in-up delay-100">
-                    {{ $companySettings['hero_title'] ?? 'Moving Your Business Forward' }}
+                    {{ $companySettings['hero_title'] ?? 'PT. Consoltainer Transport Logistics' }}
                 </h1>
                 
                 <p class="text-xs sm:text-base lg:text-lg text-slate-200 max-w-2xl font-normal leading-relaxed animate-fade-in-up delay-200">
-                    {{ $companySettings['hero_subtitle'] ?? 'Spesialis konsolidasi kargo LCL (Less than Container Load), FCL, dan solusi pengurusan ekspor-impor terpercaya dengan jaringan pelayaran langsung ke 450+ pelabuhan utama dunia.' }}
+                    {{ $companySettings['hero_subtitle'] ?? 'PPJK, Export-Import Service, Land Transportation, Customs Brokerage, Warehousing & Distribution dengan solusi paling inovatif, efisien, dan transparan.' }}
                 </p>
 
                 <!-- CTA Action Buttons -->
@@ -53,9 +53,9 @@
 
                 <!-- Trust Badges -->
                 <div class="pt-3.5 sm:pt-6 flex flex-wrap items-center gap-3 sm:gap-6 text-[11px] sm:text-xs text-slate-300 border-t border-brand-800 animate-fade-in-up delay-400">
-                    <span class="flex items-center gap-1.5 sm:gap-2"><i class="fa-solid fa-shield-check text-emerald-400 text-xs sm:text-sm"></i> Konsolidasi Kargo Aman</span>
-                    <span class="flex items-center gap-1.5 sm:gap-2"><i class="fa-solid fa-warehouse text-amber-400 text-xs sm:text-sm"></i> Dedicated CFS Depot</span>
-                    <span class="flex items-center gap-1.5 sm:gap-2"><i class="fa-solid fa-file-contract text-sky-400 text-xs sm:text-sm"></i> PPJK Bea Cukai Resmi</span>
+                    <span class="flex items-center gap-1.5 sm:gap-2"><i class="fa-solid fa-certificate text-amber-400 text-xs sm:text-sm"></i> NIB: 8120118272272</span>
+                    <span class="flex items-center gap-1.5 sm:gap-2"><i class="fa-solid fa-file-contract text-sky-400 text-xs sm:text-sm"></i> PPJK KBLI: 52291</span>
+                    <span class="flex items-center gap-1.5 sm:gap-2"><i class="fa-solid fa-shield-check text-emerald-400 text-xs sm:text-sm"></i> Bea Cukai & PMDN Resmi</span>
                 </div>
             </div>
 
@@ -66,13 +66,40 @@
                 <div x-data="{ 
                     activeCard: 0,
                     totalCards: 3,
-                    next() {
-                        this.goTo((this.activeCard + 1) % this.totalCards);
+                    timer: null,
+                    isVisible: true,
+                    init() {
+                        if ('IntersectionObserver' in window) {
+                            const observer = new IntersectionObserver((entries) => {
+                                entries.forEach(entry => {
+                                    this.isVisible = entry.isIntersecting;
+                                });
+                            }, { threshold: 0.1 });
+                            observer.observe(this.$el);
+                        }
+                        this.startAutoPlay();
+                    },
+                    startAutoPlay() {
+                        this.stopAutoPlay();
+                        this.timer = setInterval(() => {
+                            if (window.innerWidth < 1024 && this.isVisible) {
+                                this.next(false);
+                            }
+                        }, 4000);
+                    },
+                    stopAutoPlay() {
+                        if (this.timer) {
+                            clearInterval(this.timer);
+                            this.timer = null;
+                        }
+                    },
+                    next(resetTimer = true) {
+                        this.goTo((this.activeCard + 1) % this.totalCards, resetTimer);
                     },
                     prev() {
-                        this.goTo((this.activeCard - 1 + this.totalCards) % this.totalCards);
+                        this.goTo((this.activeCard - 1 + this.totalCards) % this.totalCards, true);
                     },
-                    goTo(idx) {
+                    goTo(idx, resetTimer = true) {
                         this.activeCard = idx;
                         const el = this.$refs.cardsSlider;
                         if (!el) return;
@@ -83,6 +110,7 @@
                                 behavior: 'smooth'
                             });
                         }
+                        if (resetTimer) this.startAutoPlay();
                     },
                     onScroll() {
                         const el = this.$refs.cardsSlider;
@@ -93,7 +121,12 @@
                             this.activeCard = Math.min(2, Math.max(0, Math.round(scrollLeft / width)));
                         }
                     }
-                }" class="space-y-2.5 w-full">
+                }" 
+                @mouseenter="stopAutoPlay()" 
+                @mouseleave="startAutoPlay()"
+                @touchstart.passive="stopAutoPlay()"
+                @touchend.passive="startAutoPlay()"
+                class="space-y-2.5 w-full">
                     
                     <div class="relative w-full overflow-hidden rounded-2xl">
                         <div x-ref="cardsSlider" 

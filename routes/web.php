@@ -72,6 +72,12 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::post('/team/update/{id}', [AdminController::class, 'teamUpdate'])->name('team.update');
     Route::delete('/team/{id}', [AdminController::class, 'teamDelete'])->name('team.delete');
 
+    // Department / Category Management & Card Box Ordering
+    Route::post('/departments/store', [AdminController::class, 'departmentStore'])->name('departments.store');
+    Route::post('/departments/update/{id?}', [AdminController::class, 'departmentUpdate'])->name('departments.update');
+    Route::delete('/departments/{id}', [AdminController::class, 'departmentDelete'])->name('departments.delete');
+    Route::post('/departments/move/{id}/{direction}', [AdminController::class, 'departmentMove'])->name('departments.move');
+
     // Gallery
     Route::get('/gallery', [AdminController::class, 'gallery'])->name('gallery');
     Route::post('/gallery/store', [AdminController::class, 'galleryStore'])->name('gallery.store');
@@ -90,10 +96,13 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::post('/testimonials/update/{id}', [AdminController::class, 'testimonialUpdate'])->name('testimonials.update');
     Route::delete('/testimonials/{id}', [AdminController::class, 'testimonialDelete'])->name('testimonials.delete');
 
-    // Messages / RFQ Inbox
+    // Messages & Complaints Inbox + History
     Route::get('/messages', [AdminController::class, 'messages'])->name('messages');
     Route::post('/messages/toggle/{id}', [AdminController::class, 'messageToggleRead'])->name('messages.toggle');
+    Route::post('/messages/resolve/{id}', [AdminController::class, 'messageResolve'])->name('messages.resolve');
     Route::delete('/messages/{id}', [AdminController::class, 'messageDelete'])->name('messages.delete');
+    Route::post('/messages/restore/{id}', [AdminController::class, 'messageRestore'])->name('messages.restore');
+    Route::delete('/messages/force-delete/{id}', [AdminController::class, 'messageForceDelete'])->name('messages.force_delete');
 
     // Website Settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');

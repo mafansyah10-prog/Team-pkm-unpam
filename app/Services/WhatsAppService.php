@@ -30,7 +30,7 @@ class WhatsAppService
         $token = env('FONNTE_TOKEN') ?: CompanySetting::get('fonnte_token');
 
         // Pesan resmi OTP
-        $message = "🔐 *PT. CONSOLTAINER TRANSPORT LOGISTIC*\n\n"
+        $message = "*PT. CONSOLTAINER TRANSPORT LOGISTIC*\n\n"
                  . "Halo {$adminName},\n"
                  . "Kode OTP Verifikasi Reset Password akun Back-Office Anda adalah:\n\n"
                  . "👉 *{$otp}* 👈\n\n"

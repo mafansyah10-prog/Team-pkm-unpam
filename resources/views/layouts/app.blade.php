@@ -169,7 +169,7 @@
             </div>
             <div>
                 <span class="text-base sm:text-lg font-black tracking-tight text-white block">PT. CONSOLTAINER</span>
-                <span class="text-[10px] font-bold tracking-widest text-amber-400 uppercase block">TRANSPORT LOGISTIC</span>
+                <span class="text-[10px] font-bold tracking-widest text-amber-400 uppercase block">TRANSPORT LOGISTICS</span>
             </div>
             <div class="loader-bar mx-auto mt-2"></div>
         </div>
@@ -179,13 +179,14 @@
     <div class="bg-brand-900 text-slate-300 text-xs py-2 border-b border-brand-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center space-x-4">
-                <span><i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> {{ $companySettings['phone'] ?? '+62 21 4390 8888' }}</span>
-                <span class="hidden sm:inline"><i class="fa-solid fa-envelope text-amber-400 mr-1.5"></i> {{ $companySettings['email'] ?? 'info@consoltainer.co.id' }}</span>
-                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> {{ $companySettings['hours'] ?? 'Senin - Jumat: 08:30 - 17:30 WIB' }}</span>
+                <span><i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> {{ $companySettings['phone'] ?? '(+62 21) 4607279-8' }}</span>
+                <span class="hidden sm:inline"><i class="fa-solid fa-envelope text-amber-400 mr-1.5"></i> {{ $companySettings['email'] ?? 'ctl.gm@ctl-indonesia.net' }}</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-globe text-amber-400 mr-1.5"></i> {{ $companySettings['website'] ?? 'ctl-indonesia.net' }}</span>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('admin.dashboard') }}" class="text-slate-300 hover:text-white transition flex items-center gap-1.5 font-medium hover:text-amber-300">
-                    <i class="fa-solid fa-lock text-[10px]"></i> Admin Portal
+                <span class="hidden lg:inline text-slate-400 text-[11px]"><i class="fa-solid fa-layer-group text-amber-400 mr-1"></i> Bagian dari Pan Groups</span>
+                <a href="{{ route('admin.dashboard') }}" class="text-slate-300 hover:text-white transition font-medium hover:text-amber-300">
+                    Admin Portal
                 </a>
             </div>
         </div>
@@ -200,7 +201,7 @@
                     <img src="{{ asset('images/ctl-logo.svg') }}" alt="CTL LINE Logo" class="h-14 w-auto object-contain pointer-events-none">
                     <div>
                         <span class="text-lg font-black tracking-tight text-brand-900 block leading-tight">PT. CONSOLTAINER</span>
-                        <span class="text-[10px] font-bold tracking-wider text-red-600 uppercase block">TRANSPORT LOGISTIC</span>
+                        <span class="text-[10px] font-bold tracking-wider text-red-600 uppercase block">TRANSPORT LOGISTICS</span>
                     </div>
                 </a>
 
@@ -430,17 +431,17 @@
                         </div>
                         <div>
                             <span class="text-lg font-black text-white tracking-tight block leading-tight">PT. CONSOLTAINER</span>
-                            <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase block">TRANSPORT LOGISTIC</span>
+                            <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase block">TRANSPORT LOGISTICS</span>
                         </div>
                     </div>
                     <p class="text-sm text-slate-400 leading-relaxed">
-                        <strong>PT. CONSOLTAINER TRANSPORT LOGISTIC</strong> adalah penyedia layanan <strong>LCL Consolidator Specialist</strong> terkemuka di Indonesia. Menghubungkan pelabuhan-pelabuhan utama Nusantara dengan jaringan rute pelayaran maritim dunia secara efisien, aman, dan tepat waktu.
+                        <strong>PT. CONSOLTAINER TRANSPORT LOGISTICS (CTL Line)</strong> adalah bagian dari <strong>Pan Groups</strong>, penyedia solusi Freight Forwarding, PPJK, Export-Import Service, Land Transportation, Customs Brokerage, Warehousing & Distribution terpercaya di Indonesia.
                     </p>
                     <div class="flex items-center space-x-3 pt-2">
                         <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
                         <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-linkedin-in"></i></a>
                         <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://wa.me/6281299887766" target="_blank" class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center text-white hover:bg-emerald-700 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companySettings['whatsapp'] ?? '6281299887766') }}" target="_blank" class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center text-white hover:bg-emerald-700 transition"><i class="fa-brands fa-whatsapp"></i></a>
                     </div>
                 </div>
 
@@ -449,42 +450,42 @@
                     <div>
                         <h4 class="text-white font-bold text-xs mb-4 tracking-wider uppercase">Perusahaan</h4>
                         <ul class="space-y-2 text-xs sm:text-sm text-slate-400">
-                            <li><a href="{{ route('about') }}" class="hover:text-white transition">Tentang Kami</a></li>
-                            <li><a href="{{ route('team') }}" class="hover:text-white transition">Dewan Direksi & Tim</a></li>
+                            <li><a href="{{ route('about') }}" class="hover:text-white transition">Profil & Legalitas</a></li>
+                            <li><a href="{{ route('team') }}" class="hover:text-white transition">Struktur Organisasi</a></li>
                             <li><a href="{{ route('portfolio') }}" class="hover:text-white transition">Portofolio Kargo</a></li>
                             <li><a href="{{ route('galeri') }}" class="hover:text-white transition">Galeri Operasional</a></li>
                             <li><a href="{{ route('testimonials') }}" class="hover:text-white transition">Testimoni Klien</a></li>
                             <li><a href="{{ route('packaging.guide') }}" class="hover:text-white transition flex items-center gap-1 text-amber-300 hover:text-amber-200 font-medium"><i class="fa-solid fa-boxes-stacked text-[10px]"></i> Panduan Kemasan</a></li>
-                            <li><a href="{{ route('contact', ['tab' => 'feedback']) }}" class="text-slate-300 hover:text-white transition font-medium"><i class="fa-solid fa-bullhorn text-[10px] mr-1 text-amber-400"></i> Pengaduan</a></li>
+                            <li><a href="{{ route('contact') }}" class="text-slate-300 hover:text-white transition font-medium"><i class="fa-solid fa-bullhorn text-[10px] mr-1 text-amber-400"></i> Pengaduan & Kontak</a></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 class="text-white font-bold text-xs mb-4 tracking-wider uppercase">Layanan Utama</h4>
                         <ul class="space-y-2 text-xs sm:text-sm text-slate-400">
-                            <li><a href="{{ route('services') }}" class="hover:text-white transition">LCL Consolidation</a></li>
-                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Full Container Load (FCL)</a></li>
-                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Air Freight Consolidator</a></li>
-                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Customs Brokerage (PPJK)</a></li>
-                            <li><a href="{{ route('services') }}" class="hover:text-white transition">CFS Warehousing & Depot</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Export & Import Service</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Air Freight & Incoterms</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Customs Clearance (PPJK)</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Land Transportation</a></li>
+                            <li><a href="{{ route('services') }}" class="hover:text-white transition">Warehousing & Distribution</a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold text-base mb-4 tracking-wider uppercase text-xs">Head Office</h4>
+                    <h4 class="text-white font-bold text-base mb-4 tracking-wider uppercase text-xs">Marketing Office</h4>
                     <div class="space-y-3 text-sm text-slate-400">
                         <p class="flex items-start gap-2">
                             <i class="fa-solid fa-location-dot text-amber-400 mt-1"></i>
-                            <span>{{ $companySettings['address'] ?? 'Jl. Yos Sudarso No. 88, Tanjung Priok, Jakarta Utara' }}</span>
+                            <span>{{ $companySettings['address'] ?? 'Jl. Sultan Hamengkubuwono IX Ruko Inkopau Blok J No. 8, Cakung, Jakarta Timur' }}</span>
                         </p>
                         <p class="flex items-center gap-2">
                             <i class="fa-solid fa-phone text-amber-400"></i>
-                            <span>{{ $companySettings['phone'] ?? '+62 21 4390 8888' }}</span>
+                            <span>{{ $companySettings['phone'] ?? '(+62 21) 4607279-8' }}</span>
                         </p>
                         <p class="flex items-center gap-2">
                             <i class="fa-solid fa-envelope text-amber-400"></i>
-                            <span>{{ $companySettings['email'] ?? 'info@consoltainer.co.id' }}</span>
+                            <span>{{ $companySettings['email'] ?? 'ctl.gm@ctl-indonesia.net' }}</span>
                         </p>
                         <p class="flex items-center gap-2 text-emerald-400 font-semibold">
                             <i class="fa-brands fa-whatsapp"></i>

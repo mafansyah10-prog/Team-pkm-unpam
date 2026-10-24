@@ -22,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Set locale dan timezone default Indonesia (WIB)
+        date_default_timezone_set(config('app.timezone', 'Asia/Jakarta'));
+        \Carbon\Carbon::setLocale(config('app.locale', 'id'));
+
         try {
             if (Schema::hasTable('company_settings')) {
                 $companySettings = CompanySetting::pluck('value', 'key')->toArray();

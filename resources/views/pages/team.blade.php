@@ -1,19 +1,128 @@
 @extends('layouts.app')
 
-@section('title', 'Dewan Direksi & Tim Profesional | PT. CONSOLTAINER TRANSPORT LOGISTIC')
+@section('title', 'Struktur Organisasi & Tim Profesional | PT. Consoltainer Transport Logistics')
 
 @section('content')
-<section class="bg-gradient-to-r from-brand-900 to-brand-800 text-white py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-700/60 px-3 py-1 rounded-full">Our Leadership & Team</span>
-        <h1 class="text-3xl sm:text-5xl font-extrabold mt-3">Dewan Direksi & Tim Profesional</h1>
-        <p class="text-slate-300 max-w-2xl mt-3 text-base">
-            Dikelola oleh para praktisi maritim berpengalaman, spesialis operasional kepelabuhanan, dan tim kepabeanan bersertifikasi.
+<!-- Page Header -->
+<section class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white py-16 sm:py-20 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-700/60 px-3.5 py-1.5 rounded-full border border-amber-400/20 mb-3">
+            <i class="fa-solid fa-sitemap"></i>
+            <span>Organization & Team</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Struktur Organisasi & Tim Kami</h1>
+        <p class="text-slate-300 max-w-2xl mt-3 text-sm sm:text-base leading-relaxed">
+            Struktur organisasi yang jelas memberikan gambaran wewenang dan tanggung jawab setiap fungsi dalam mewujudkan visi dan misi perusahaan.
         </p>
     </div>
 </section>
 
-<section class="py-14 sm:py-20 bg-slate-50" x-data="{
+<!-- Section 1: Visual Interactive Organizational Chart (Page 5) -->
+<section class="py-14 sm:py-20 bg-slate-100 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+            <span class="text-xs font-bold uppercase tracking-widest text-brand-600 bg-white px-3.5 py-1 rounded-full border border-slate-200 shadow-sm">Bagan Struktur Resmi</span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-2">Struktur Organisasi Perusahaan</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">Hierarki kepemimpinan dan pembagian divisi kerja di PT. Consoltainer Transport Logistics.</p>
+        </div>
+
+        @php
+            // Dewan Direksi (Eksekutif)
+            $directors = $teamMembers->filter(function($m) {
+                return $m->departmentModel?->is_executive || in_array($m->department, ['Executive Management', 'Direksi']);
+            })->sortBy('sort_order');
+
+            // Seluruh Divisi Operasional (Card Boxes) terurut sesuai sort_order yang diatur oleh Admin
+            $divisionDepts = $departments->where('is_executive', false)->sortBy('sort_order');
+        @endphp
+
+        <div class="space-y-10">
+            <!-- Top Level: Direksi / Executive (Navy Blue Blocks) -->
+            <div class="flex flex-wrap justify-center gap-4 sm:gap-8">
+                @forelse($directors as $dir)
+                @php
+                    $dirDept = $dir->departmentModel;
+                    $dirStyle = $dirDept ? $dirDept->header_style : null;
+                @endphp
+                <div class="w-full sm:w-64 text-white rounded-2xl p-4 sm:p-5 text-center shadow-lg border-2 border-slate-800 transform hover:-translate-y-1 transition"
+                     style="{{ $dirStyle['style'] ?? 'background-color: #0f172a !important; color: #ffffff !important;' }}">
+                    <span class="text-base sm:text-lg font-black block tracking-tight">{{ $dir->name }}</span>
+                    <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider block mt-1">{{ $dir->position }}</span>
+                </div>
+                @empty
+                <div class="w-full sm:w-64 bg-slate-900 text-white rounded-2xl p-4 sm:p-5 text-center shadow-lg border-2 border-slate-800">
+                    <span class="text-base sm:text-lg font-black block tracking-tight">Supangat</span>
+                    <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider block mt-1">Direktur Utama</span>
+                </div>
+                <div class="w-full sm:w-64 bg-slate-900 text-white rounded-2xl p-4 sm:p-5 text-center shadow-lg border-2 border-slate-800">
+                    <span class="text-base sm:text-lg font-black block tracking-tight">Thoriah</span>
+                    <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider block mt-1">Wakil Direktur</span>
+                </div>
+                @endforelse
+            </div>
+
+            <!-- Connector Line / Decorative Separator -->
+            <div class="flex items-center justify-center">
+                <div class="h-8 w-0.5 bg-slate-300"></div>
+            </div>
+
+            <!-- Middle & Staff Level: Dynamic Operating Divisions Card Boxes (Orderable by Admin) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @forelse($divisionDepts as $dept)
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <!-- Manager / Division Header Box (Menampilkan Nama Divisi & Nama Kepala Divisi) -->
+                        @php
+                            $hStyle = $dept->header_style;
+                            $leaderName = $dept->leader_name ?: ($dept->manager?->name ?: $dept->name);
+                            $leaderTitle = $dept->leader_title ?: ($dept->manager?->position ?: 'Pimpinan Divisi');
+                        @endphp
+                        <div class="text-white rounded-xl p-3.5 text-center shadow mb-4"
+                             style="{{ $hStyle['style'] ?? 'background-color: #b91c1c !important; color: #ffffff !important;' }}">
+                            <!-- NAMA DIVISI -->
+                            <span class="text-[10px] font-black uppercase tracking-widest text-amber-300 block mb-1 drop-shadow-xs">
+                                {{ $dept->name }}
+                            </span>
+                            <!-- NAMA KEPALA DIVISI -->
+                            <span class="text-sm sm:text-base font-extrabold block leading-tight">
+                                {{ $leaderName }}
+                            </span>
+                            <!-- JABATAN KEPALA DIVISI -->
+                            <span class="text-[10px] sm:text-[11px] font-medium text-white/85 uppercase tracking-wider block mt-0.5">
+                                {{ $leaderTitle }}
+                            </span>
+                        </div>
+
+                        <!-- Staff Grid -->
+                        <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider block mb-2 px-1">{{ $dept->name }} Staff:</span>
+                        <div class="grid {{ $dept->staff->count() > 2 ? 'grid-cols-2' : 'grid-cols-1' }} gap-2">
+                            @forelse($dept->staff as $stf)
+                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                                <span class="text-xs font-bold text-slate-800 block truncate" title="{{ $stf->name }}">{{ $stf->name }}</span>
+                                <span class="text-[9px] text-slate-500 block truncate">{{ $stf->position }}</span>
+                            </div>
+                            @empty
+                            <div class="col-span-full p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-center text-slate-400 text-[10px]">
+                                Belum ada staf terdaftar
+                            </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-span-4 p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+                    Belum ada divisi operasional aktif.
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section 2: Directory & Rincian Personel Tim dengan Filter Interaktif -->
+<section class="py-14 sm:py-20 bg-white" x-data="{
+    filterDept: 'all',
     selectedMember: null,
     showDetailModal: false,
     openDetail(member) {
@@ -26,71 +135,75 @@
     }
 }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-600 bg-brand-50 px-3.5 py-1 rounded-full">Directory</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Daftar Personel & Tim Kami</h2>
+            </div>
+
+            <!-- Filter Department Buttons (Dynamic from $departments) -->
+            <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                <button type="button" @click="filterDept = 'all'" :class="filterDept === 'all' ? 'bg-brand-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" class="px-3 py-1.5 rounded-xl transition">
+                    Semua ({{ count($teamMembers) }})
+                </button>
+                @foreach($departments as $dept)
+                <button type="button" @click="filterDept = '{{ $dept->name }}'" :class="filterDept === '{{ $dept->name }}' ? 'bg-brand-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" class="px-3 py-1.5 rounded-xl transition">
+                    {{ $dept->name }} ({{ $dept->members->count() }})
+                </button>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             @foreach($teamMembers as $member)
-            <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col justify-between">
-                <!-- Image Container with Click-to-View -->
-                <div @click="openDetail({{ json_encode($member) }})" 
-                     class="h-44 sm:h-72 overflow-hidden bg-slate-100 relative cursor-pointer group/img">
-                    @if($member->image_url)
-                    <img src="{{ $member->image_url }}" alt="{{ $member->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    @else
-                    <div class="w-full h-full flex items-center justify-center bg-brand-800 text-white text-2xl sm:text-4xl font-bold">
-                        {{ substr($member->name, 0, 2) }}
+            <div x-show="filterDept === 'all' || filterDept === '{{ $member->department }}' || filterDept === '{{ $member->departmentModel?->name }}'"
+                 x-transition
+                 class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition flex flex-col justify-between group">
+                
+                <!-- Card Header / Avatar -->
+                <div class="p-4 sm:p-5 flex items-center gap-3 sm:gap-4 border-b border-slate-100 bg-slate-50/50">
+                    @php
+                        $mDept = $member->departmentModel;
+                        $avatarBg = $mDept?->color ?? (str_contains(strtolower($member->position), 'direktur') ? '#0f172a' : '#0052a3');
+                    @endphp
+                    <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center font-black text-sm sm:text-lg flex-shrink-0 shadow text-white"
+                         style="background-color: {{ $avatarBg }} !important;">
+                        {{ strtoupper(substr($member->name, 0, 2)) }}
                     </div>
-                    @endif
-
-                    <!-- Gradient Shadow di bawah gambar agar jabatan sangat jelas dan terbaca -->
-                    <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent pointer-events-none"></div>
-
-                    <!-- Jabatan di Bawah Pojok Kiri Gambar Profile -->
-                    <div class="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 max-w-[90%] bg-slate-950/85 backdrop-blur-md text-white text-[9px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/15 shadow-md flex items-center gap-1 truncate z-[2]">
-                        <i class="fa-solid fa-briefcase text-amber-400 text-[8px] sm:text-[10px] flex-shrink-0"></i>
-                        <span class="truncate">{{ $member->position }}</span>
-                    </div>
-
-                    <!-- Hover / Mobile Preview Indicator Overlay -->
-                    <div class="absolute inset-0 bg-brand-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-2 z-[3]">
-                        <span class="bg-white/95 text-brand-900 text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 transform scale-90 group-hover:scale-100 transition">
-                            <i class="fa-solid fa-magnifying-glass-plus text-brand-600"></i>
-                            <span>Lihat Detail</span>
-                        </span>
+                    <div class="min-w-0 flex-1">
+                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">{{ $member->department }}</span>
+                        <h3 class="text-xs sm:text-base font-extrabold text-slate-900 truncate group-hover:text-brand-600 transition">{{ $member->name }}</h3>
+                        <span class="text-[10px] sm:text-xs font-semibold text-brand-700 block truncate">{{ $member->position }}</span>
                     </div>
                 </div>
 
                 <!-- Card Body -->
-                <div class="p-3 sm:p-6 flex-grow flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-xs sm:text-lg font-bold text-slate-900 leading-snug line-clamp-1 cursor-pointer hover:text-brand-600 transition mb-1.5"
-                            @click="openDetail({{ json_encode($member) }})">
-                            {{ $member->name }}
-                        </h3>
-                        <p class="text-[10px] sm:text-xs text-slate-600 leading-relaxed line-clamp-2 sm:line-clamp-3 mb-2">{{ $member->bio }}</p>
+                <div class="p-3 sm:p-5 flex-grow flex flex-col justify-between">
+                    @if(!empty($member->bio))
+                    <p class="text-[10px] sm:text-xs text-slate-600 leading-relaxed line-clamp-3 mb-3">
+                        {{ $member->bio }}
+                    </p>
+                    @endif
 
-                        <!-- Tombol Lihat Detail -->
+                    <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] sm:text-xs mt-auto">
                         <button type="button" 
                                 @click="openDetail({{ json_encode($member) }})"
-                                class="text-[10px] sm:text-xs font-bold text-brand-600 hover:text-brand-800 transition inline-flex items-center gap-1 mb-2 hover:underline">
-                            <span>Lihat profil & foto detail</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                                class="text-brand-600 hover:text-brand-800 font-bold inline-flex items-center gap-1">
+                            <span>Detail</span>
+                            <i class="fa-solid fa-arrow-right text-[9px]"></i>
                         </button>
-                    </div>
-                    
-                    @if($member->email)
-                    <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] sm:text-xs text-slate-500">
-                        <span class="truncate">{{ $member->email }}</span>
-                        @if($member->linkedin)
-                        <a href="{{ $member->linkedin }}" target="_blank" class="text-brand-600 hover:text-brand-800 ml-1" title="Buka LinkedIn"><i class="fa-brands fa-linkedin text-xs sm:text-base"></i></a>
+                        @if(!empty($member->email))
+                        <span class="text-slate-400 truncate max-w-[120px]">{{ $member->email }}</span>
                         @endif
                     </div>
-                    @endif
                 </div>
             </div>
             @endforeach
         </div>
     </div>
 
-    <!-- Modal Pop-up View Details Anggota Tim -->
+    <!-- Modal Detail Pop-up -->
     <div x-show="showDetailModal" 
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0"
@@ -99,7 +212,7 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          x-cloak
-         class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
          @keydown.escape.window="closeDetail()">
         
         <div @click.away="closeDetail()"
@@ -110,75 +223,44 @@
              x-transition:leave="transition ease-in duration-150 transform"
              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 scale-95 translate-y-4"
-             class="bg-white rounded-3xl max-w-xl w-full shadow-2xl border border-slate-100 text-slate-900 relative max-h-[92vh] overflow-hidden flex flex-col">
+             class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 text-slate-900 relative overflow-hidden">
             
-            <!-- Close Button -->
             <button type="button" 
                     @click="closeDetail()" 
-                    class="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-10 w-9 h-9 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center transition shadow-lg backdrop-blur" 
+                    class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" 
                     aria-label="Tutup">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
 
             <template x-if="selectedMember">
-                <div class="overflow-y-auto p-4 sm:p-6 space-y-4">
-                    <!-- Preview Foto Resolusi Penuh (Utuh Tanpa Terpotong) -->
-                    <div class="relative w-full min-h-[260px] max-h-[380px] sm:max-h-[460px] rounded-2xl overflow-hidden bg-slate-950 flex items-center justify-center shadow-inner group">
-                        <template x-if="selectedMember.image_url || selectedMember.image">
-                            <div class="w-full h-full relative flex items-center justify-center min-h-[260px] max-h-[380px] sm:max-h-[460px]">
-                                <!-- Ambient Blur Effect di Latar Belakang -->
-                                <img :src="selectedMember.image_url || selectedMember.image" class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-30 scale-110 pointer-events-none">
-                                
-                                <!-- Foto Asli Utuh 100% Tanpa Terpotong (object-contain) -->
-                                <img :src="selectedMember.image_url || selectedMember.image" :alt="selectedMember.name" class="relative z-[1] w-auto h-auto max-h-[360px] sm:max-h-[440px] max-w-full object-contain mx-auto rounded-xl shadow-lg">
-                            </div>
-                        </template>
-                        <template x-if="!selectedMember.image_url && !selectedMember.image">
-                            <div class="w-full h-64 flex items-center justify-center bg-brand-800 text-white text-5xl font-extrabold" x-text="selectedMember.name ? selectedMember.name.substring(0, 2) : ''">
-                            </div>
-                        </template>
-
-                        <!-- Gradient Shadow di bawah gambar modal -->
-                        <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent pointer-events-none z-[2]"></div>
-
-                        <!-- Jabatan di Bawah Pojok Kiri Gambar Profile Modal -->
-                        <div class="absolute bottom-3 left-3 max-w-[92%] bg-slate-950/90 backdrop-blur-md text-white text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-xl border border-white/15 shadow-lg flex items-center gap-1.5 z-[3]">
-                            <i class="fa-solid fa-briefcase text-amber-400 text-xs flex-shrink-0"></i>
-                            <span class="truncate" x-text="selectedMember.position"></span>
+                <div class="p-6 sm:p-8 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-brand-700 text-white flex items-center justify-center text-xl font-black shadow-md"
+                             x-text="selectedMember.name ? selectedMember.name.substring(0, 2).toUpperCase() : ''">
                         </div>
-                    </div>
-                    
-                    <!-- Detail Informasi -->
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full border border-brand-200" x-text="selectedMember.department"></span>
-                        </div>
-                        <h3 class="text-lg sm:text-2xl font-extrabold text-slate-900" x-text="selectedMember.name"></h3>
-                        
-                        <!-- Biografi Lengkap -->
-                        <div class="mt-3.5 bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                            <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-                                <i class="fa-solid fa-circle-info text-brand-600"></i> Profil & Pengalaman Kerja
-                            </h4>
-                            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line" x-text="selectedMember.bio"></p>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-full" x-text="selectedMember.department"></span>
+                            <h3 class="text-xl font-extrabold text-slate-900 mt-1" x-text="selectedMember.name"></h3>
+                            <span class="text-xs font-semibold text-amber-600 block" x-text="selectedMember.position"></span>
                         </div>
                     </div>
 
-                    <!-- Kontak Email -->
-                    <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
-                        <template x-if="selectedMember.email">
-                            <a :href="'mailto:' + selectedMember.email" class="inline-flex items-center gap-2 text-slate-600 hover:text-brand-600 font-medium bg-slate-50 hover:bg-brand-50 px-3 py-1.5 rounded-xl border border-slate-200 transition">
-                                <i class="fa-solid fa-envelope text-brand-600"></i>
-                                <span class="truncate max-w-[240px] sm:max-w-none" x-text="selectedMember.email"></span>
-                            </a>
-                        </template>
-                    </div>
+                    <template x-if="selectedMember.bio">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Tanggung Jawab & Wewenang:</span>
+                            <p x-text="selectedMember.bio"></p>
+                        </div>
+                    </template>
 
-                    <!-- Footer Action -->
-                    <div class="pt-3 border-t border-slate-100 flex justify-end">
-                        <button type="button" 
-                                @click="closeDetail()" 
-                                class="px-5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">
+                    <template x-if="selectedMember.email">
+                        <div class="pt-2 text-xs flex items-center gap-2 text-slate-600">
+                            <i class="fa-solid fa-envelope text-brand-600"></i>
+                            <span x-text="selectedMember.email"></span>
+                        </div>
+                    </template>
+
+                    <div class="pt-4 border-t border-slate-100 flex justify-end">
+                        <button type="button" @click="closeDetail()" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition">
                             Tutup
                         </button>
                     </div>

@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Layanan Logistik & Konsolidasi Kargo | PT. CONSOLTAINER TRANSPORT LOGISTIC')
+@section('title', 'Layanan Forwarding & Logistik Terpadu | PT. Consoltainer Transport Logistics')
 
 @section('content')
-<section class="bg-gradient-to-r from-brand-900 to-brand-800 text-white py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-700/60 px-3 py-1 rounded-full">Our Services</span>
-        <h1 class="text-3xl sm:text-5xl font-extrabold mt-3">Layanan Logistik Terpadu</h1>
-        <p class="text-slate-300 max-w-2xl mt-3 text-base">
-            Solusi komprehensif mulai dari LCL Consolidator, FCL Ocean Freight, Air Freight, Kepabeanan PPJK, hingga pergudangan CFS modern.
+<section class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white py-16 sm:py-20 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-700/60 px-3.5 py-1.5 rounded-full border border-amber-400/20">Our Services</span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold mt-3 tracking-tight">Layanan Logistik & Freight Forwarding</h1>
+        <p class="text-slate-300 max-w-2xl mt-3 text-sm sm:text-base leading-relaxed">
+            Solusi komprehensif meliputi Export-Import Service (FCL & LCL), Air Freight & Incoterms 2020, Customs Clearance (PPJK), Land Transportation, hingga Warehousing & Distribution.
         </p>
     </div>
 </section>

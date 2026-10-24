@@ -14,6 +14,7 @@ class TeamMember extends Model
         'name',
         'position',
         'department',
+        'department_id',
         'bio',
         'image',
         'email',
@@ -22,6 +23,11 @@ class TeamMember extends Model
     ];
 
     protected $appends = ['image_url'];
+
+    public function departmentModel()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 
     public function getImageUrlAttribute(): string
     {

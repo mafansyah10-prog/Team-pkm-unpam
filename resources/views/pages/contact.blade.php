@@ -41,6 +41,7 @@
                 <form action="{{ route('contact.store') }}" method="POST" class="space-y-4">
                     @csrf
                     <input type="hidden" name="form_type" value="feedback">
+                    <input type="hidden" name="client_time" id="client_time">
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -124,38 +125,35 @@
             <!-- Contact Information & Branches -->
             <div class="lg:col-span-5 space-y-6">
                 
-                <!-- Main Head Office Card -->
+                <!-- Main Marketing Office Card -->
                 <div class="bg-brand-900 text-white p-8 rounded-3xl shadow-xl space-y-4">
-                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-800 px-3 py-1 rounded-full">Headquarters</span>
-                    <h3 class="text-xl font-bold">{{ $companySettings['company_name'] ?? 'PT. CONSOLTAINER TRANSPORT LOGISTIC' }}</h3>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-800 px-3 py-1 rounded-full">Marketing Office</span>
+                        <span class="text-[11px] text-slate-300 font-medium"><i class="fa-solid fa-globe text-amber-400 mr-1"></i> ctl-indonesia.net</span>
+                    </div>
+                    <h3 class="text-xl font-bold">{{ $companySettings['company_name'] ?? 'PT. Consoltainer Transport Logistics' }}</h3>
                     
                     <div class="space-y-3 text-sm text-slate-300 pt-2">
                         <p class="flex items-start gap-3">
-                            <i class="fa-solid fa-location-dot text-amber-400 text-base mt-1"></i>
-                            <span>{{ $companySettings['address'] ?? 'Gedung Consoltainer Center Lt. 5, Jl. Yos Sudarso No. 88, Tanjung Priok, Jakarta Utara 14320' }}</span>
+                            <i class="fa-solid fa-location-dot text-amber-400 text-base mt-1 flex-shrink-0"></i>
+                            <span class="leading-relaxed">{{ $companySettings['address'] ?? 'Jl. Sultan Hamengkubuwono IX Ruko Inkopau Blok J No. 8, Ujung Menteng, Cakung, Jakarta Timur 13960' }}</span>
                         </p>
                         <p class="flex items-center gap-3">
-                            <i class="fa-solid fa-phone text-amber-400 text-base"></i>
-                            <span>{{ $companySettings['phone'] ?? '+62 21 4390 8888 (Hunting)' }}</span>
+                            <i class="fa-solid fa-phone text-amber-400 text-base flex-shrink-0"></i>
+                            <span>{{ $companySettings['phone_marketing'] ?? '(+62 21) 4607279-8, 46802174-7' }}</span>
                         </p>
                         <p class="flex items-center gap-3">
-                            <i class="fa-solid fa-envelope text-amber-400 text-base"></i>
-                            <span>{{ $companySettings['email'] ?? 'info@consoltainer.co.id' }}</span>
+                            <i class="fa-solid fa-fax text-amber-400 text-base flex-shrink-0"></i>
+                            <span>Fax: {{ $companySettings['fax_marketing'] ?? '(+62 21) 46823886' }}</span>
                         </p>
                         <p class="flex items-center gap-3">
-                            <i class="fa-solid fa-clock text-amber-400 text-base"></i>
-                            <span>{{ $companySettings['hours'] ?? 'Senin - Jumat: 08:30 - 17:30 WIB' }}</span>
+                            <i class="fa-solid fa-envelope text-amber-400 text-base flex-shrink-0"></i>
+                            <span>{{ $companySettings['email'] ?? 'ctl.gm@ctl-indonesia.net' }}</span>
                         </p>
-                        @if(!empty($companySettings['weekend_hours']))
-                        <p class="flex items-center gap-3 text-xs text-slate-400 pl-7">
-                            <span>Sabtu: {{ $companySettings['weekend_hours'] }}</span>
+                        <p class="flex items-center gap-3">
+                            <i class="fa-solid fa-clock text-amber-400 text-base flex-shrink-0"></i>
+                            <span>{{ $companySettings['hours'] ?? 'Senin - Jumat: 08:30 - 17:30 WIB | Sabtu: 08:30 - 13:00 WIB' }}</span>
                         </p>
-                        @endif
-                        @if(!empty($companySettings['holiday_note']))
-                        <p class="flex items-center gap-3 text-xs text-amber-300/80 pl-7">
-                            <span>{{ $companySettings['holiday_note'] }}</span>
-                        </p>
-                        @endif
                     </div>
 
                     <div class="pt-4 border-t border-brand-800">
@@ -165,22 +163,38 @@
                     </div>
                 </div>
 
-                <!-- Branch Offices List -->
+                <!-- Branch Offices & Pan's Building List (Page 12) -->
                 <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3">Jaringan Kantor Cabang & CFS Depot</h4>
+                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-building text-brand-600"></i> Jaringan Kantor Perusahaan
+                    </h4>
                     
                     <div class="space-y-3 text-xs text-slate-600">
-                        <div class="p-3 bg-slate-50 rounded-xl">
-                            <h5 class="font-bold text-slate-900 text-sm">Surabaya Branch & Depot</h5>
-                            <p class="mt-0.5">Jl. Perak Timur No. 120, Tanjung Perak, Surabaya | Telp: +62 31 329 1122</p>
+                        <!-- Pan's Building -->
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+                            <div class="flex items-center justify-between">
+                                <h5 class="font-bold text-slate-900 text-sm">Pan's Building (Holding)</h5>
+                                <span class="text-[10px] bg-brand-50 text-brand-700 font-bold px-2 py-0.5 rounded-full">Pan Groups</span>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed">{{ $companySettings['address_pans'] ?? 'Jl. Raya Sultan Agung No. 425 Medan Satria, Bekasi, Indonesia' }}</p>
+                            <p class="font-medium text-slate-700 pt-1">
+                                <i class="fa-solid fa-phone text-brand-600 mr-1"></i> Telp: {{ $companySettings['pans_building_phone'] ?? '+62-21 2928 6681 705 (25 lines)' }}
+                            </p>
+                            <p class="text-slate-500">
+                                <i class="fa-solid fa-fax text-slate-400 mr-1"></i> Fax: {{ $companySettings['pans_building_fax'] ?? '+62-21 2928 6680' }}
+                            </p>
                         </div>
-                        <div class="p-3 bg-slate-50 rounded-xl">
-                            <h5 class="font-bold text-slate-900 text-sm">Medan (Belawan) Branch</h5>
-                            <p class="mt-0.5">Jl. Pelabuhan Raya No. 45, Belawan, Medan | Telp: +62 61 694 5566</p>
-                        </div>
-                        <div class="p-3 bg-slate-50 rounded-xl">
-                            <h5 class="font-bold text-slate-900 text-sm">Semarang Branch</h5>
-                            <p class="mt-0.5">Jl. Usman Janatin No. 18, Tanjung Emas, Semarang | Telp: +62 24 358 7788</p>
+
+                        <!-- Kantor Cabang Semarang -->
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+                            <div class="flex items-center justify-between">
+                                <h5 class="font-bold text-slate-900 text-sm">Kantor Cabang Semarang</h5>
+                                <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full">Jawa Tengah</span>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed">{{ $companySettings['address_semarang'] ?? 'Ruko Galaxi No. 2, Jl. Soekarno-Hatta No. 8, Semarang' }}</p>
+                            <p class="font-medium text-slate-700 pt-1">
+                                <i class="fa-solid fa-phone text-brand-600 mr-1"></i> Telp: {{ $companySettings['phone_semarang'] ?? '+62-24 7692 8588, 77' }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -190,4 +204,23 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('form[action="{{ route('contact.store') }}"]');
+        if (form) {
+            form.addEventListener('submit', () => {
+                try {
+                    const now = new Date();
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                    const formatted = now.toLocaleDateString('id-ID', options) + ' WIB';
+                    const el = document.getElementById('client_time');
+                    if (el) el.value = formatted;
+                } catch (e) {
+                    // Fallback
+                }
+            });
+        }
+    });
+</script>
 @endsection

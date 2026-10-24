@@ -201,9 +201,8 @@
 
                 <!-- Heading -->
                 <div class="mb-5">
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        <span>Reset Password</span>
-                        <span>🔐</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        Reset Password
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-500 mt-1">
                         Ikuti alur verifikasi 4 tahapan resmi untuk mengamankan & memulihkan akun administrator Anda.

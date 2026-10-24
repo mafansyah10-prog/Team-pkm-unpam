@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Models\Product;
 use App\Models\TeamMember;
+use App\Models\Department;
 use App\Models\GalleryItem;
 use App\Models\Portfolio;
 use App\Models\Testimonial;
@@ -15,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -27,10 +29,12 @@ class AdminController extends Controller
             'gallery' => GalleryItem::count(),
             'portfolios' => Portfolio::count(),
             'testimonials' => Testimonial::count(),
-            'unread_messages' => ContactMessage::where('is_read', false)->count(),
+            'unread_messages' => ContactMessage::pending()->where('is_read', false)->count(),
+            'pending_messages' => ContactMessage::pending()->count(),
+            'history_messages' => ContactMessage::history()->count(),
         ];
 
-        $recentMessages = ContactMessage::orderBy('created_at', 'desc')->take(5)->get();
+        $recentMessages = ContactMessage::pending()->orderBy('created_at', 'desc')->take(5)->get();
 
         return view('admin.dashboard', compact('stats', 'recentMessages'));
     }
@@ -169,34 +173,37 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Produk berhasil diperbarui!');
     }
 
-    // 3. Team Management
+    // 3. Team & Department Management
     public function team()
     {
-        $team = TeamMember::orderBy('sort_order')->get();
-        return view('admin.team', compact('team'));
+        $departments = Department::withCount('members')
+            ->with(['members' => function ($query) {
+                $query->orderBy('sort_order');
+            }])
+            ->orderBy('sort_order')
+            ->get();
+        $team = TeamMember::with('departmentModel')->orderBy('sort_order')->get();
+        return view('admin.team', compact('team', 'departments'));
     }
 
     public function teamStore(Request $request)
     {
         $data = $request->validate([
-            'name'       => 'required|string|max:255',
-            'position'   => 'required|string|max:255',
-            'department' => 'required|string|max:255',
-            'bio'        => 'nullable|string',
-            'email'      => 'nullable|email',
-            'image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'name'          => 'required|string|max:255',
+            'position'      => 'required|string|max:255',
+            'department_id' => 'required|exists:departments,id',
+            'sort_order'    => 'nullable|integer',
         ]);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('uploads/team', 'public');
-        } else {
-            unset($data['image']);
+        $dept = Department::findOrFail($data['department_id']);
+        $data['department'] = $dept->name;
+
+        if (!isset($data['sort_order']) || $data['sort_order'] === null) {
+            $data['sort_order'] = TeamMember::count() + 1;
         }
 
-        $data['sort_order'] = TeamMember::count() + 1;
-
         TeamMember::create($data);
-        return redirect()->back()->with('success', 'Anggota tim berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'Anggota tim "' . $data['name'] . '" berhasil ditambahkan ke ' . $dept->name . '!');
     }
 
     public function teamDelete($id)
@@ -213,23 +220,177 @@ class AdminController extends Controller
     {
         $member = TeamMember::findOrFail($id);
         $data = $request->validate([
-            'name'       => 'required|string|max:255',
-            'position'   => 'required|string|max:255',
-            'department' => 'required|string|max:255',
-            'bio'        => 'nullable|string',
-            'email'      => 'nullable|email',
-            'image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'name'          => 'required|string|max:255',
+            'position'      => 'required|string|max:255',
+            'department_id' => 'required|exists:departments,id',
+            'sort_order'    => 'nullable|integer',
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($member->image && !str_starts_with($member->image, 'http')) {
-                Storage::disk('public')->delete($member->image);
-            }
-            $data['image'] = $request->file('image')->store('uploads/team', 'public');
-        }
+        $dept = Department::findOrFail($data['department_id']);
+        $data['department'] = $dept->name;
 
         $member->update($data);
-        return redirect()->back()->with('success', 'Anggota tim berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Data anggota tim "' . $member->name . '" berhasil diperbarui!');
+    }
+
+    // 3.1 Department Category CRUD & Reordering
+    public function departmentStore(Request $request)
+    {
+        $data = $request->validate([
+            'name'         => 'required|string|max:255',
+            'leader_name'  => 'nullable|string|max:255',
+            'leader_title' => 'nullable|string|max:255',
+            'sort_order'   => 'nullable|integer',
+            'is_executive' => 'nullable',
+            'color'        => 'nullable|string',
+        ]);
+
+        $baseSlug = Str::slug($data['name']);
+        $slug = $baseSlug ?: 'dept-' . time();
+        $counter = 1;
+        while (Department::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+
+        $data['slug'] = $slug;
+        $data['is_executive'] = in_array($request->input('is_executive'), [1, '1', true, 'true'], true);
+        
+        if (!empty($data['color'])) {
+            $rawColor = trim($data['color']);
+            if (!str_starts_with($rawColor, '#')) {
+                $rawColor = '#' . $rawColor;
+            }
+            $data['color'] = strtolower($rawColor);
+        } else {
+            $data['color'] = '#b91c1c';
+        }
+
+        if (!isset($data['sort_order']) || $data['sort_order'] === null) {
+            $data['sort_order'] = (Department::max('sort_order') ?? 0) + 1;
+        }
+
+        $dept = Department::create($data);
+
+        // Auto-create leader as TeamMember if provided
+        if (!empty($data['leader_name'])) {
+            TeamMember::create([
+                'name'          => $data['leader_name'],
+                'position'      => !empty($data['leader_title']) ? $data['leader_title'] : 'Manager of ' . $dept->name,
+                'department_id' => $dept->id,
+                'department'    => $dept->name,
+                'sort_order'    => 1,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Kategori departemen "' . $data['name'] . '" berhasil ditambahkan!');
+    }
+
+    public function departmentUpdate(Request $request, $id = null)
+    {
+        $targetId = $id ?: ($request->input('department_id') ?: $request->input('id'));
+        $dept = Department::findOrFail($targetId);
+        $data = $request->validate([
+            'name'         => 'required|string|max:255',
+            'leader_name'  => 'nullable|string|max:255',
+            'leader_title' => 'nullable|string|max:255',
+            'sort_order'   => 'nullable|integer',
+            'is_executive' => 'nullable',
+            'color'        => 'nullable|string',
+        ]);
+
+        $data['is_executive'] = in_array($request->input('is_executive'), [1, '1', true, 'true'], true);
+        
+        if (!empty($data['color'])) {
+            $rawColor = trim($data['color']);
+            if (!str_starts_with($rawColor, '#')) {
+                $rawColor = '#' . $rawColor;
+            }
+            $data['color'] = strtolower($rawColor);
+        } else {
+            $data['color'] = $dept->color ?? '#b91c1c';
+        }
+
+        if (isset($data['sort_order']) && $data['sort_order'] !== null) {
+            $data['sort_order'] = (int) $data['sort_order'];
+        }
+
+        $oldLeaderName = $dept->leader_name;
+        $dept->update($data);
+
+        // Keep existing members' string department synced
+        TeamMember::where('department_id', $dept->id)->update(['department' => $dept->name]);
+
+        // Sync leader as TeamMember if leader_name is provided
+        if (!empty($data['leader_name'])) {
+            $leaderTitle = !empty($data['leader_title']) ? $data['leader_title'] : 'Manager of ' . $dept->name;
+            $leaderMember = TeamMember::where('department_id', $dept->id)
+                ->where(function($q) use ($oldLeaderName, $data) {
+                    if ($oldLeaderName) {
+                        $q->where('name', $oldLeaderName)->orWhere('name', $data['leader_name']);
+                    } else {
+                        $q->where('name', $data['leader_name']);
+                    }
+                })->first();
+
+            if ($leaderMember) {
+                $leaderMember->update([
+                    'name'       => $data['leader_name'],
+                    'position'   => $leaderTitle,
+                    'department' => $dept->name,
+                ]);
+            } else {
+                TeamMember::create([
+                    'name'          => $data['leader_name'],
+                    'position'      => $leaderTitle,
+                    'department_id' => $dept->id,
+                    'department'    => $dept->name,
+                    'sort_order'    => 1,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Kategori departemen "' . $dept->name . '" berhasil diperbarui!');
+    }
+
+    public function departmentDelete($id)
+    {
+        $dept = Department::findOrFail($id);
+        $name = $dept->name;
+
+        // Disassociate members so data is not corrupted
+        TeamMember::where('department_id', $id)->update([
+            'department_id' => null,
+            'department' => 'Tanpa Kategori'
+        ]);
+
+        $dept->delete();
+        return redirect()->back()->with('success', 'Kategori departemen "' . $name . '" berhasil dihapus!');
+    }
+
+    public function departmentMove($id, $direction)
+    {
+        $current = Department::findOrFail($id);
+        $currentOrder = (int) $current->sort_order;
+
+        if ($direction === 'up') {
+            $target = Department::where('sort_order', '<', $currentOrder)
+                ->orderBy('sort_order', 'desc')
+                ->first();
+        } else {
+            $target = Department::where('sort_order', '>', $currentOrder)
+                ->orderBy('sort_order', 'asc')
+                ->first();
+        }
+
+        if ($target) {
+            $targetOrder = (int) $target->sort_order;
+            // Swap sort_order
+            $current->update(['sort_order' => $targetOrder]);
+            $target->update(['sort_order' => $currentOrder]);
+            return redirect()->back()->with('success', 'Posisi card box "' . $current->name . '" berhasil dipindahkan!');
+        }
+
+        return redirect()->back()->with('info', 'Posisi card box sudah berada di batas urutan.');
     }
 
     // 4. Gallery Management
@@ -394,11 +555,44 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Testimoni berhasil diperbarui!');
     }
 
-    // 7. Contact Messages Management
-    public function messages()
+    // 7. Contact Messages & Complaints Management + History
+    public function messages(Request $request)
     {
-        $messages = ContactMessage::orderBy('created_at', 'desc')->get();
-        return view('admin.messages', compact('messages'));
+        $activeMessages = ContactMessage::pending()->orderBy('created_at', 'desc')->get();
+        $historyMessages = ContactMessage::history()->orderByRaw('COALESCE(resolved_at, deleted_at, updated_at) DESC')->get();
+        
+        $activeTab = $request->query('tab', 'active');
+        
+        $stats = [
+            'active_count'   => $activeMessages->count(),
+            'unread_count'   => $activeMessages->where('is_read', false)->count(),
+            'history_count'  => $historyMessages->count(),
+            'resolved_count' => $historyMessages->where('status', 'resolved')->count(),
+            'deleted_count'  => $historyMessages->where('status', 'deleted')->count(),
+        ];
+
+        // Format riwayat pengaduan untuk kalender interaktif
+        $historyEvents = $historyMessages->map(function ($msg) {
+            $eventDate = ($msg->resolved_at ?? $msg->deleted_at ?? $msg->created_at)?->timezone('Asia/Jakarta')->format('Y-m-d') 
+                ?? $msg->created_at?->timezone('Asia/Jakarta')->format('Y-m-d');
+            return [
+                'id' => $msg->id,
+                'name' => $msg->name,
+                'company' => $msg->company,
+                'subject' => $msg->subject,
+                'status' => $msg->status,
+                'date' => $eventDate,
+                'created_date' => $msg->created_at?->timezone('Asia/Jakarta')->format('Y-m-d'),
+                'formatted_date' => $msg->formatted_date,
+                'formatted_resolved_at' => $msg->formatted_resolved_at,
+                'formatted_deleted_at' => $msg->formatted_deleted_at,
+                'handled_by' => $msg->handled_by,
+                'resolution_notes' => $msg->resolution_notes,
+                'deleted_reason' => $msg->deleted_reason,
+            ];
+        });
+
+        return view('admin.messages', compact('activeMessages', 'historyMessages', 'historyEvents', 'activeTab', 'stats'));
     }
 
     public function messageToggleRead($id)
@@ -406,13 +600,58 @@ class AdminController extends Controller
         $msg = ContactMessage::findOrFail($id);
         $msg->is_read = !$msg->is_read;
         $msg->save();
-        return redirect()->back()->with('success', 'Status pesan diperbarui!');
+        return redirect()->back()->with('success', 'Status baca laporan berhasil diperbarui!');
     }
 
-    public function messageDelete($id)
+    public function messageResolve(Request $request, $id)
     {
-        ContactMessage::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Pesan berhasil dihapus!');
+        $msg = ContactMessage::findOrFail($id);
+        $notes = $request->input('resolution_notes');
+        $adminName = Auth::user()->name ?? 'Administrator';
+
+        $msg->status = 'resolved';
+        $msg->is_read = true;
+        $msg->resolved_at = Carbon::now('Asia/Jakarta');
+        $msg->handled_by = $adminName;
+        $msg->resolution_notes = $notes;
+        $msg->save();
+
+        return redirect()->route('admin.messages', ['tab' => 'history'])
+            ->with('success', 'Laporan dari "' . $msg->name . '" telah selesai ditangani dan dicatat ke Riwayat (History)!');
+    }
+
+    public function messageDelete(Request $request, $id)
+    {
+        $msg = ContactMessage::findOrFail($id);
+        
+        // Pindahkan ke riwayat sebagai laporan yang dihapus / diarsipkan
+        $msg->status = 'deleted';
+        $msg->deleted_at = Carbon::now('Asia/Jakarta');
+        $msg->deleted_reason = $request->input('reason', 'Dihapus dari inbox aktif');
+        $msg->save();
+
+        return redirect()->back()->with('success', 'Laporan dari "' . $msg->name . '" berhasil dihapus dari inbox aktif dan dipindahkan ke Riwayat (History).');
+    }
+
+    public function messageRestore($id)
+    {
+        $msg = ContactMessage::findOrFail($id);
+        $msg->status = 'pending';
+        $msg->deleted_at = null;
+        $msg->resolved_at = null;
+        $msg->save();
+
+        return redirect()->route('admin.messages', ['tab' => 'active'])
+            ->with('success', 'Laporan dari "' . $msg->name . '" berhasil dipulihkan kembali ke Inbox Aktif!');
+    }
+
+    public function messageForceDelete($id)
+    {
+        $msg = ContactMessage::findOrFail($id);
+        $name = $msg->name;
+        $msg->delete();
+
+        return redirect()->back()->with('success', 'Laporan dari "' . $name . '" telah dihapus secara permanen dari sistem.');
     }
 
     // 8. Website Settings
