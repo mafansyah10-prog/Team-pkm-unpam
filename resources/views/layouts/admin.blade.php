@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>@yield('title', 'Admin Dashboard - PT. CONSOLTAINER TRANSPORT LOGISTIC')</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/ctl-logo.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/ctl-logo.svg') }}">
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

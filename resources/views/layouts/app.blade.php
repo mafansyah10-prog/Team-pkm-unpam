@@ -6,6 +6,10 @@
     <title>@yield('title', 'PT. CONSOLTAINER TRANSPORT LOGISTIC - CTL LINE | LCL Consolidator Specialist')</title>
     <meta name="description" content="PT. CONSOLTAINER TRANSPORT LOGISTIC - Penyedia Layanan LCL Consolidator Specialist, Ekspor Impor, Ocean Freight, Customs Clearance PPJK, & Warehousing Terpercaya di Indonesia.">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/ctl-logo.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/ctl-logo.svg') }}">
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
