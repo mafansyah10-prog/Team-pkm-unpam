@@ -192,6 +192,8 @@ class AdminController extends Controller
             'name'             => 'required|string|max:255',
             'position'         => 'required|string|max:255',
             'department_id'    => 'required|exists:departments,id',
+            'email'            => 'nullable|string|max:255',
+            'image'            => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
             'responsibilities' => 'nullable|string',
             'authorities'      => 'nullable|string',
             'bio'              => 'nullable|string',
@@ -200,6 +202,13 @@ class AdminController extends Controller
 
         $dept = Department::findOrFail($data['department_id']);
         $data['department'] = $dept->name;
+        if (array_key_exists('email', $data)) {
+            $data['email'] = !empty($data['email']) ? trim($data['email']) : null;
+        }
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/team', 'public');
+        }
 
         if (!isset($data['sort_order']) || $data['sort_order'] === null) {
             $data['sort_order'] = TeamMember::count() + 1;
@@ -226,6 +235,9 @@ class AdminController extends Controller
             'name'             => 'required|string|max:255',
             'position'         => 'required|string|max:255',
             'department_id'    => 'required|exists:departments,id',
+            'email'            => 'nullable|string|max:255',
+            'image'            => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
+            'remove_image'     => 'nullable',
             'responsibilities' => 'nullable|string',
             'authorities'      => 'nullable|string',
             'bio'              => 'nullable|string',
@@ -234,6 +246,21 @@ class AdminController extends Controller
 
         $dept = Department::findOrFail($data['department_id']);
         $data['department'] = $dept->name;
+        if (array_key_exists('email', $data)) {
+            $data['email'] = !empty($data['email']) ? trim($data['email']) : null;
+        }
+
+        if ($request->hasFile('image')) {
+            if ($member->image && !str_starts_with($member->image, 'http')) {
+                Storage::disk('public')->delete($member->image);
+            }
+            $data['image'] = $request->file('image')->store('uploads/team', 'public');
+        } elseif ($request->boolean('remove_image')) {
+            if ($member->image && !str_starts_with($member->image, 'http')) {
+                Storage::disk('public')->delete($member->image);
+            }
+            $data['image'] = null;
+        }
 
         $member->update($data);
         return redirect()->back()->with('success', 'Data anggota tim "' . $member->name . '" berhasil diperbarui!');
@@ -692,10 +719,32 @@ class AdminController extends Controller
             CompanySetting::set('about_image', $aboutImgPath);
         }
 
-        foreach ($request->except(['_token', 'hero_banner', 'about_image']) as $key => $value) {
+        foreach ($request->except(['_token', 'hero_banner', 'about_image', 'social_media']) as $key => $value) {
             CompanySetting::set($key, $value);
         }
-        return redirect()->back()->with('success', 'Pengaturan website dan profil perusahaan berhasil disimpan!');
+
+        // Process dynamic social media list
+        if ($request->has('social_media')) {
+            $rawSocial = $request->input('social_media');
+            $socialArray = is_array($rawSocial) ? $rawSocial : json_decode($rawSocial, true);
+            if (is_array($socialArray)) {
+                CompanySetting::set('social_media', json_encode(array_values($socialArray)));
+                
+                // Keep backward compatibility for individual platform keys
+                foreach ($socialArray as $sm) {
+                    $platform = strtolower($sm['platform'] ?? '');
+                    if (str_contains($platform, 'facebook')) {
+                        CompanySetting::set('facebook_url', $sm['url'] ?? '#');
+                    } elseif (str_contains($platform, 'instagram')) {
+                        CompanySetting::set('instagram_url', $sm['url'] ?? '#');
+                    } elseif (str_contains($platform, 'linkedin')) {
+                        CompanySetting::set('linkedin_url', $sm['url'] ?? '#');
+                    }
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'Pengaturan website, kontak, dan akun sosial media berhasil disimpan!');
     }
 
     /**

@@ -441,11 +441,38 @@
                     <p class="text-sm text-slate-400 leading-relaxed">
                         <strong>PT. CONSOLTAINER TRANSPORT LOGISTICS (CTL Line)</strong> adalah bagian dari <strong>Pan Groups</strong>, penyedia solusi Freight Forwarding, PPJK, Export-Import Service, Land Transportation, Customs Brokerage, Warehousing & Distribution terpercaya di Indonesia.
                     </p>
-                    <div class="flex items-center space-x-3 pt-2">
-                        <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="#" class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companySettings['whatsapp'] ?? '6281299887766') }}" target="_blank" class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center text-white hover:bg-emerald-700 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                    @php
+                        $socialLinks = [];
+                        if (!empty($companySettings['social_media'])) {
+                            $decodedSm = json_decode($companySettings['social_media'], true);
+                            if (is_array($decodedSm)) {
+                                $socialLinks = $decodedSm;
+                            }
+                        }
+                        if (empty($socialLinks)) {
+                            $socialLinks = [
+                                ['platform' => 'Facebook', 'url' => $companySettings['facebook_url'] ?? '#', 'icon' => 'fa-brands fa-facebook-f'],
+                                ['platform' => 'LinkedIn', 'url' => $companySettings['linkedin_url'] ?? '#', 'icon' => 'fa-brands fa-linkedin-in'],
+                                ['platform' => 'Instagram', 'url' => $companySettings['instagram_url'] ?? '#', 'icon' => 'fa-brands fa-instagram'],
+                                ['platform' => 'WhatsApp', 'url' => 'https://wa.me/' . preg_replace('/[^0-9]/', '', $companySettings['whatsapp_marketing'] ?? $companySettings['whatsapp'] ?? '6281299887766'), 'icon' => 'fa-brands fa-whatsapp'],
+                            ];
+                        }
+                    @endphp
+                    <div class="flex flex-wrap items-center gap-2.5 pt-2">
+                        @foreach($socialLinks as $sm)
+                            @php
+                                $smUrl = $sm['url'] ?? '#';
+                                $smPlatform = $sm['platform'] ?? 'Social Media';
+                                $smIcon = !empty($sm['icon']) ? $sm['icon'] : 'fa-solid fa-link';
+                                $isLink = !empty($smUrl) && $smUrl !== '#';
+                            @endphp
+                            <a href="{{ $isLink ? $smUrl : 'javascript:void(0)' }}" 
+                               @if($isLink) target="_blank" rel="noopener noreferrer" @endif
+                               title="{{ $smPlatform }}" 
+                               class="w-9 h-9 rounded-full bg-brand-800 flex items-center justify-center text-slate-300 hover:bg-brand-600 hover:text-white transition shadow-sm hover:scale-110">
+                                <i class="{{ $smIcon }} text-sm"></i>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
 
@@ -492,9 +519,19 @@
                             <span>{{ $companySettings['email'] ?? 'ctl.gm@ctl-indonesia.net' }}</span>
                         </p>
                         <p class="flex items-center gap-2 text-emerald-400 font-semibold">
-                            <i class="fa-brands fa-whatsapp"></i>
-                            <span>{{ $companySettings['whatsapp'] ?? '+62 812 9988 7766' }}</span>
+                            <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companySettings['whatsapp_marketing'] ?? $companySettings['whatsapp'] ?? '6281299887766') }}" target="_blank" class="hover:underline">
+                                {{ $companySettings['whatsapp_marketing'] ?? $companySettings['whatsapp'] ?? '+62 812 9988 7766' }}
+                            </a>
                         </p>
+                        @if(!empty($companySettings['phone_pengaduan']))
+                        <p class="flex items-center gap-2 text-slate-300 text-xs">
+                            <i class="fa-solid fa-bullhorn text-amber-400"></i>
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companySettings['phone_pengaduan']) }}?text=Halo%20Layanan%20Pengaduan%20PT.%20CONSOLTAINER" target="_blank" class="hover:text-white">
+                                Hotline: {{ $companySettings['phone_pengaduan'] }}
+                            </a>
+                        </p>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -22,18 +22,23 @@
     // Fitur Pencarian Anggota Tim
     searchQuery: '',
 
-    isRowVisible(deptId, name, position, deptName) {
+    isRowVisible(deptId, name, position, deptName, email) {
         const matchesDept = (this.filterDeptId === 'all' || this.filterDeptId === deptId);
         if (!matchesDept) return false;
         if (!this.searchQuery.trim()) return true;
         const q = this.searchQuery.toLowerCase().trim();
         return (name && name.toLowerCase().includes(q)) ||
                (position && position.toLowerCase().includes(q)) ||
-               (deptName && deptName.toLowerCase().includes(q));
+               (deptName && deptName.toLowerCase().includes(q)) ||
+               (email && email.toLowerCase().includes(q));
     },
 
     openEditMember(item) {
         this.editMemberItem = Object.assign({}, item);
+        this.editMemberItem.email = item.email || '';
+        this.editMemberItem.image_url = item.image_url || '';
+        this.editMemberItem.preview_image = item.image_url || '';
+        this.editMemberItem.remove_image = false;
         this.editMemberItem.responsibilities = item.responsibilities || '';
         this.editMemberItem.authorities = item.authorities || '';
         this.editMemberModalOpen = true;
@@ -242,7 +247,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($team as $item)
-                        <tr x-show="isRowVisible({{ $item->department_id ?? 0 }}, '{{ addslashes($item->name) }}', '{{ addslashes($item->position) }}', '{{ addslashes($item->departmentModel->name ?? $item->department) }}')" class="hover:bg-slate-50/80 transition">
+                        <tr x-show="isRowVisible({{ $item->department_id ?? 0 }}, '{{ addslashes($item->name) }}', '{{ addslashes($item->position) }}', '{{ addslashes($item->departmentModel->name ?? $item->department) }}', '{{ addslashes($item->email ?? '') }}')" class="hover:bg-slate-50/80 transition">
                             <td class="py-3 px-4 text-center text-slate-400 font-mono font-bold">
                                 {{ $loop->iteration }}
                             </td>
@@ -252,11 +257,28 @@
                                     $avatarCol = $itemDept?->color ?? (str_contains(strtolower($item->position), 'direktur') ? '#0f172a' : '#0052a3');
                                 @endphp
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-xs shadow-sm flex-shrink-0 text-white"
+                                    @if($item->image)
+                                    <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-10 h-10 rounded-xl object-cover shadow-sm flex-shrink-0 border border-slate-200">
+                                    @else
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-xs shadow-sm flex-shrink-0 text-white"
                                          style="background-color: {{ $avatarCol }} !important;">
                                         {{ strtoupper(substr($item->name, 0, 2)) }}
                                     </div>
-                                    <span class="font-bold text-slate-900 block text-sm">{{ $item->name }}</span>
+                                    @endif
+                                    <div class="min-w-0">
+                                        <span class="font-bold text-slate-900 block text-sm">{{ $item->name }}</span>
+                                        @if(!empty($item->email))
+                                        <div class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5 mt-0.5" title="Email: {{ $item->email }}">
+                                            <i class="fa-solid fa-envelope text-[10px] text-brand-600 flex-shrink-0"></i>
+                                            <span class="truncate max-w-[200px]">{{ $item->email }}</span>
+                                        </div>
+                                        @else
+                                        <div class="text-[10px] text-slate-400 italic flex items-center gap-1 mt-0.5">
+                                            <i class="fa-regular fa-envelope text-[9px]"></i>
+                                            <span>Email belum diset</span>
+                                        </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </td>
                             <td class="py-3 px-4">
@@ -375,7 +397,25 @@
                             <template x-for="(mem, idx) in (editDeptItem.members || [])" :key="mem.id">
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-400" x-text="idx + 1"></td>
-                                    <td class="py-2.5 px-3 font-extrabold text-slate-900" x-text="mem.name"></td>
+                                    <td class="py-2.5 px-3">
+                                        <div class="flex items-center gap-2.5">
+                                            <template x-if="mem.image_url">
+                                                <img :src="mem.image_url" :alt="mem.name" class="w-8 h-8 rounded-lg object-cover flex-shrink-0 border border-slate-200 shadow-xs">
+                                            </template>
+                                            <template x-if="!mem.image_url">
+                                                <div class="w-8 h-8 rounded-lg bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0" x-text="mem.name ? mem.name.substring(0, 2).toUpperCase() : ''"></div>
+                                            </template>
+                                            <div class="min-w-0">
+                                                <span class="font-extrabold text-slate-900 block" x-text="mem.name"></span>
+                                                <template x-if="mem.email">
+                                                    <span class="text-[10px] text-slate-500 font-mono flex items-center gap-1 mt-0.5">
+                                                        <i class="fa-solid fa-envelope text-[9px] text-brand-600"></i>
+                                                        <span x-text="mem.email"></span>
+                                                    </span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="py-2.5 px-3">
                                         <span class="font-semibold" :class="mem.position && mem.position.toLowerCase().includes('manager') ? 'text-red-700 font-bold' : 'text-slate-700'" x-text="mem.position"></span>
                                         <template x-if="mem.position && mem.position.toLowerCase().includes('manager')">
@@ -418,7 +458,7 @@
                     <span class="text-[10px] bg-brand-100 dark:bg-brand-900/60 text-brand-800 dark:text-brand-300 font-bold px-2 py-0.5 rounded-full border dark:border-brand-700/40">Kategori Terpilih Otomatis</span>
                 </div>
 
-                <form action="{{ route('admin.team.store') }}" method="POST" class="space-y-3 text-xs">
+                <form action="{{ route('admin.team.store') }}" method="POST" enctype="multipart/form-data" class="space-y-3 text-xs">
                     @csrf
                     <!-- Hidden department_id otomatis terisi sesuai kategori yang sedang diedit -->
                     <input type="hidden" name="department_id" :value="editDeptItem.id">
@@ -438,6 +478,31 @@
                                 Jabatan (Position) <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" name="position" list="presetPositions" required placeholder="Pilih / ketik jabatan..." class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm text-slate-900 dark:text-slate-100">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Email / Akun Gmail (Opsional) -->
+                        <div>
+                            <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1 text-[10px] flex items-center gap-1.5">
+                                <i class="fa-solid fa-envelope text-brand-600 dark:text-brand-400"></i>
+                                <span>Email / Akun Gmail (Opsional)</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-at text-[10px]"></i>
+                                </div>
+                                <input type="email" name="email" placeholder="Contoh: nama@ctl-indonesia.net" class="w-full pl-8 pr-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-medium focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm text-slate-900 dark:text-slate-100">
+                            </div>
+                        </div>
+
+                        <!-- Foto Profil (Opsional) -->
+                        <div>
+                            <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1 text-[10px] flex items-center gap-1.5">
+                                <i class="fa-solid fa-image text-brand-600 dark:text-brand-400"></i>
+                                <span>Foto Profil (Opsional)</span>
+                            </label>
+                            <input type="file" name="image" accept="image/jpeg,image/png,image/jpg,image/webp" class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900">
                         </div>
                     </div>
 
@@ -817,7 +882,7 @@
                 <button @click="editMemberModalOpen = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold transition">&times;</button>
             </div>
 
-            <form :action="'{{ url('admin/team/update') }}/' + editMemberItem.id" method="POST" class="space-y-4 text-xs">
+            <form :action="'{{ url('admin/team/update') }}/' + editMemberItem.id" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
                 @csrf
 
                 <!-- Nama Lengkap -->
@@ -843,6 +908,87 @@
                     <div>
                         <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Jabatan (Position) *</label>
                         <input type="text" name="position" list="presetPositions" x-model="editMemberItem.position" required class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-slate-100 focus:border-brand-600 focus:ring-1 focus:ring-brand-600">
+                    </div>
+                </div>
+
+                <!-- Email / Akun Gmail Anggota -->
+                <div class="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase text-[11px] flex items-center gap-1.5">
+                            <i class="fa-solid fa-envelope text-brand-600 dark:text-brand-400"></i>
+                            <span>Email / Akun Gmail</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400 font-medium lowercase">Tampil di pop-up info /tim</span>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-at text-xs"></i>
+                        </div>
+                        <input type="text"
+                               name="email"
+                               x-model="editMemberItem.email"
+                               placeholder="Contoh: thoriah@ctl-indonesia.net atau nama@gmail.com"
+                               class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-slate-100 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 shadow-sm">
+                    </div>
+                    <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-normal">
+                        Alamat email atau Gmail ini akan muncul dengan ikon surat <i class="fa-solid fa-envelope text-brand-600"></i> pada detail profil personel saat pengunjung membuka halaman <strong>Struktur Organisasi (/tim)</strong>.
+                    </p>
+                </div>
+
+                <!-- Bagian Ganti Foto Profil Anggota -->
+                <div class="p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase text-[11px] flex items-center gap-1.5">
+                            <i class="fa-solid fa-camera text-brand-600 dark:text-brand-400"></i>
+                            <span>Foto Profil Personel</span>
+                        </label>
+                        <span class="text-[10px] text-slate-400 font-medium">Format: JPG, PNG, WEBP (Max 8MB)</span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <!-- Preview Foto Saat Ini / Inisial -->
+                        <div class="relative flex-shrink-0">
+                            <template x-if="editMemberItem.preview_image && !editMemberItem.remove_image">
+                                <img :src="editMemberItem.preview_image" :alt="editMemberItem.name" class="w-20 h-20 rounded-2xl object-cover shadow border-2 border-brand-500/50">
+                            </template>
+                            <template x-if="!editMemberItem.preview_image || editMemberItem.remove_image">
+                                <div class="w-20 h-20 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl font-black shadow border border-slate-300 dark:border-slate-700"
+                                     x-text="editMemberItem.name ? editMemberItem.name.substring(0, 2).toUpperCase() : '??'">
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="flex-1 w-full space-y-2">
+                            <!-- Input Pilih Foto Baru -->
+                            <div>
+                                <input type="file" 
+                                       name="image" 
+                                       accept="image/jpeg,image/png,image/jpg,image/webp"
+                                       @change="
+                                            const file = $event.target.files[0];
+                                            if (file) {
+                                                editMemberItem.preview_image = URL.createObjectURL(file);
+                                                editMemberItem.remove_image = false;
+                                            }
+                                       "
+                                       class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-600 file:text-white hover:file:bg-brand-700 transition border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 cursor-pointer">
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Pilih berkas foto baru untuk mengganti foto personel ini.</p>
+                            </div>
+
+                            <!-- Opsi Hapus Foto (jika sudah ada foto) -->
+                            <template x-if="editMemberItem.image_url">
+                                <div class="flex items-center gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+                                    <label class="inline-flex items-center gap-2 cursor-pointer text-[11px] font-semibold text-rose-600 hover:text-rose-700">
+                                        <input type="checkbox" 
+                                               name="remove_image" 
+                                               value="1" 
+                                               x-model="editMemberItem.remove_image"
+                                               class="rounded border-slate-300 text-rose-600 focus:ring-rose-500">
+                                        <span>Hapus foto profil dan gunakan inisial huruf</span>
+                                    </label>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
 

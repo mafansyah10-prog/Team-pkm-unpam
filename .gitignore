@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.agents
+/consoltainer_backup.sql
+/consoltainer_clean.sql

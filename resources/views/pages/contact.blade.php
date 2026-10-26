@@ -157,8 +157,37 @@
                     </div>
 
                     <div class="pt-4 border-t border-brand-800">
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companySettings['whatsapp'] ?? '6281299887766') }}?text=Halo%20{{ urlencode($companySettings['company_name'] ?? 'Consoltainer') }},%20saya%20ingin%20konsultasi%20layanan" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow text-center block transition flex items-center justify-center gap-2 text-sm">
-                            <i class="fa-brands fa-whatsapp text-lg"></i> Direct WhatsApp Marketing
+                        @php
+                            $cleanMarketingContact = preg_replace('/[^0-9]/', '', $companySettings['whatsapp_marketing'] ?? $companySettings['whatsapp'] ?? '6281299887766');
+                        @endphp
+                        <a href="https://wa.me/{{ $cleanMarketingContact }}?text=Halo%20Marketing%20{{ urlencode($companySettings['company_name'] ?? 'PT. Consoltainer') }},%20saya%20ingin%20konsultasi%20layanan%20kargo" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow text-center block transition flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Direct WhatsApp Marketing ({{ $companySettings['whatsapp_marketing'] ?? $companySettings['whatsapp'] ?? '+62 812 9988 7766' }})
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hotline Pengaduan & Layanan Pelanggan Card -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-3xl border border-amber-200/80 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-200/70 px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                            <i class="fa-solid fa-headset text-amber-600"></i> Hotline Pengaduan Cepat
+                        </span>
+                        <span class="text-[10px] text-amber-700 font-bold bg-white/80 px-2 py-0.5 rounded-full border border-amber-200">Respon Prioritas</span>
+                    </div>
+                    <h4 class="text-base font-bold text-slate-900">Saluran Langsung Aduan & Penjaminan Mutu</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Jika Anda membutuhkan respon segera terkait kendala pengiriman, status kontainer, invoice, atau CFS Depot, hubungi langsung nomor pengaduan resmi kami:
+                    </p>
+                    <div class="pt-1 flex flex-col sm:flex-row gap-2">
+                        @php
+                            $cleanPengaduanContact = preg_replace('/[^0-9]/', '', $companySettings['phone_pengaduan'] ?? $companySettings['whatsapp'] ?? '6281299887766');
+                            $cleanFastChatContact = preg_replace('/[^0-9]/', '', $companySettings['whatsapp_fast_chat'] ?? $companySettings['whatsapp'] ?? '6281299887766');
+                        @endphp
+                        <a href="https://wa.me/{{ $cleanPengaduanContact }}?text=Halo%20Layanan%20Pengaduan%20PT.%20CONSOLTAINER,%20saya%20ingin%20melaporkan%20kendala" target="_blank" class="flex-1 py-2.5 px-3 bg-brand-900 hover:bg-brand-800 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition">
+                            <i class="fa-solid fa-bullhorn text-amber-400"></i> Hotline: {{ $companySettings['phone_pengaduan'] ?? '+62 812 9988 7766' }}
+                        </a>
+                        <a href="https://wa.me/{{ $cleanFastChatContact }}?text=Halo%20PT.%20CONSOLTAINER,%20saya%20ingin%20tanya%20informasi%20cepat" target="_blank" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition">
+                            <i class="fa-brands fa-whatsapp text-sm"></i> Fast Chat
                         </a>
                     </div>
                 </div>

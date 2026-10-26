@@ -564,10 +564,18 @@
                     Punya saran, masukan perbaikan, atau laporan kendala layanan kargo? Kami menyediakan saluran resmi penjaminan mutu untuk memastikan pelayanan yang selalu lebih baik bagi bisnis Anda.
                 </p>
             </div>
-            <div class="flex flex-wrap gap-4 z-10">
+            <div class="flex flex-wrap gap-3 z-10">
                 <a href="{{ route('contact') }}" class="px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-bullhorn text-brand-900"></i> Form Masukan & Pengaduan
                 </a>
+                @if(!empty($companySettings['phone_pengaduan']))
+                    @php
+                        $cleanPengaduan = preg_replace('/[^0-9]/', '', $companySettings['phone_pengaduan']);
+                    @endphp
+                    <a href="https://wa.me/{{ $cleanPengaduan }}?text=Halo%20Layanan%20Pengaduan%20PT.%20CONSOLTAINER,%20saya%20ingin%20menyampaikan%20laporan%20layanan" target="_blank" class="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold rounded-xl shadow transition flex items-center gap-2 text-sm backdrop-blur-sm">
+                        <i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i> Hotline: {{ $companySettings['phone_pengaduan'] }}
+                    </a>
+                @endif
             </div>
             <!-- Decorative Icon Backdrop -->
             <div class="absolute -right-8 -bottom-8 opacity-5 text-white text-9xl pointer-events-none">
@@ -585,10 +593,14 @@
             <p class="text-slate-800 font-medium text-base">Konsultasikan kebutuhan logistik dan dapatkan penawaran harga terbaik dari tim kami.</p>
         </div>
         <div class="flex flex-wrap gap-4">
-            <a href="{{ route('contact') }}" class="px-8 py-3.5 bg-brand-900 hover:bg-brand-800 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95">
-                Hubungi Marketing Kami
+            @php
+                $cleanMarketingHome = preg_replace('/[^0-9]/', '', $companySettings['whatsapp_marketing'] ?? $companySettings['whatsapp'] ?? '6281299887766');
+                $cleanFastChatHome = preg_replace('/[^0-9]/', '', $companySettings['whatsapp_fast_chat'] ?? $companySettings['whatsapp'] ?? '6281299887766');
+            @endphp
+            <a href="https://wa.me/{{ $cleanMarketingHome }}?text=Halo%20Marketing%20PT.%20CONSOLTAINER,%20saya%20ingin%20konsultasi%20pengiriman%20kargo" target="_blank" class="px-8 py-3.5 bg-brand-900 hover:bg-brand-800 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95 flex items-center gap-2">
+                <i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i> Hubungi Marketing Kami
             </a>
-            <a href="https://wa.me/6281299887766" target="_blank" class="px-6 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl shadow transition flex items-center gap-2">
+            <a href="https://wa.me/{{ $cleanFastChatHome }}?text=Halo%20Consoltainer,%20saya%20ingin%20tanya%20informasi%20kargo%20cepat" target="_blank" class="px-6 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl shadow transition flex items-center gap-2">
                 <i class="fa-brands fa-whatsapp text-emerald-600 text-lg"></i> Fast Chat WhatsApp
             </a>
         </div>
