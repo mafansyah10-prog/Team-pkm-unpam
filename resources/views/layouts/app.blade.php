@@ -200,14 +200,14 @@
     <header class="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-50 border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <a href="{{ route('home') }}" class="flex items-center space-x-3 select-none">
-                    <img src="{{ asset('images/ctl-logo.svg') }}" alt="CTL LINE Logo" class="h-14 w-auto object-contain pointer-events-none">
+                <!-- Logo (Unclickable) -->
+                <div class="flex items-center space-x-3 select-none cursor-default">
+                    <img src="{{ asset('images/ctl-logo.svg') }}" alt="CTL LINE Logo" class="h-14 w-auto object-contain pointer-events-none select-none">
                     <div>
                         <span class="text-lg font-black tracking-tight text-brand-900 block leading-tight">PT. CONSOLTAINER</span>
                         <span class="text-[10px] font-bold tracking-wider text-red-600 uppercase block">TRANSPORT LOGISTICS</span>
                     </div>
-                </a>
+                </div>
 
                 <!-- Desktop Nav Items (Minimalist Categories) -->
                 <nav class="hidden lg:flex items-center space-x-1 text-sm font-semibold text-slate-700">
