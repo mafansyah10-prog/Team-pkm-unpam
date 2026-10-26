@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/consolta/public_html/
+    - /bin/cp -a * $DEPLOYPATH
+    - /bin/cp -a .htaccess $DEPLOYPATH
