@@ -26,6 +26,16 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        $packagingCount = 0;
+        try {
+            if (!Schema::hasTable('packaging_items') || !Schema::hasTable('packaging_groups')) {
+                Artisan::call('migrate', ['--force' => true]);
+            }
+            $packagingCount = PackagingItem::count();
+        } catch (\Throwable $e) {
+            $packagingCount = 0;
+        }
+
         $stats = [
             'services' => Service::count(),
             'products' => Product::count(),
@@ -33,7 +43,7 @@ class AdminController extends Controller
             'gallery' => GalleryItem::count(),
             'portfolios' => Portfolio::count(),
             'testimonials' => Testimonial::count(),
-            'packaging' => PackagingItem::count(),
+            'packaging' => $packagingCount,
             'unread_messages' => ContactMessage::pending()->where('is_read', false)->count(),
             'pending_messages' => ContactMessage::pending()->count(),
             'history_messages' => ContactMessage::history()->count(),
@@ -840,16 +850,19 @@ class AdminController extends Controller
             if (!Schema::hasTable('packaging_groups') || !Schema::hasTable('packaging_items')) {
                 Artisan::call('migrate', ['--force' => true]);
             }
-        } catch (\Throwable $e) {}
 
-        $items = PackagingItem::with('group')
-            ->orderBy('group_id')
-            ->orderBy('sort_order')
-            ->get();
-            
-        $groups = PackagingGroup::withCount('items')
-            ->orderBy('sort_order')
-            ->get();
+            $items = PackagingItem::with('group')
+                ->orderBy('group_id')
+                ->orderBy('sort_order')
+                ->get();
+                
+            $groups = PackagingGroup::withCount('items')
+                ->orderBy('sort_order')
+                ->get();
+        } catch (\Throwable $e) {
+            $items = collect();
+            $groups = collect();
+        }
 
         return view('admin.packaging', compact('items', 'groups'));
     }

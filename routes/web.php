@@ -50,6 +50,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/forgot-password/verify', [AuthController::class, 'verifyOtpAndReset'])->name('forgot-password.verify');
 });
 
+// Auto-migration & cache sync trigger
+Route::get('/up-migrate', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        return response('MIGRATE_OK: ' . \Illuminate\Support\Facades\Artisan::output(), 200);
+    } catch (\Throwable $e) {
+        return response('MIGRATE_ERROR: ' . $e->getMessage(), 500);
+    }
+});
+
 // Admin Back-Office Panel (protected by AdminAuth middleware)
 Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
