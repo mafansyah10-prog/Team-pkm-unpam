@@ -4,3 +4,6 @@ deployment:
     - export DEPLOYPATH=/home/consolta/public_html/
     - /bin/cp -a * $DEPLOYPATH
     - /bin/cp -a .htaccess $DEPLOYPATH
+    - cd $DEPLOYPATH && (php artisan migrate --force || /usr/local/bin/php artisan migrate --force || /usr/bin/php artisan migrate --force || true)
+    - cd $DEPLOYPATH && (php artisan optimize:clear || /usr/local/bin/php artisan optimize:clear || /usr/bin/php artisan optimize:clear || true)
+    - cd $DEPLOYPATH && (php artisan storage:link || /usr/local/bin/php artisan storage:link || /usr/bin/php artisan storage:link || true)

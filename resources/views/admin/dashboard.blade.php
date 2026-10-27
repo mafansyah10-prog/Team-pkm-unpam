@@ -62,8 +62,8 @@
         </a>
     </div>
 
-    <!-- Secondary Stats (3 Columns) -->
-    <div class="grid grid-cols-3 gap-2.5 sm:gap-4">
+    <!-- Secondary Stats (4 Columns) -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
         <a href="{{ route('admin.team') }}" class="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 text-center hover:border-brand-500 transition shadow-2xs">
             <span class="text-[10px] sm:text-xs text-slate-500 font-semibold block">Anggota Tim</span>
             <span class="text-base sm:text-xl font-bold text-slate-900 block mt-0.5">{{ $stats['team'] }} <span class="text-xs font-normal text-slate-400 hidden sm:inline">Orang</span></span>
@@ -75,6 +75,10 @@
         <a href="{{ route('admin.testimonials') }}" class="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 text-center hover:border-brand-500 transition shadow-2xs">
             <span class="text-[10px] sm:text-xs text-slate-500 font-semibold block">Testimoni</span>
             <span class="text-base sm:text-xl font-bold text-slate-900 block mt-0.5">{{ $stats['testimonials'] }} <span class="text-xs font-normal text-slate-400 hidden sm:inline">Ulasan</span></span>
+        </a>
+        <a href="{{ route('admin.packaging') }}" class="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 text-center hover:border-brand-500 transition shadow-2xs">
+            <span class="text-[10px] sm:text-xs text-slate-500 font-semibold block">Panduan Kemasan</span>
+            <span class="text-base sm:text-xl font-bold text-slate-900 block mt-0.5">{{ $stats['packaging'] }} <span class="text-xs font-normal text-slate-400 hidden sm:inline">Kemasan</span></span>
         </a>
     </div>
 

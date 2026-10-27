@@ -96,6 +96,15 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::post('/testimonials/update/{id}', [AdminController::class, 'testimonialUpdate'])->name('testimonials.update');
     Route::delete('/testimonials/{id}', [AdminController::class, 'testimonialDelete'])->name('testimonials.delete');
 
+    // Packaging Guide (CEISA 4.0) Management
+    Route::get('/packaging', [AdminController::class, 'packaging'])->name('packaging');
+    Route::post('/packaging/store', [AdminController::class, 'packagingStore'])->name('packaging.store');
+    Route::post('/packaging/update/{id}', [AdminController::class, 'packagingUpdate'])->name('packaging.update');
+    Route::delete('/packaging/{id}', [AdminController::class, 'packagingDelete'])->name('packaging.delete');
+    Route::post('/packaging/groups/store', [AdminController::class, 'packagingGroupStore'])->name('packaging.groups.store');
+    Route::post('/packaging/groups/update/{id}', [AdminController::class, 'packagingGroupUpdate'])->name('packaging.groups.update');
+    Route::delete('/packaging/groups/{id}', [AdminController::class, 'packagingGroupDelete'])->name('packaging.groups.delete');
+
     // Messages & Complaints Inbox + History
     Route::get('/messages', [AdminController::class, 'messages'])->name('messages');
     Route::post('/messages/toggle/{id}', [AdminController::class, 'messageToggleRead'])->name('messages.toggle');

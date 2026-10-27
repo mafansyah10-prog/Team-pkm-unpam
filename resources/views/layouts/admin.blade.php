@@ -486,6 +486,11 @@
                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition {{ request()->routeIs('admin.testimonials*') ? 'bg-brand-600 text-white font-bold shadow-lg shadow-brand-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
                     <i class="fa-solid fa-comments text-sm w-5 {{ request()->routeIs('admin.testimonials*') ? 'text-white' : 'text-slate-400' }}"></i> Testimoni Klien
                 </a>
+                <a href="{{ route('admin.packaging') }}"
+                   @click="if (window.innerWidth < 768) sidebarOpen = false"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition {{ request()->routeIs('admin.packaging*') ? 'bg-brand-600 text-white font-bold shadow-lg shadow-brand-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                    <i class="fa-solid fa-boxes-packing text-sm w-5 {{ request()->routeIs('admin.packaging*') ? 'text-white' : 'text-slate-400' }}"></i> Panduan Kemasan
+                </a>
 
                 <div class="pt-4 pb-1 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Inquiry & Pengaturan</div>
 

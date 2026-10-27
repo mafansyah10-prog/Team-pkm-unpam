@@ -101,7 +101,7 @@
                 <div>
                     <span class="text-xs font-bold uppercase tracking-widest text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Katalog Visual</span>
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Kemasan Kargo yang Sering Digunakan</h2>
-                    <p class="text-sm text-slate-600 mt-1">22 jenis kemasan umum dikelompokkan berdasarkan bentuk dan wadahnya</p>
+                    <p class="text-sm text-slate-600 mt-1">{{ collect($packagingGroups)->sum(fn($g) => count($g['cards'])) }} jenis kemasan umum dikelompokkan berdasarkan bentuk dan wadahnya</p>
                 </div>
                 <div class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                     <i class="fa-solid fa-camera mr-1 text-slate-400"></i> Disertai foto ilustrasi & kode resmi
@@ -113,7 +113,7 @@
                 <!-- Category Filter Bar -->
                 <div class="flex flex-wrap items-center gap-2 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm" id="category-filters">
                     <button type="button" data-filter="all" class="cat-btn active px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-brand-900 text-amber-400 shadow-sm">
-                        <i class="fa-solid fa-shapes"></i> Semua (22)
+                        <i class="fa-solid fa-shapes"></i> Semua ({{ collect($packagingGroups)->sum(fn($g) => count($g['cards'])) }})
                     </button>
                     @foreach($packagingGroups as $grp)
                     <button type="button" data-filter="{{ $grp['id'] }}" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700">

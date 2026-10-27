@@ -11,6 +11,8 @@ use App\Models\Portfolio;
 use App\Models\Testimonial;
 use App\Models\ContactMessage;
 use App\Models\CompanySetting;
+use App\Models\PackagingGroup;
+use App\Models\PackagingItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -29,6 +31,7 @@ class AdminController extends Controller
             'gallery' => GalleryItem::count(),
             'portfolios' => Portfolio::count(),
             'testimonials' => Testimonial::count(),
+            'packaging' => PackagingItem::count(),
             'unread_messages' => ContactMessage::pending()->where('is_read', false)->count(),
             'pending_messages' => ContactMessage::pending()->count(),
             'history_messages' => ContactMessage::history()->count(),
@@ -826,5 +829,163 @@ class AdminController extends Controller
         CompanySetting::set('mail_port', trim($request->input('mail_port', '587')));
 
         return redirect()->back()->with('success', 'Pengaturan Pengiriman OTP Administrator berhasil diperbarui! Kode OTP 6-digit sekarang otomatis dikirimkan ke Gmail: ' . $user->email);
+    }
+
+    // ── 9. Packaging Guide Management ──────────────────────────────────────────
+    public function packaging()
+    {
+        $items = PackagingItem::with('group')
+            ->orderBy('group_id')
+            ->orderBy('sort_order')
+            ->get();
+            
+        $groups = PackagingGroup::withCount('items')
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('admin.packaging', compact('items', 'groups'));
+    }
+
+    public function packagingStore(Request $request)
+    {
+        $data = $request->validate([
+            'group_id'   => 'required|exists:packaging_groups,id',
+            'code'       => 'required|string|max:10',
+            'ceisa'      => 'required|string|max:255',
+            'title'      => 'required|string|max:255',
+            'desc'       => 'required|string',
+            'example'    => 'nullable|string|max:255',
+            'tips'       => 'nullable|string',
+            'image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'is_active'  => 'nullable',
+        ], [
+            'group_id.required' => 'Kategori/grup kemasan wajib dipilih.',
+            'code.required'     => 'Kode kemasan CEISA wajib diisi (misal: CT, PX, DR).',
+            'ceisa.required'    => 'Nama resmi CEISA wajib diisi (misal: Carton, Pallet).',
+            'title.required'    => 'Judul kemasan wajib diisi.',
+            'desc.required'     => 'Deskripsi teknis kemasan wajib diisi.',
+        ]);
+
+        $data['code'] = strtoupper(trim($data['code']));
+        $data['is_active'] = $request->has('is_active');
+        $data['sort_order'] = PackagingItem::where('group_id', $data['group_id'])->count() + 1;
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/packaging', 'public');
+        }
+
+        PackagingItem::create($data);
+
+        return redirect()->back()->with('success', 'Kemasan ' . $data['code'] . ' - ' . $data['title'] . ' berhasil ditambahkan ke katalog!');
+    }
+
+    public function packagingUpdate(Request $request, $id)
+    {
+        $item = PackagingItem::findOrFail($id);
+
+        $data = $request->validate([
+            'group_id'   => 'required|exists:packaging_groups,id',
+            'code'       => 'required|string|max:10',
+            'ceisa'      => 'required|string|max:255',
+            'title'      => 'required|string|max:255',
+            'desc'       => 'required|string',
+            'example'    => 'nullable|string|max:255',
+            'tips'       => 'nullable|string',
+            'image'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'is_active'  => 'nullable',
+        ], [
+            'group_id.required' => 'Kategori/grup kemasan wajib dipilih.',
+            'code.required'     => 'Kode kemasan CEISA wajib diisi.',
+            'ceisa.required'    => 'Nama resmi CEISA wajib diisi.',
+            'title.required'    => 'Judul kemasan wajib diisi.',
+            'desc.required'     => 'Deskripsi teknis kemasan wajib diisi.',
+        ]);
+
+        $data['code'] = strtoupper(trim($data['code']));
+        $data['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('image')) {
+            if ($item->image && str_starts_with($item->image, 'uploads/')) {
+                Storage::disk('public')->delete($item->image);
+            }
+            $data['image'] = $request->file('image')->store('uploads/packaging', 'public');
+        }
+
+        $item->update($data);
+
+        return redirect()->back()->with('success', 'Data kemasan ' . $item->code . ' berhasil diperbarui!');
+    }
+
+    public function packagingDelete($id)
+    {
+        $item = PackagingItem::findOrFail($id);
+        $code = $item->code;
+
+        if ($item->image && str_starts_with($item->image, 'uploads/')) {
+            Storage::disk('public')->delete($item->image);
+        }
+
+        $item->delete();
+
+        return redirect()->back()->with('success', 'Kemasan ' . $code . ' berhasil dihapus!');
+    }
+
+    public function packagingGroupStore(Request $request)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'icon'  => 'nullable|string|max:50',
+            'desc'  => 'nullable|string',
+        ]);
+
+        $slug = Str::slug($data['title']);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (PackagingGroup::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter++;
+        }
+
+        $data['slug'] = $slug;
+        $data['icon'] = $data['icon'] ?: 'fa-box';
+        $data['sort_order'] = PackagingGroup::count() + 1;
+
+        PackagingGroup::create($data);
+
+        return redirect()->back()->with('success', 'Kategori kemasan "' . $data['title'] . '" berhasil ditambahkan!');
+    }
+
+    public function packagingGroupUpdate(Request $request, $id)
+    {
+        $group = PackagingGroup::findOrFail($id);
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'icon'  => 'nullable|string|max:50',
+            'desc'  => 'nullable|string',
+        ]);
+
+        if (empty($data['icon'])) {
+            $data['icon'] = 'fa-box';
+        }
+
+        $group->update($data);
+
+        return redirect()->back()->with('success', 'Kategori kemasan "' . $group->title . '" berhasil diperbarui!');
+    }
+
+    public function packagingGroupDelete($id)
+    {
+        $group = PackagingGroup::findOrFail($id);
+        $itemCount = $group->items()->count();
+        $title = $group->title;
+
+        if ($itemCount > 0) {
+            return redirect()->back()->withErrors([
+                'group' => 'Kategori "' . $title . '" memiliki ' . $itemCount . ' kemasan di dalamnya. Hapus atau pindahkan kemasan tersebut sebelum menghapus kategori ini.'
+            ]);
+        }
+
+        $group->delete();
+
+        return redirect()->back()->with('success', 'Kategori kemasan "' . $title . '" berhasil dihapus!');
     }
 }
