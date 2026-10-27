@@ -53,6 +53,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Admin Back-Office Panel (protected by AdminAuth middleware)
 Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/migrate', [AdminController::class, 'runMigrations'])->name('migrate');
 
     // Services
     Route::get('/services', [AdminController::class, 'services'])->name('services');

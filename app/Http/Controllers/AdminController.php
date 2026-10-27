@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -834,6 +836,12 @@ class AdminController extends Controller
     // ── 9. Packaging Guide Management ──────────────────────────────────────────
     public function packaging()
     {
+        try {
+            if (!Schema::hasTable('packaging_groups') || !Schema::hasTable('packaging_items')) {
+                Artisan::call('migrate', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {}
+
         $items = PackagingItem::with('group')
             ->orderBy('group_id')
             ->orderBy('sort_order')
@@ -844,6 +852,17 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.packaging', compact('items', 'groups'));
+    }
+
+    public function runMigrations()
+    {
+        try {
+            Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('optimize:clear');
+            return redirect()->route('admin.dashboard')->with('success', 'Migrasi database berhasil dijalankan!');
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.dashboard')->withErrors(['migration' => 'Error migrasi: ' . $e->getMessage()]);
+        }
     }
 
     public function packagingStore(Request $request)
