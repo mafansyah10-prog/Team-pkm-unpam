@@ -738,6 +738,10 @@ class AdminController extends Controller
             CompanySetting::set($key, $value);
         }
 
+        if (!$request->has('phone_pengaduan')) {
+            CompanySetting::where('key', 'phone_pengaduan')->delete();
+        }
+
         // Process dynamic social media list
         if ($request->has('social_media')) {
             $rawSocial = $request->input('social_media');

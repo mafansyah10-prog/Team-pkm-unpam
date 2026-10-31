@@ -54,6 +54,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::get('/up-migrate', function () {
     try {
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \App\Models\CompanySetting::where('key', 'phone_pengaduan')->delete();
         \Illuminate\Support\Facades\Artisan::call('optimize:clear');
         return response('MIGRATE_OK: ' . \Illuminate\Support\Facades\Artisan::output(), 200);
     } catch (\Throwable $e) {

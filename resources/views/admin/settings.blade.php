@@ -42,10 +42,10 @@
             </div>
         </div>
 
-        <!-- 2. Kontak Kantor, WhatsApp & Saluran Pengaduan Pelanggan -->
+        <!-- 2. Kontak Kantor & WhatsApp Resmi -->
         <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
             <div class="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-bold text-sm mb-4">
-                <i class="fa-solid fa-phone-volume text-brand-600"></i> Kontak Kantor, WhatsApp & Saluran Pengaduan
+                <i class="fa-solid fa-phone-volume text-brand-600"></i> Kontak Kantor & WhatsApp Resmi
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -66,16 +66,16 @@
                 </div>
             </div>
 
-            <!-- WhatsApp Marketing, Fast Chat, and Nomor Pengaduan Highlighted Box -->
+            <!-- WhatsApp Marketing & Fast Chat Highlighted Box -->
             <div class="p-4 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl mb-4 space-y-4">
                 <div class="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-200/60 dark:border-emerald-800/40 pb-2">
                     <div class="flex items-center gap-2 text-emerald-900 dark:text-emerald-300 font-bold text-xs uppercase tracking-wider">
-                        <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i> Saluran Cepat WhatsApp & Layanan Pengaduan Resmi
+                        <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i> Saluran Cepat WhatsApp Resmi
                     </div>
                     <span class="text-[10px] bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 px-2.5 py-0.5 rounded-full font-bold">Terhubung Langsung ke Tombol Pengguna</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- 1. Direct WhatsApp Marketing -->
                     <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-emerald-200 dark:border-slate-800 space-y-2 shadow-2xs">
                         <div class="flex items-center justify-between">
@@ -98,18 +98,6 @@
                         </div>
                         <input type="text" name="whatsapp_fast_chat" value="{{ $settings['whatsapp_fast_chat'] ?? $settings['whatsapp'] ?? '+62 812 9988 7766' }}" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border dark:border-slate-700 rounded-xl text-sm font-bold text-emerald-700 dark:text-emerald-400" placeholder="+62 812 9988 7766">
                         <p class="text-[10px] text-slate-500 leading-tight">Digunakan pada tombol <strong>"Fast Chat WhatsApp"</strong> di banner oranye pada halaman utama/beranda.</p>
-                    </div>
-
-                    <!-- 3. Nomor Pengaduan / Hotline Layanan Pelanggan -->
-                    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-emerald-200 dark:border-slate-800 space-y-2 shadow-2xs">
-                        <div class="flex items-center justify-between">
-                            <label class="block font-bold text-slate-800 dark:text-slate-200 text-xs uppercase">
-                                Nomor Pengaduan Pelanggan
-                            </label>
-                            <span class="text-[9px] bg-sky-50 text-sky-800 font-bold px-1.5 py-0.5 rounded">Hotline Aduan</span>
-                        </div>
-                        <input type="text" name="phone_pengaduan" value="{{ $settings['phone_pengaduan'] ?? $settings['whatsapp'] ?? '+62 812 9988 7766' }}" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border dark:border-slate-700 rounded-xl text-sm font-bold text-sky-700 dark:text-sky-400" placeholder="+62 812 9988 7766">
-                        <p class="text-[10px] text-slate-500 leading-tight">Hotline resmi aduan kendala kargo, CFS Depot, dan layanan suara konsumen di halaman kontak & footer.</p>
                     </div>
                 </div>
             </div>
