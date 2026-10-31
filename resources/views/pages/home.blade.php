@@ -568,14 +568,6 @@
                 <a href="{{ route('contact') }}" class="px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-bullhorn text-brand-900"></i> Form Masukan & Pengaduan
                 </a>
-                @if(!empty($companySettings['phone_pengaduan']))
-                    @php
-                        $cleanPengaduan = preg_replace('/[^0-9]/', '', $companySettings['phone_pengaduan']);
-                    @endphp
-                    <a href="https://wa.me/{{ $cleanPengaduan }}?text=Halo%20Layanan%20Pengaduan%20PT.%20CONSOLTAINER,%20saya%20ingin%20menyampaikan%20laporan%20layanan" target="_blank" class="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold rounded-xl shadow transition flex items-center gap-2 text-sm backdrop-blur-sm">
-                        <i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i> Hotline: {{ $companySettings['phone_pengaduan'] }}
-                    </a>
-                @endif
             </div>
             <!-- Decorative Icon Backdrop -->
             <div class="absolute -right-8 -bottom-8 opacity-5 text-white text-9xl pointer-events-none">
