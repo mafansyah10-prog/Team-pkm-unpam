@@ -55,7 +55,7 @@
                     <p class="text-[10px] text-slate-400 mt-1">Tampil di header topbar & footer web.</p>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">WhatsApp Hotline Utama</label>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">WhatsApp Utama Perusahaan</label>
                     <input type="text" name="whatsapp" value="{{ $settings['whatsapp'] ?? '+62 812 9988 7766' }}" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border dark:border-slate-700 rounded-xl text-sm font-medium dark:text-slate-100">
                     <p class="text-[10px] text-slate-400 mt-1">Nomor WhatsApp induk profil perusahaan.</p>
                 </div>

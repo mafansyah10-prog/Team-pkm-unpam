@@ -524,14 +524,6 @@
                                 {{ $companySettings['whatsapp_marketing'] ?? $companySettings['whatsapp'] ?? '+62 812 9988 7766' }}
                             </a>
                         </p>
-                        @if(!empty($companySettings['phone_pengaduan']))
-                        <p class="flex items-center gap-2 text-slate-300 text-xs">
-                            <i class="fa-solid fa-bullhorn text-amber-400"></i>
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $companySettings['phone_pengaduan']) }}?text=Halo%20Layanan%20Pengaduan%20PT.%20CONSOLTAINER" target="_blank" class="hover:text-white">
-                                Hotline: {{ $companySettings['phone_pengaduan'] }}
-                            </a>
-                        </p>
-                        @endif
                     </div>
                 </div>
             </div>
