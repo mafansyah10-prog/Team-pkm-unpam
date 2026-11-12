@@ -97,9 +97,16 @@ class TrackingController extends Controller
         }
         abort_unless($res->successful(), $res->status() === 404 ? 404 : 502);
 
+        $type = strtolower(trim(explode(';', (string) $res->header('Content-Type'))[0]));
+        $disposition = $res->header('Content-Disposition') ?: 'attachment';
+        // Pratinjau (?preview=1): hanya PDF & gambar (bukan SVG/HTML) yang boleh tampil inline; selain itu tetap unduh.
+        if ($request->boolean('preview') && ($type === 'application/pdf' || in_array($type, ['image/png', 'image/jpeg', 'image/gif', 'image/webp'], true))) {
+            $disposition = preg_replace('/^\s*attachment/i', 'inline', $disposition);
+        }
+
         return response($res->body(), 200, [
-            'Content-Type' => $res->header('Content-Type') ?: 'application/octet-stream',
-            'Content-Disposition' => $res->header('Content-Disposition') ?: 'attachment',
+            'Content-Type' => $type ?: 'application/octet-stream',
+            'Content-Disposition' => $disposition,
             'X-Content-Type-Options' => 'nosniff',
             'Cache-Control' => 'private, no-store',
         ]);

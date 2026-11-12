@@ -96,13 +96,26 @@
             </div>
         </div>
 
+        @if(array_key_exists('show_terminal', $job) && ! $job['show_terminal'])
+        <div class="{{ $kartu }}">
+            <h2 class="{{ $judul }}"><i class="fa-solid fa-warehouse"></i> Lokasi Barang</h2>
+            @if(! empty($job['warehouse']))
+                <p class="text-sm font-semibold text-slate-900">{{ $job['warehouse']['name'] ?? 'Gudang LCL' }}</p>
+                @if(! empty($job['warehouse']['address']))<p class="text-sm text-slate-600 mt-1">{{ $job['warehouse']['address'] }}</p>@endif
+                @if(! empty($job['warehouse']['pbm']))<p class="text-sm text-slate-500 mt-1">PBM: {{ $job['warehouse']['pbm'] }}</p>@endif
+            @else
+                <p class="text-sm text-slate-500">Informasi lokasi gudang akan dikonfirmasi oleh tim kami.</p>
+            @endif
+        </div>
+        @endif
+
         @if(count($job['containers']))
         <div class="{{ $kartu }}">
             <h2 class="{{ $judul }}"><i class="fa-solid fa-cubes"></i> Kontainer</h2>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead class="text-xs uppercase text-slate-500">
-                        <tr><th class="text-left py-2 pr-4">No. Kontainer</th><th class="text-left py-2 pr-4">Ukuran</th><th class="text-left py-2 pr-4">Seal</th><th class="text-left py-2 pr-4">Posisi terminal</th><th class="text-left py-2">Pengembalian</th></tr>
+                        <tr><th class="text-left py-2 pr-4">No. Kontainer</th><th class="text-left py-2 pr-4">Ukuran</th><th class="text-left py-2 pr-4">Seal</th>@if($job['show_terminal'] ?? false)<th class="text-left py-2 pr-4">Posisi terminal</th>@endif<th class="text-left py-2">Pengembalian</th></tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @foreach($job['containers'] as $c)
@@ -111,12 +124,14 @@
                             <td class="py-2.5 pr-4 font-semibold">{{ $c['container_number'] }}</td>
                             <td class="py-2.5 pr-4">{{ $v($c['container_size']) }}</td>
                             <td class="py-2.5 pr-4">{{ $v($c['seal_number']) }}</td>
+                            @if($job['show_terminal'] ?? false)
                             <td class="py-2.5 pr-4">
                                 @if($t)
                                     <span class="font-semibold">{{ $tahap[$t['stage']] ?? $v($t['stage_text']) }}</span>
                                     <span class="block text-xs text-slate-500">{{ $t['terminal'] }}@if($t['location']) &middot; {{ $t['location'] }}@endif @if($t['gate_out_at']) &middot; keluar {{ $tgl($t['gate_out_at'], true) }}@elseif($t['discharged_at']) &middot; bongkar {{ $tgl($t['discharged_at'], true) }}@endif</span>
                                 @else <span class="text-slate-400">Belum terpantau</span> @endif
                             </td>
+                            @endif
                             <td class="py-2.5">
                                 @if(! empty($c['is_returned']))<span class="text-emerald-700 font-semibold">Sudah kembali {{ $tgl($c['return_date']) }}</span>
                                 @elseif(! empty($c['free_time_end_date']))<span>Free time s/d <b>{{ $tgl($c['free_time_end_date']) }}</b></span>
@@ -146,7 +161,10 @@
                 @else <p class="text-sm text-slate-400">Belum ada riwayat status.</p> @endif
             </div>
 
-            <div class="{{ $kartu }}">
+            <div class="{{ $kartu }}" x-data="{ buka: false, nama: '', lihat: '', unduh: '',
+                    pilih(el) { this.nama = el.dataset.nama; this.lihat = el.dataset.lihat; this.unduh = el.dataset.unduh; this.buka = true; },
+                    cetak() { try { this.$refs.frame.contentWindow.focus(); this.$refs.frame.contentWindow.print(); } catch (e) { window.open(this.lihat, '_blank', 'noopener'); } } }"
+                 @keydown.escape.window="buka = false">
                 <h2 class="{{ $judul }}"><i class="fa-solid fa-file-lines"></i> Dokumen</h2>
                 @if(count($docs))
                 <ul class="divide-y divide-slate-100">
@@ -156,11 +174,31 @@
                             <p class="text-sm font-semibold text-slate-800">{{ $jenisDok[$d['document_type']] ?? 'Dokumen' }}</p>
                             <p class="text-xs text-slate-500 truncate">{{ $d['file_name'] }} &middot; {{ $tgl($d['created_at']) }}</p>
                         </div>
-                        <a href="{{ route('tracking.document', [$job['id'], $d['id']]) }}" class="shrink-0 px-3 py-1.5 bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-download"></i> Unduh</a>
+                        <div class="shrink-0">
+                            @if(in_array(strtolower(pathinfo($d['file_name'], PATHINFO_EXTENSION)), ['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'], true))
+                            <button type="button" @click="pilih($el)" data-nama="{{ $d['file_name'] }}" data-lihat="{{ route('tracking.document', [$job['id'], $d['id'], 'preview' => 1]) }}" data-unduh="{{ route('tracking.document', [$job['id'], $d['id']]) }}" class="px-3 py-1.5 bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-eye"></i> Preview</button>
+                            @else
+                            <a href="{{ route('tracking.document', [$job['id'], $d['id']]) }}" class="px-3 py-1.5 bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-download"></i> Unduh</a>
+                            @endif
+                        </div>
                     </li>
                     @endforeach
                 </ul>
                 @else <p class="text-sm text-slate-400">Belum ada dokumen yang tersedia. Delivery Order tersedia setelah pembayaran terkonfirmasi.</p> @endif
+
+                <div x-show="buka" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-slate-900/70" @click.self="buka = false" role="dialog" aria-modal="true">
+                    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full max-h-[92vh] flex flex-col overflow-hidden">
+                        <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-200">
+                            <p class="text-sm font-bold text-slate-800 truncate" x-text="nama"></p>
+                            <div class="shrink-0 flex items-center gap-2">
+                                <a :href="unduh" class="px-3 py-1.5 bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Download</span></a>
+                                <button type="button" @click="cetak()" class="px-3 py-1.5 bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-print"></i> <span class="hidden sm:inline">Print</span></button>
+                                <button type="button" @click="buka = false" class="px-3 py-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"><i class="fa-solid fa-xmark"></i> <span class="hidden sm:inline">Tutup</span></button>
+                            </div>
+                        </div>
+                        <iframe x-ref="frame" :src="buka ? lihat : 'about:blank'" class="flex-1 w-full bg-slate-100" title="Pratinjau dokumen"></iframe>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
