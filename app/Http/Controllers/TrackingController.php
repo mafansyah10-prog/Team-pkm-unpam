@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\DocklyPortal;
 use App\Services\DocklyUnauthorized;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 
 class TrackingController extends Controller
 {
@@ -19,6 +20,37 @@ class TrackingController extends Controller
         }
 
         return view('tracking.login');
+    }
+
+    /** Cari nomor HBL tanpa login. Batas: 12 permintaan/menit (route) + 8 pencarian gagal per 15 menit per IP. */
+    public function cari(Request $request)
+    {
+        $bl = strtoupper(trim((string) $request->query('bl', '')));
+        if ($bl === '') {
+            return view('tracking.cari', ['bl' => '', 'job' => null, 'pesan' => null]);
+        }
+
+        $kunci = 'tracking-bl-gagal:'.$request->ip();
+        if (RateLimiter::tooManyAttempts($kunci, 8)) {
+            return response()->view('tracking.cari', ['bl' => $bl, 'job' => null, 'pesan' => 'Terlalu banyak pencarian yang tidak ditemukan. Coba lagi dalam beberapa menit.'], 429);
+        }
+        if (strlen($bl) < 5 || strlen($bl) > 40 || ! preg_match('/^[A-Z0-9._\/-]+$/', $bl)) {
+            RateLimiter::hit($kunci, 900);
+
+            return response()->view('tracking.cari', ['bl' => $bl, 'job' => null, 'pesan' => 'Nomor BL tidak ditemukan. Periksa kembali penulisannya.'], 404);
+        }
+
+        $hasil = $this->dockly->trackByHbl($bl);
+        if ($hasil['status'] === 200 && $hasil['data']) {
+            return view('tracking.cari', ['bl' => $bl, 'job' => $hasil['data'], 'pesan' => null]);
+        }
+        if (in_array($hasil['status'], [404, 409], true)) {
+            RateLimiter::hit($kunci, 900);
+        }
+        $kode = in_array($hasil['status'], [404, 409, 429, 503], true) ? $hasil['status'] : 502;
+        $pesan = $kode === 404 ? 'Nomor BL tidak ditemukan. Periksa kembali penulisannya.' : ($hasil['message'] ?: 'Data tracking tidak dapat dimuat.');
+
+        return response()->view('tracking.cari', ['bl' => $bl, 'job' => null, 'pesan' => $pesan], $kode);
     }
 
     public function login(Request $request)

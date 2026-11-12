@@ -36,6 +36,7 @@ Route::get('/kemasan', [CompanyController::class, 'packagingGuide'])->name('pack
 
 // Tracking Customer (data dari API Dockly)
 Route::prefix('tracking')->name('tracking.')->group(function () {
+    Route::get('/cari', [TrackingController::class, 'cari'])->middleware('throttle:12,1')->name('cari');
     Route::get('/login', [TrackingController::class, 'showLogin'])->name('login');
     Route::post('/login', [TrackingController::class, 'login'])->middleware('throttle:10,1')->name('login.post');
     Route::middleware(DocklyPortalAuth::class)->group(function () {

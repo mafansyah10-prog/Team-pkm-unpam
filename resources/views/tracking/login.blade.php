@@ -8,6 +8,10 @@
         <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-800 px-3 py-1 rounded-full">Customer Portal</span>
         <h1 class="text-3xl sm:text-4xl font-extrabold mt-3">Tracking Pengiriman</h1>
         <p class="text-slate-200 max-w-2xl mt-3 text-base">Pantau status kargo, posisi kontainer, dan dokumen pengiriman Anda secara langsung.</p>
+        <div class="mt-6 max-w-2xl">
+            <p class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Lacak tanpa login</p>
+            @include('tracking._cari-form')
+        </div>
     </div>
 </section>
 

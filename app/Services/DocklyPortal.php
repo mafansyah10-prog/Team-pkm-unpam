@@ -38,6 +38,18 @@ class DocklyPortal
         return ['ok' => false, 'status' => $res->status(), 'message' => $res->json('message') ?: 'Login gagal.', 'token' => null, 'user' => null];
     }
 
+    /** Cari 1 nomor HBL tanpa login (data dibatasi oleh Dockly). @return array{status:int,data:?array,message:?string} */
+    public function trackByHbl(string $bl): array
+    {
+        try {
+            $res = $this->http()->get('/portal-public/track', ['bl' => $bl]);
+        } catch (ConnectionException $e) {
+            return ['status' => 503, 'data' => null, 'message' => 'Layanan tracking sedang tidak tersedia. Coba beberapa saat lagi.'];
+        }
+
+        return ['status' => $res->status(), 'data' => $res->successful() ? $res->json('data') : null, 'message' => $res->json('message')];
+    }
+
     /** GET ke API portal. Melempar DocklyUnauthorized bila token ditolak (kedaluwarsa/akun dinonaktifkan). */
     public function get(string $token, string $path): Response
     {
