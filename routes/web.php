@@ -8,6 +8,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TrackingController;
+use App\Http\Middleware\DocklyPortalAuth;
 
 // Public Website Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -31,6 +33,18 @@ Route::get('/produk/{slug}', [ProductController::class, 'show'])->name('products
 Route::get('/panduan-kemasan', [CompanyController::class, 'packagingGuide'])->name('packaging.guide');
 Route::get('/panduan-jenis-kemasan', [CompanyController::class, 'packagingGuide'])->name('packaging.guide.alias');
 Route::get('/kemasan', [CompanyController::class, 'packagingGuide'])->name('packaging.guide.short');
+
+// Tracking Customer (data dari API Dockly)
+Route::prefix('tracking')->name('tracking.')->group(function () {
+    Route::get('/login', [TrackingController::class, 'showLogin'])->name('login');
+    Route::post('/login', [TrackingController::class, 'login'])->middleware('throttle:10,1')->name('login.post');
+    Route::middleware(DocklyPortalAuth::class)->group(function () {
+        Route::post('/logout', [TrackingController::class, 'logout'])->name('logout');
+        Route::get('/', [TrackingController::class, 'index'])->name('index');
+        Route::get('/{id}', [TrackingController::class, 'show'])->whereNumber('id')->name('show');
+        Route::get('/{id}/dokumen/{doc}', [TrackingController::class, 'document'])->whereNumber(['id', 'doc'])->name('document');
+    });
+});
 
 // Contact Us
 Route::get('/kontak', [ContactController::class, 'index'])->name('contact');

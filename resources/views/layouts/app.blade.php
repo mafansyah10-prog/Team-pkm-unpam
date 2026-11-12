@@ -305,6 +305,11 @@
                     <a href="{{ route('contact') }}" class="px-3.5 py-2 rounded-xl hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('contact') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">
                         Kontak
                     </a>
+
+                    <!-- Direct: Tracking Customer -->
+                    <a href="{{ route('tracking.index') }}" class="px-3.5 py-2 rounded-xl hover:text-brand-600 hover:bg-slate-50 transition {{ request()->routeIs('tracking.*') ? 'text-brand-600 bg-brand-50 font-bold' : '' }}">
+                        Tracking
+                    </a>
                 </nav>
 
                 <!-- Mobile Menu Button -->
@@ -412,6 +417,15 @@
                     <span class="flex items-center gap-2">
                         <i class="fa-solid fa-envelope text-slate-400 text-xs"></i>
                         <span>Kontak</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300"></i>
+                </a>
+
+                <!-- Direct: Tracking Customer -->
+                <a href="{{ route('tracking.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition {{ request()->routeIs('tracking.*') ? 'bg-brand-50 text-brand-600' : 'text-slate-700 hover:bg-slate-50' }}">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-slate-400 text-xs"></i>
+                        <span>Tracking</span>
                     </span>
                     <i class="fa-solid fa-chevron-right text-[10px] text-slate-300"></i>
                 </a>

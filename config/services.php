@@ -28,6 +28,12 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    'dockly' => [
+        // Alamat dasar API Dockly (sudah termasuk /api). Lokal: sandbox http://127.0.0.1:5003/api
+        'url' => env('DOCKLY_PORTAL_URL', 'http://127.0.0.1:5003/api'),
+        'timeout' => (int) env('DOCKLY_PORTAL_TIMEOUT', 15),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
