@@ -801,7 +801,8 @@ class AdminController extends Controller
         $user = Auth::user();
         $fonnteToken  = env('FONNTE_TOKEN') ?: CompanySetting::get('fonnte_token', '');
         $mailUsername = CompanySetting::get('mail_username') ?: env('MAIL_USERNAME', '');
-        $mailPassword = CompanySetting::get('mail_password') ?: env('MAIL_PASSWORD', '');
+        // Sandi aplikasi tidak pernah dikirim ke browser; view hanya tahu sudah tersimpan atau belum.
+        $hasMailPassword = (bool) (CompanySetting::get('mail_password') ?: env('MAIL_PASSWORD', ''));
         $mailHost     = CompanySetting::get('mail_host') ?: env('MAIL_HOST', 'smtp.gmail.com');
         $mailPort     = CompanySetting::get('mail_port') ?: env('MAIL_PORT', '587');
 
@@ -809,7 +810,7 @@ class AdminController extends Controller
             'user',
             'fonnteToken',
             'mailUsername',
-            'mailPassword',
+            'hasMailPassword',
             'mailHost',
             'mailPort'
         ));
@@ -822,10 +823,13 @@ class AdminController extends Controller
     {
         $user = Auth::user();
 
+        // Sandi wajib hanya bila belum ada yang tersimpan; kolom kosong berarti pertahankan sandi lama.
+        $hasStoredPassword = (bool) (CompanySetting::get('mail_password') ?: env('MAIL_PASSWORD', ''));
+
         $request->validate([
             'name'          => 'required|string|max:255',
             'mail_username' => 'required|email|max:255',
-            'mail_password' => 'required|string|max:255',
+            'mail_password' => ($hasStoredPassword ? 'nullable' : 'required') . '|string|max:255',
             'mail_host'     => 'nullable|string|max:255',
             'mail_port'     => 'nullable|string|max:10',
         ], [
@@ -840,7 +844,9 @@ class AdminController extends Controller
         $user->save();
 
         CompanySetting::set('mail_username', trim($request->mail_username));
-        CompanySetting::set('mail_password', trim($request->mail_password));
+        if (filled($request->mail_password)) {
+            CompanySetting::set('mail_password', trim($request->mail_password));
+        }
         CompanySetting::set('mail_host', trim($request->input('mail_host', 'smtp.gmail.com')));
         CompanySetting::set('mail_port', trim($request->input('mail_port', '587')));
 

@@ -108,12 +108,13 @@
                             type="password" 
                             id="mail_password" 
                             name="mail_password" 
-                            value="{{ old('mail_password', $mailPassword ?? '') }}" 
-                            required
-                            placeholder="xxxx xxxx xxxx xxxx"
+                            value=""
+                            autocomplete="new-password"
+                            @unless($hasMailPassword ?? false) required @endunless
+                            placeholder="{{ ($hasMailPassword ?? false) ? '•••• •••• •••• •••• (tersimpan)' : 'xxxx xxxx xxxx xxxx' }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-rose-300 dark:border-rose-900/60 rounded-xl text-xs font-mono text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500 transition shadow-sm"
                         >
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Sandi Aplikasi Google 16 karakter tanpa spasi atau dengan spasi.</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">{{ ($hasMailPassword ?? false) ? 'Sandi sudah tersimpan. Kosongkan kolom ini untuk mempertahankannya, atau isi untuk menggantinya.' : 'Sandi Aplikasi Google 16 karakter tanpa spasi atau dengan spasi.' }}</p>
                     </div>
                 </div>
 
