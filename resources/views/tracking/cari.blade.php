@@ -41,7 +41,7 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-wider text-slate-500">No. HBL</p>
                 <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 break-all">{{ $job['hbl_number'] }}</h2>
-                <p class="text-sm text-slate-600 mt-1">{{ $v($job['pol_name']) }} <i class="fa-solid fa-arrow-right text-[10px] mx-1"></i> {{ $v($job['pod_name']) }}</p>
+                <p class="text-sm font-semibold text-slate-600 mt-1">{{ collect([$job['jenis']['arah'] ?? null, $job['jenis']['moda'] ?? null])->filter()->implode(' · ') }}</p>
             </div>
             <span class="px-3.5 py-1.5 rounded-full text-sm font-bold {{ $batal ? 'bg-rose-100 text-rose-800' : 'bg-amber-400 text-brand-900' }}">{{ $label[$job['status']] ?? $job['status'] }}</span>
         </div>
@@ -86,6 +86,8 @@
                 <dl class="text-sm space-y-2">
                     <div class="flex justify-between gap-3"><dt class="text-slate-500">Barang</dt><dd class="font-semibold text-right">{{ $v($job['cargo_description']) }}</dd></div>
                     <div class="flex justify-between gap-3"><dt class="text-slate-500">Jumlah kemasan</dt><dd class="font-semibold">{{ $v($job['packages']) }} {{ $job['package_unit'] }}</dd></div>
+                    <div class="flex justify-between gap-3"><dt class="text-slate-500">Berat kotor</dt><dd class="font-semibold">{{ ($job['gross_weight'] ?? null) ? $job['gross_weight'].' KGS' : '-' }}</dd></div>
+                    <div class="flex justify-between gap-3"><dt class="text-slate-500">Volume</dt><dd class="font-semibold">{{ ($job['volume_cbm'] ?? null) ? $job['volume_cbm'].' CBM' : '-' }}</dd></div>
                     <div class="flex justify-between gap-3"><dt class="text-slate-500">Consignee</dt><dd class="font-semibold text-right">{{ $v($job['consignee_name']) }}</dd></div>
                 </dl>
             </div>

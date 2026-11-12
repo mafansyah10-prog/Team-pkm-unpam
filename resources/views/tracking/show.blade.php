@@ -31,7 +31,7 @@
         <div class="flex flex-wrap items-end justify-between gap-4 mt-3">
             <div>
                 <h1 class="text-2xl sm:text-4xl font-extrabold">{{ $job['job_number'] }}</h1>
-                <p class="text-slate-200 mt-2 text-sm">{{ $v($job['pol_name']) }} <i class="fa-solid fa-arrow-right text-[10px] mx-1"></i> {{ $v($job['pod_name']) }}
+                <p class="text-slate-200 mt-2 text-sm">{{ collect([$job['jenis']['arah'] ?? null, $job['jenis']['moda'] ?? null])->filter()->implode(' · ') }}
                     @if($job['cust_ref_number']) &middot; Ref. {{ $job['cust_ref_number'] }} @endif</p>
             </div>
             <span class="px-3.5 py-1.5 rounded-full text-sm font-bold {{ $batal ? 'bg-rose-100 text-rose-800' : 'bg-amber-400 text-brand-900' }}">{{ $label[$job['status']] ?? $job['status'] }}</span>
