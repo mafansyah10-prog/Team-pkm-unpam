@@ -20,14 +20,7 @@
 @endphp
 
 @section('content')
-<section class="bg-brand-900 text-white py-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-800 px-3 py-1 rounded-full">Lacak Pengiriman</span>
-        <h1 class="text-2xl sm:text-4xl font-extrabold mt-3">Cari dengan Nomor BL</h1>
-        <p class="text-slate-200 mt-2 text-sm max-w-2xl">Tanpa perlu login. Masukkan nomor House B/L (HBL) Anda untuk melihat status pengiriman.</p>
-        <div class="mt-5 max-w-2xl">@include('tracking._cari-form')</div>
-    </div>
-</section>
+@include('tracking._hero')
 
 <section class="py-8 bg-slate-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
