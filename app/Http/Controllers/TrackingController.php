@@ -91,14 +91,45 @@ class TrackingController extends Controller
 
     public function index(Request $request)
     {
+        // Label status di layar -> kode status Dockly (filter dijalankan di server, daftar berhalaman).
+        $statusOpsi = [
+            'Diproses' => 'draft,in_progress', 'Dikonfirmasi' => 'confirmed', 'Kargo Siap' => 'cargo_ready',
+            'Berangkat' => 'departed', 'Tiba' => 'arrived', 'Bea Cukai Selesai' => 'customs_cleared',
+            'Selesai' => 'completed', 'Dibatalkan' => 'cancelled',
+        ];
+        $q = mb_substr(trim((string) $request->query('q', '')), 0, 60);
+        $st = (string) $request->query('status', '');
+        $st = array_key_exists($st, $statusOpsi) ? $st : '';
+        $page = max(1, (int) $request->query('page', 1));
+
+        $query = ['page' => $page, 'per_page' => 25];
+        if ($q !== '') {
+            $query['q'] = $q;
+        }
+        if ($st !== '') {
+            $query['status'] = $statusOpsi[$st];
+        }
+
         try {
-            $res = $this->dockly->get($this->token(), '/portal/jobs');
+            $res = $this->dockly->get($this->token(), '/portal/jobs?'.http_build_query($query));
         } catch (DocklyUnauthorized) {
             return $this->sessionExpired($request);
         }
         abort_unless($res->successful(), 502, 'Data tracking tidak dapat dimuat.');
 
-        return view('tracking.index', ['jobs' => $res->json('data') ?? []]);
+        $meta = $res->json('meta') ?? ['page' => 1, 'per_page' => 25, 'total' => 0, 'pages' => 1];
+        // Nomor halaman melebihi jumlah halaman (mis. dari link lama) -> arahkan ke halaman terakhir.
+        if ($meta['total'] > 0 && $page > $meta['pages']) {
+            return redirect()->route('tracking.index', array_filter(['q' => $q, 'status' => $st, 'page' => $meta['pages'] > 1 ? $meta['pages'] : null]));
+        }
+
+        return view('tracking.index', [
+            'jobs' => $res->json('data') ?? [],
+            'meta' => $meta,
+            'q' => $q,
+            'st' => $st,
+            'statusOpsi' => array_keys($statusOpsi),
+        ]);
     }
 
     public function show(Request $request, int $id)
