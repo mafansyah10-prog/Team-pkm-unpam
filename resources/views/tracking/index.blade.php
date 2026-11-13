@@ -73,6 +73,8 @@
                     <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                         <tr>
                             <th class="text-left px-4 py-3">No. Job</th>
+                            <th class="text-left px-4 py-3">HBL</th>
+                            <th class="text-left px-4 py-3">MBL</th>
                             <th class="text-left px-4 py-3">Rute</th>
                             <th class="text-left px-4 py-3">ETD</th>
                             <th class="text-left px-4 py-3">ETA</th>
@@ -84,6 +86,8 @@
                         @foreach($jobs as $j)
                         <tr class="hover:bg-slate-50">
                             <td class="px-4 py-3 font-semibold text-slate-900">{{ $j['job_number'] }}</td>
+                            <td class="px-4 py-3 text-slate-600 break-all">{{ $j['hbl_number'] ?? '-' }}</td>
+                            <td class="px-4 py-3 text-slate-600 break-all">{{ $j['mbl_number'] ?? '-' }}</td>
                             <td class="px-4 py-3 text-slate-600">{{ $j['pol_name'] ?? '-' }} <i class="fa-solid fa-arrow-right text-[10px] text-slate-400 mx-1"></i> {{ $j['pod_name'] ?? '-' }}</td>
                             <td class="px-4 py-3 text-slate-600">{{ $fmt($j['atd'] ?? $j['etd']) }}</td>
                             <td class="px-4 py-3 text-slate-600">{{ $fmt($j['ata'] ?? $j['eta']) }}</td>
