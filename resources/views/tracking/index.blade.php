@@ -46,7 +46,7 @@
         <form action="{{ route('tracking.index') }}" method="GET" class="flex flex-wrap gap-3 mb-5">
             <div class="relative flex-1 min-w-[220px]">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="search" name="q" value="{{ $q }}" maxlength="60" placeholder="Cari No. Job, No. HBL, pelabuhan, barang..."
+                <input type="search" name="q" value="{{ $q }}" maxlength="60" placeholder="Cari No. Job, HBL, MBL, pelabuhan, barang..."
                        class="w-full pl-10 pr-4 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </div>
             <select name="status" onchange="this.form.submit()" class="px-4 py-2.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -82,22 +82,38 @@
                             <th class="px-4 py-3"></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @foreach($jobs as $j)
-                        <tr class="hover:bg-slate-50">
-                            <td class="px-4 py-3 font-semibold text-slate-900">{{ $j['job_number'] }}</td>
-                            <td class="px-4 py-3 text-slate-600 break-all">{{ $j['hbl_number'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-slate-600 break-all">{{ $j['mbl_number'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-slate-600">{{ $j['pol_name'] ?? '-' }} <i class="fa-solid fa-arrow-right text-[10px] text-slate-400 mx-1"></i> {{ $j['pod_name'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-slate-600">{{ $fmt($j['atd'] ?? $j['etd']) }}</td>
-                            <td class="px-4 py-3 text-slate-600">{{ $fmt($j['ata'] ?? $j['eta']) }}</td>
-                            <td class="px-4 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold {{ $warna[$j['status']] ?? 'bg-amber-100 text-amber-800' }}">{{ $label[$j['status']] ?? $j['status'] }}</span></td>
-                            <td class="px-4 py-3 text-right">
-                                <a href="{{ route('tracking.show', $j['id']) }}" class="text-brand-600 hover:text-brand-700 font-bold text-xs whitespace-nowrap">Lacak <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
+                    @php
+                        // Sub-job (grup = nomor job induk) dikelompokkan per halaman; baris induk (kalau milik customer ini) jadi kepala grup.
+                        $kunciGrup = collect($jobs)->pluck('grup')->filter()->unique()->values()->all();
+                        $induk = collect($jobs)->filter(fn ($x) => in_array($x['job_number'], $kunciGrup, true))->keyBy('job_number');
+                        $anakPer = collect($jobs)->filter(fn ($x) => ! empty($x['grup']))->groupBy('grup');
+                        $sudah = [];
+                    @endphp
+                    @foreach($jobs as $j)
+                        @if(! empty($j['grup']))
+                            @continue(isset($sudah[$j['grup']]))
+                            @php $sudah[$j['grup']] = true; $kids = $anakPer[$j['grup']]; @endphp
+                            <tbody class="border-t border-slate-100 divide-y divide-slate-100" x-data="{ open: true }">
+                                @if($induk->has($j['grup']))
+                                    @include('tracking._job-baris', ['j' => $induk[$j['grup']], 'toggle' => true])
+                                @else
+                                    <tr class="bg-slate-50/60 hover:bg-slate-50 cursor-pointer" @click="open = !open">
+                                        <td colspan="8" class="px-4 py-3 font-semibold text-slate-900">
+                                            <span class="mr-1.5 w-5 h-5 inline-flex items-center justify-center rounded text-slate-500"><i class="fa-solid fa-chevron-down text-[10px] transition-transform" :class="open ? '' : '-rotate-90'"></i></span>
+                                            {{ $j['grup'] }} <span class="ml-2 text-xs font-medium text-slate-500">{{ count($kids) }} sub-job</span>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @foreach($kids as $k)
+                                    @include('tracking._job-baris', ['j' => $k, 'anak' => true])
+                                @endforeach
+                            </tbody>
+                        @elseif(! $induk->has($j['job_number']))
+                            <tbody class="border-t border-slate-100">
+                                @include('tracking._job-baris', ['j' => $j])
+                            </tbody>
+                        @endif
+                    @endforeach
                 </table>
             </div>
         </div>
