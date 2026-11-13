@@ -124,6 +124,7 @@ class TrackingController extends Controller
 
         return view('tracking.index', [
             'jobs' => $res->json('data') ?? [],
+            'indukRingkas' => $res->json('induk') ?? [],
             'meta' => $meta,
             'q' => $q,
             'st' => $st,

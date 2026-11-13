@@ -97,11 +97,21 @@
                                 @if($induk->has($j['grup']))
                                     @include('tracking._job-baris', ['j' => $induk[$j['grup']], 'toggle' => true])
                                 @else
+                                    @php $m = $indukRingkas[$j['grup']] ?? null; @endphp
                                     <tr class="bg-slate-50/60 hover:bg-slate-50 cursor-pointer" @click="open = !open">
-                                        <td colspan="8" class="px-4 py-3 font-semibold text-slate-900">
+                                        <td @if(! $m) colspan="8" @endif class="px-4 py-3 font-semibold text-slate-900">
                                             <span class="mr-1.5 w-5 h-5 inline-flex items-center justify-center rounded text-slate-500"><i class="fa-solid fa-chevron-down text-[10px] transition-transform" :class="open ? '' : '-rotate-90'"></i></span>
                                             {{ $j['grup'] }} <span class="ml-2 text-xs font-medium text-slate-500">{{ count($kids) }} sub-job</span>
                                         </td>
+                                        @if($m)
+                                        <td class="px-4 py-3 text-slate-600">-</td>
+                                        <td class="px-4 py-3 text-slate-600 break-all">{{ $m['mbl_number'] ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-slate-600">{{ $m['pol_name'] ?? '-' }} <i class="fa-solid fa-arrow-right text-[10px] text-slate-400 mx-1"></i> {{ $m['pod_name'] ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-slate-600">{{ $fmt($m['atd'] ?? $m['etd']) }}</td>
+                                        <td class="px-4 py-3 text-slate-600">{{ $fmt($m['ata'] ?? $m['eta']) }}</td>
+                                        <td class="px-4 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-bold {{ $warna[$m['status']] ?? 'bg-amber-100 text-amber-800' }}">{{ $label[$m['status']] ?? $m['status'] }}</span></td>
+                                        <td class="px-4 py-3"></td>
+                                        @endif
                                     </tr>
                                 @endif
                                 @foreach($kids as $k)
