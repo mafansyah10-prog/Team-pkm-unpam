@@ -56,17 +56,16 @@ class TrackingController extends Controller
     public function login(Request $request)
     {
         $data = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
         ], [
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
+            'email.required' => 'Email atau username wajib diisi.',
             'password.required' => 'Kata sandi wajib diisi.',
         ]);
 
         $r = $this->dockly->login($data['email'], $data['password']);
         if (! $r['ok']) {
-            $msg = $r['status'] === 401 ? 'Email atau kata sandi salah.' : $r['message'];
+            $msg = $r['status'] === 401 ? 'Email/username atau kata sandi salah.' : $r['message'];
 
             return back()->withInput($request->only('email'))->withErrors(['email' => $msg]);
         }

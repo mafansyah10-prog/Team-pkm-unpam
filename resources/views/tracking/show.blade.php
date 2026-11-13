@@ -154,7 +154,7 @@
                     <li class="pl-4 relative">
                         <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-brand-500"></span>
                         <p class="text-sm font-semibold text-slate-800">{{ $m['milestone'] }}</p>
-                        <p class="text-xs text-slate-500">{{ $tgl($m['occurred_at'], true) }}@if($m['location']) &middot; {{ $m['location'] }}@endif</p>
+                        <p class="text-xs text-slate-500">{{ $tgl($m['occurred_at'], ! ($m['date_only'] ?? false)) }}@if($m['location']) &middot; {{ $m['location'] }}@endif</p>
                     </li>
                     @endforeach
                 </ol>
