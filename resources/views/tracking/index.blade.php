@@ -26,7 +26,7 @@
 
 @section('content')
 <section class="bg-brand-900 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-end justify-between gap-4">
+    <div class="w-full px-4 sm:px-6 lg:px-8 flex flex-wrap items-end justify-between gap-4">
         <div>
             <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-brand-800 px-3 py-1 rounded-full">Customer Portal</span>
             <h1 class="text-3xl sm:text-4xl font-extrabold mt-3">Pengiriman Saya</h1>
@@ -42,7 +42,7 @@
 </section>
 
 <section class="py-10 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
         <form action="{{ route('tracking.index') }}" method="GET" class="flex flex-wrap gap-3 mb-5">
             <div class="relative flex-1 min-w-[220px]">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -69,7 +69,7 @@
         @else
         <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
             <div class="overflow-x-auto">
-                <table class="w-full text-sm">
+                <table class="w-full text-sm whitespace-nowrap">
                     <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                         <tr>
                             <th class="text-left px-4 py-3">No. Job</th>
@@ -104,8 +104,8 @@
                                             {{ $j['grup'] }} <span class="ml-2 text-xs font-medium text-slate-500">{{ count($kids) }} sub-job</span>
                                         </td>
                                         @if($m)
-                                        <td class="px-4 py-3 text-slate-600 break-all">{{ $m['hbl_number'] ?? '-' }}</td>
-                                        <td class="px-4 py-3 text-slate-600 break-all">{{ $m['mbl_number'] ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-slate-600">{{ $m['hbl_number'] ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-slate-600">{{ $m['mbl_number'] ?? '-' }}</td>
                                         <td class="px-4 py-3 text-slate-600">{{ $m['pol_name'] ?? '-' }} <i class="fa-solid fa-arrow-right text-[10px] text-slate-400 mx-1"></i> {{ $m['pod_name'] ?? '-' }}</td>
                                         <td class="px-4 py-3 text-slate-600">{{ $fmt($m['atd'] ?? $m['etd']) }}</td>
                                         <td class="px-4 py-3 text-slate-600">{{ $fmt($m['ata'] ?? $m['eta']) }}</td>
