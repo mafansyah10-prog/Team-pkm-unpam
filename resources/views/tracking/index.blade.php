@@ -104,7 +104,7 @@
                                             {{ $j['grup'] }} <span class="ml-2 text-xs font-medium text-slate-500">{{ count($kids) }} sub-job</span>
                                         </td>
                                         @if($m)
-                                        <td class="px-4 py-3 text-slate-600">-</td>
+                                        <td class="px-4 py-3 text-slate-600 break-all">{{ $m['hbl_number'] ?? '-' }}</td>
                                         <td class="px-4 py-3 text-slate-600 break-all">{{ $m['mbl_number'] ?? '-' }}</td>
                                         <td class="px-4 py-3 text-slate-600">{{ $m['pol_name'] ?? '-' }} <i class="fa-solid fa-arrow-right text-[10px] text-slate-400 mx-1"></i> {{ $m['pod_name'] ?? '-' }}</td>
                                         <td class="px-4 py-3 text-slate-600">{{ $fmt($m['atd'] ?? $m['etd']) }}</td>
